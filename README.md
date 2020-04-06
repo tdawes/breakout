@@ -1,5 +1,7 @@
 # Breakout
 
+![CI](https://github.com/prodo-dev/breakout/workflows/CI/badge.svg)
+
 This is a monorepo.
 
 - `packages/www`: [Next.js](https://nextjs.org/) app for build and server the frontend
