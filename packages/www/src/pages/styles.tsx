@@ -1,19 +1,21 @@
 /** @jsx jsx */
 import {
-  Label,
-  Slider,
-  Text,
-  Checkbox,
   Box,
-  jsx,
-  Styled,
   Button,
-  Link,
-  Flex,
-  NavLink,
-  Grid,
+  Checkbox,
   Field,
+  Flex,
+  Grid,
   Input,
+  jsx,
+  Label,
+  Link,
+  NavLink,
+  Radio,
+  Select,
+  Slider,
+  Styled,
+  Text,
   Textarea,
 } from "theme-ui";
 import Layout from "../components/Layout";
@@ -68,13 +70,6 @@ const Styles = () => (
           acted as the Eye of Ra, Ra's feminine counterpart, and in this form
           she had a vengeful aspect that protected him from his enemies.
         </Styled.p>
-
-        <Styled.blockquote>This is a blockquote</Styled.blockquote>
-
-        <Styled.ul>
-          <Styled.li>these are</Styled.li>
-          <Styled.li>list items</Styled.li>
-        </Styled.ul>
       </Section>
 
       <Section>
@@ -82,6 +77,9 @@ const Styles = () => (
           internal link
         </Link>
         <Link href="https://prodo.ai">external link</Link>
+        <Link variant="button" href="/" sx={{ ml: 3 }}>
+          button link
+        </Link>
       </Section>
 
       <Section>
@@ -133,6 +131,28 @@ const Styles = () => (
               <Text>I am a checkbox label</Text>
             </Label>
           </Label>
+
+          <Box>
+            <Text>Select</Text>
+            <Select defaultValue="Hello">
+              <option>Hello</option>
+              <option>Hi</option>
+              <option>Beep</option>
+              <option>Boop</option>
+            </Select>
+          </Box>
+
+          <Box>
+            <Text>Radio buttons</Text>
+            <Label>
+              <Radio name="o" value="true" defaultChecked={true} />
+              Option one
+            </Label>
+            <Label>
+              <Radio name="o" value="false" />
+              Option two
+            </Label>
+          </Box>
 
           <Box>
             <Label>label for slider</Label>
