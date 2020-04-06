@@ -7,7 +7,10 @@
   ],
   "scripts": {
     "build": "yarn workspaces run build",
-    "start": "yarn workspace www dev"
+    "start": "yarn workspace www dev",
+    "start:server": "yarn workspace server start",
+    "start:server:prod": "yarn workspace server start:prod",
+    "clean": "yarn workspaces run clean"
   },
   "dependencies": {},
   "devDependencies": {

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "clean": "rimraf .next out"
   },
   "dependencies": {
     "@emotion/styled": "^10.0.27",
@@ -26,6 +27,7 @@
     "@types/react": "^16.9.32",
     "@types/styled-system__css": "^5.0.8",
     "@types/theme-ui": "^0.3.1",
+    "rimraf": "^3.0.2",
     "typescript": "^3.8.3"
   }
 }
