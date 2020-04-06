@@ -14,11 +14,13 @@ import {
   Radio,
   Select,
   Slider,
+  IconButton,
   Styled,
   Text,
   Textarea,
 } from "theme-ui";
 import Layout from "../components/Layout";
+import { Feather } from "react-feather";
 
 const Section: React.FC = (props) => <Box {...props} sx={{ py: 2 }} />;
 const Color: React.FC = (props) => (

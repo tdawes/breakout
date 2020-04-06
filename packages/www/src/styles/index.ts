@@ -141,6 +141,12 @@ const theme: Theme = {
     },
     icon: {
       cursor: "pointer",
+      borderRadius: 2,
+      transition: "all 150ms ease-in-out",
+
+      "&:hover,&:focus,&:active": {
+        bg: "accent",
+      },
     },
   },
 

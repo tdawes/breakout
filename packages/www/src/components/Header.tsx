@@ -2,7 +2,6 @@
 import * as React from "react";
 import { Box, Flex, jsx } from "theme-ui";
 import Link from "./Link";
-import { PenTool } from "react-feather";
 import Nav from "./Nav";
 
 const Header: React.FC<{ home?: string }> = (props) => (
