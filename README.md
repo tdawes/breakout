@@ -4,7 +4,7 @@
 
 This is a monorepo.
 
-- `packages/www`: [Next.js](https://nextjs.org/) app
+- `packages/www`: [Next.js](https://nextjs.org/) app for frontend
 - `packages/server`: [Socket.IO](https://socket.io/) server for web socket communication
 
 ## Getting Started
