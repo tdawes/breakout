@@ -25,11 +25,11 @@ Everything is deployed on push to master and on successful CI.
 
 ## CI
 
-There is a Github action to build server and client on push.
+There is a [Github action](https://github.com/prodo-dev/breakout/actions) to build everything on push.
 
 ## Theming
 
 Component styling is accomplished with [ThemeUI](https://theme-ui.com/). The
 theme for the site (light and dark mode) are defined in
 `/packages/www/src/styles/index.ts`. The base components used can be seen at
-[webrtc-experiement.now.sh/styles](https://webrtc-experiement.now.sh/styles).
+[localhost:3000/styles](http://localhost:3000/styles).
