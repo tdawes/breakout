@@ -12,6 +12,11 @@ io.on("connection", (client) => {
     client.join(roomId);
   });
 
+  client.on("message", ({ text, roomId }: { text: string; roomId: string }) => {
+    console.log("received message", text, roomId);
+    client.to(roomId).broadcast.emit("message", { text });
+  });
+
   client.on("leave", ({ roomId }: { roomId: string }) => {
     console.log(`client ${client.id} leaving room ${roomId}`);
     client.leave(roomId);

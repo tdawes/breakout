@@ -4,9 +4,12 @@
 
 This is a monorepo.
 
-- `packages/www`: [Next.js](https://nextjs.org/) app for build and server the frontend
+- `packages/www`: [Next.js](https://nextjs.org/) app
+- `packages/server`: [Socket.IO](https://socket.io/) server for web socket communication
 
 ## Getting Started
+
+You need to run two things locally: the frontend and the server.
 
 Start the frontend with
 
@@ -15,6 +18,12 @@ yarn start
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+Start the server in another terminal with
+
+```
+yarn start:server
+```
 
 ## Deployment
 
