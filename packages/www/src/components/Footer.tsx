@@ -1,5 +1,6 @@
 /** @jsx jsx */
-import { Box, jsx, Text } from "theme-ui";
+import { Box, jsx, Text, Flex } from "theme-ui";
+import Logo from "./Logo";
 
 const Footer = () => (
   <Box
@@ -19,6 +20,7 @@ const Footer = () => (
         pt: 2,
       }}
     >
+      <Logo />
       <Text>© 2020 Prodo Tech Ltd</Text>
     </Box>
   </Box>

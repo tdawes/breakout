@@ -1,12 +1,38 @@
 import * as React from "react";
 import { DefaultSeo } from "next-seo";
-import defaultConfig from "../seo";
 import Head from "next/head";
+import { DefaultSeoProps } from "next-seo";
 
 export interface Props {
   title?: string;
   description?: string;
 }
+
+const title = "Breakout";
+const url = "";
+const description = "Online pub quiz";
+const image = "";
+
+const defaultConfig: DefaultSeoProps = {
+  title,
+  description,
+  openGraph: {
+    type: "website",
+    url,
+    site_name: title,
+    images: [
+      {
+        url: image,
+        width: 512,
+        height: 512,
+      },
+    ],
+  },
+  twitter: {
+    handle: "",
+    cardType: "summary",
+  },
+};
 
 const SEO: React.FC<Props> = (props) => {
   const title =

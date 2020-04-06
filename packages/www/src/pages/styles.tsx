@@ -14,6 +14,7 @@ import {
   Grid,
   Field,
   Input,
+  Textarea,
 } from "theme-ui";
 import Layout from "../components/Layout";
 
@@ -67,6 +68,13 @@ const Styles = () => (
           acted as the Eye of Ra, Ra's feminine counterpart, and in this form
           she had a vengeful aspect that protected him from his enemies.
         </Styled.p>
+
+        <Styled.blockquote>This is a blockquote</Styled.blockquote>
+
+        <Styled.ul>
+          <Styled.li>these are</Styled.li>
+          <Styled.li>list items</Styled.li>
+        </Styled.ul>
       </Section>
 
       <Section>
@@ -95,7 +103,9 @@ const Styles = () => (
       <Section>
         <Flex>
           <Button sx={{ mr: 2 }}>Primary</Button>
-          <Button variant="secondary">Secondary</Button>
+          <Button variant="secondary" sx={{ mr: 2 }}>
+            Secondary
+          </Button>
         </Flex>
       </Section>
 
@@ -106,11 +116,16 @@ const Styles = () => (
             label="label for placeholder"
             placeholder="this is placeholder"
           />
-          <Field
-            name="value"
-            label="label for value"
-            defaultValue="this is value"
-          />
+
+          <Box>
+            <Label htmlFor="name">i am a label</Label>
+            <Input name="name" defaultValue="i am a value" />
+          </Box>
+
+          <Box>
+            <Label htmlFor="textarea">textarea label</Label>
+            <Textarea defaultValue="this is a multiline text area" />
+          </Box>
 
           <Label>
             <Label>

@@ -1,12 +1,8 @@
 import { system } from "@theme-ui/presets";
 import { Theme } from "theme-ui";
+import { SystemStyleObject } from "@styled-system/css";
 
-const heading = {
-  fontFamily: "heading",
-  lineHeight: "heading",
-  fontWeight: "heading",
-};
-
+// system font
 const font = [
   "-apple-system",
   "BlinkMacSystemFont",
@@ -22,7 +18,13 @@ const font = [
   "Segoe UI Symbol",
 ].join(",");
 
-const baseLink = {
+const heading = {
+  fontFamily: "heading",
+  lineHeight: "heading",
+  fontWeight: "heading",
+};
+
+const baseLink: SystemStyleObject = {
   color: "text",
   textDecoration: "underline",
   transition: "all 150ms ease-in-out",
@@ -34,7 +36,7 @@ const baseLink = {
   },
 };
 
-const baseInput = {
+const baseInput: SystemStyleObject = {
   borderRadius: 0,
   borderWidth: 2,
 
@@ -48,7 +50,7 @@ const baseInput = {
   },
 };
 
-const baseButton = {
+const baseButton: SystemStyleObject = {
   color: "background",
   bg: "primary",
   cursor: "pointer",
@@ -73,7 +75,6 @@ const theme: Theme = {
     secondary: darkColor,
     accent: "#fbba72",
     muted: "#dfdfdf",
-    highlight: "green",
     grey: {
       200: "#dfdfdf",
       400: "#cecece",
@@ -88,6 +89,7 @@ const theme: Theme = {
       dark: {
         text: lightColor,
         background: darkColor,
+        primary: "#4a7fff",
         secondary: lightColor,
         muted: "#313030",
         accent: "#c37620",
@@ -139,18 +141,6 @@ const theme: Theme = {
     },
     icon: {
       cursor: "pointer",
-    },
-    subtle: {
-      ...baseButton,
-      py: 0,
-      color: "text",
-      bg: "muted",
-      border: "none",
-
-      "&:hover,&:focus,&:active": {
-        boxShadow: "none",
-        bg: "accent",
-      },
     },
   },
 
@@ -276,10 +266,7 @@ const theme: Theme = {
       borderLeft: "solid 4px hsla(0,0%,0%,0.13)",
       color: "hsla(0,0%,0%,0.53)",
     },
-    ul: {
-      pl: 0,
-      listStyle: "none",
-    },
+    ul: {},
     li: {
       pb: 1,
     },

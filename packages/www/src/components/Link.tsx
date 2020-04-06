@@ -4,7 +4,6 @@ import { Link as TLink } from "theme-ui";
 import { SystemStyleObject } from "@styled-system/css";
 
 export interface Props {
-  to?: string;
   href?: string;
   target?: string;
   variant?: string;
@@ -15,8 +14,8 @@ export interface Props {
 const isExternalLink = (href: string): boolean =>
   href.startsWith("http://") || href.startsWith("https://");
 
-const Link: React.FC<Props> = props => {
-  const href = props.href || props.to;
+const Link: React.FC<Props> = (props) => {
+  const href = props.href;
   if (isExternalLink(href)) {
     return (
       <TLink href={href} target="_blank" rel="noopener" {...props}>

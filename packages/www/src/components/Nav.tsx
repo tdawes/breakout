@@ -18,6 +18,7 @@ const ThemeSwitcher: React.FC = () => {
         color: "text",
         bg: "transparent",
         border: "none",
+        borderRadius: 0,
         px: 2,
         py: 1,
 
