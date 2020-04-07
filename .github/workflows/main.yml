@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  build_and_lint:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -12,5 +12,5 @@ jobs:
         with:
           node-version: "13.x"
       - run: yarn install
-      - run: yarn build
       - run: yarn lint
+      - run: yarn build
