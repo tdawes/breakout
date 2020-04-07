@@ -19,7 +19,6 @@ const defaultConfig: DefaultSeoProps = {
   openGraph: {
     type: "website",
     url,
-    site_name: title,
     images: [
       {
         url: image,

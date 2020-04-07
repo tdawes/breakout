@@ -69,8 +69,8 @@ const Styles = () => (
           religion. As a sky deity, she was the mother or consort of the sky god
           Horus and the sun god Ra, and the symbolic mother of their earthly
           representatives, the pharaohs. She was one of several goddesses who
-          acted as the Eye of Ra, Ra's feminine counterpart, and in this form
-          she had a vengeful aspect that protected him from his enemies.
+          acted as the Eye of Ra, Ras feminine counterpart, and in this form she
+          had a vengeful aspect that protected him from his enemies.
         </Styled.p>
       </Section>
 
