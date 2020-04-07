@@ -1,0 +1,8 @@
+{
+  "firebase": {
+    "apiKey": "AIzaSyCuT78N_35KuqU2bPZi7Yn4l2O6ltvtYkU",
+    "authDomain": "breakout-development-andreja.firebaseapp.com",
+    "databaseURL": "https://breakout-development-andreja.firebaseio.com",
+    "projectId": "breakout-development-andreja"
+  }
+}
