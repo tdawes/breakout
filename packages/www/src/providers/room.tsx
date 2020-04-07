@@ -20,7 +20,7 @@ const dummyRoom: Room = {
     a: { id: "a", name: "Table A", users: {} },
     b: { id: "b", name: "Table b", users: {} },
   },
-  qm: null,
+  quizMaster: null,
 };
 
 export const RoomProvider: React.FC = (props) => {

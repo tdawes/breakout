@@ -36,12 +36,15 @@ const TablePage = () => {
 
 const Page: NextPage = () => {
   const router = useRouter();
+  const roomId = router.query.roomId as string;
   const tableId = router.query.tableId as string;
 
   const { changeTable } = useTable();
+  const { changeRoom } = useRoom();
 
   React.useEffect(() => {
     changeTable(tableId);
+    changeRoom(roomId);
   }, []);
 
   return <TablePage />;

@@ -5,6 +5,7 @@ import { useUser } from "../providers/user";
 import { Edit2 } from "react-feather";
 import Loading from "./Loading";
 
+const maxNameLength = 20;
 const ChangeName: React.FC<{
   defaultValue: string;
   onChange: (name: string) => void;
@@ -16,17 +17,24 @@ const ChangeName: React.FC<{
       as="form"
       onSubmit={(e) => {
         e.preventDefault();
-        if (name !== "") {
+        if (name !== "" && name.length <= maxNameLength) {
           props.onChange(name);
         }
       }}
     >
       <Text>Change your name</Text>
 
+      {name.length > maxNameLength && (
+        <Text sx={{ color: "error" }}>
+          Name must be shorter than {maxNameLength} characters
+        </Text>
+      )}
+
       <Input
         placeholder="your username"
         value={name}
         onChange={(e) => setName(e.target.value)}
+        autoFocus
       />
       <Button sx={{ mt: 2 }}>Change</Button>
     </Box>

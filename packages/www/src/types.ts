@@ -8,7 +8,7 @@ export interface Room {
   name: string;
   users: Keyed<User>;
   tables: Keyed<Table>;
-  qm: string | null;
+  quizMaster: string | null;
 }
 
 export interface Table {
