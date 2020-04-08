@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Keyed, Table, Room } from "../types";
+import { Table } from "../types";
 
 export interface TableState {
   table: Table | null;

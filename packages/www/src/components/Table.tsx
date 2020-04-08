@@ -1,11 +1,11 @@
 /** @jsx jsx */
-import { Flex, Grid, Box, jsx, Button } from "theme-ui";
+import { Box, Grid, jsx } from "theme-ui";
+import { useTable } from "../providers/table";
 import GameHeader from "./GameHeader";
+import { LoadingCenter } from "./Loading";
+import ScratchPad from "./Scratchpad";
 import TableHeader from "./TableHeader";
 import UserVideo from "./UserVideo";
-import ScratchPad from "./Scratchpad";
-import { useTable } from "../providers/table";
-import { LoadingCenter } from "./Loading";
 
 const Table = () => {
   const { table } = useTable();

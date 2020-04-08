@@ -1,15 +1,9 @@
 /** @jsx jsx */
 import * as React from "react";
-import { Text, Flex, Grid, Box, jsx, Button, Textarea } from "theme-ui";
-import GameHeader from "./GameHeader";
-import TableHeader from "./TableHeader";
-import UserVideo from "./UserVideo";
-import { useTable } from "../providers/table";
-import { LoadingCenter } from "./Loading";
-import { ChevronUp, ChevronDown } from "react-feather";
+import { ChevronDown, ChevronUp } from "react-feather";
+import { Box, Flex, jsx, Text, Textarea } from "theme-ui";
 
 const ScratchPad: React.FC = (props) => {
-  const { table } = useTable();
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
@@ -37,7 +31,6 @@ const ScratchPad: React.FC = (props) => {
 
       <Box
         sx={{
-          // transform: `scaleY(${isOpen ? "1" : "0"})`,
           height: isOpen ? "200px" : "0",
           opacity: isOpen ? 1 : 0,
           overflow: "hidden",

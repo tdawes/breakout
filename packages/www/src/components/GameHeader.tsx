@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Text, Flex, Box, jsx, Button } from "theme-ui";
+import { Flex, jsx, Text } from "theme-ui";
 import { useRoom } from "../providers/room";
 
 const GameHeader = () => {

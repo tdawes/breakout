@@ -1,12 +1,11 @@
 /** @jsx jsx */
 import { useRouter } from "next/router";
 import * as React from "react";
-import { Flex, Box, jsx, Text, Grid } from "theme-ui";
+import { Box, jsx } from "theme-ui";
 import Layout from "../../../../components/Layout";
+import Loading from "../../../../components/Loading";
 import Stage from "../../../../components/Stage";
 import Table from "../../../../components/Table";
-import Loading from "../../../../components/Loading";
-import User from "../../../../components/User";
 import { useRoom } from "../../../../providers/room";
 import { useTable } from "../../../../providers/table";
 

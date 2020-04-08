@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import * as React from "react";
-import { Grid, Text, Flex, Box, jsx, Button } from "theme-ui";
+import { Box, Flex, Grid, jsx, Text } from "theme-ui";
 import { useTable } from "../providers/table";
 import Avatar from "./Avatar";
 

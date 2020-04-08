@@ -1,5 +1,4 @@
 /** @jsx jsx */
-import { NextPage } from "next";
 import { useRouter } from "next/router";
 import * as React from "react";
 import { Box, Flex, jsx, Styled, Text } from "theme-ui";
