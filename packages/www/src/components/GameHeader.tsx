@@ -25,7 +25,7 @@ const GameHeader = () => {
       }}
     >
       <Text>This game</Text>
-      <Flex>
+      <Flex sx={{ alignItems: "center" }}>
         <Flex sx={{ alignItems: "flex-end", mr: 4 }}>
           <Text sx={{ fontSize: 5, pr: 2 }}>{numTables}</Text>
           <Text sx={{ fontSize: 1 }}>total tables</Text>

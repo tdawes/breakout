@@ -16,7 +16,7 @@ const Stage = () => {
     >
       <Box sx={{ flexGrow: 1 }}>
         <UserVideo
-          title="Quiz Master"
+          title="Quizmaster"
           image="https://source.unsplash.com/random/300x1000"
           sx={{ minHeight: "400px" }}
         />
