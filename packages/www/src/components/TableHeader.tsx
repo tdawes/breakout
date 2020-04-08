@@ -53,19 +53,17 @@ const TableHeader = () => {
       <Flex sx={{ justifyContent: "flex-end" }}>
         <TableStats sx={{ display: ["none", "none", "flex"] }} />
 
-        <Grid
-          gap={2}
+        <Flex
           sx={{
             flexGrow: 1,
-            minWidth: ["0", "0", "20rem"],
-            gridTemplateColumns: "repeat(auto-fill, minmax(3rem, 1fr))",
+            flexWrap: "wrap",
             pl: [0, 0, 4],
           }}
         >
           {Object.keys(table.users).map((k) => (
-            <Avatar key={k} name={table.users[k].name} />
+            <Avatar key={k} name={table.users[k].name} sx={{ mr: 3 }} />
           ))}
-        </Grid>
+        </Flex>
       </Flex>
     </Box>
   );

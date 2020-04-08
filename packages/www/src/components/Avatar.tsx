@@ -8,6 +8,7 @@ const Avatar: React.FC<{ name: string; size?: number }> = (props) => {
 
   return (
     <Flex
+      {...props}
       sx={{
         alignItems: "center",
         justifyContent: "center",
@@ -23,7 +24,7 @@ const Avatar: React.FC<{ name: string; size?: number }> = (props) => {
           bg: "grey.400",
         }}
       />
-      <Text sx={{ fontSize: 1, pt: 1 }}>{props.name}</Text>
+      <Text sx={{ fontSize: 1, pt: 0 }}>{props.name}</Text>
     </Flex>
   );
 };

@@ -20,8 +20,8 @@ const dummyTable: Table = {
     two: { id: "two", name: "Andreja" },
     three: { id: "three", name: "Tom" },
     four: { id: "four", name: "Bruno" },
-    // five: { id: "five", name: "Kai" },
-    // six: { id: "six", name: "Sunir" },
+    five: { id: "five", name: "Kai" },
+    six: { id: "six", name: "Sunir" },
   },
 };
 
