@@ -1,5 +1,7 @@
 # Breakout
 
+Deployed to [prodo-breakout.now.sh](https://prodo-breakout.now.sh).
+
 ![CI](https://github.com/prodo-dev/breakout/workflows/CI/badge.svg)
 
 This is a monorepo.
