@@ -113,6 +113,9 @@ const Styles = () => (
             <Button variant="secondary" sx={{ mr: 2 }}>
               Secondary
             </Button>
+            <Button variant="subtle" sx={{ mr: 2 }}>
+              Subtle
+            </Button>
           </Flex>
         </Section>
 
