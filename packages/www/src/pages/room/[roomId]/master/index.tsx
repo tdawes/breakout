@@ -65,10 +65,7 @@ const MasterPage = () => {
     <Layout title={room?.id}>
       <Flex
         sx={{
-          flexDirection: "column",
-          "@media screen and (min-width: 40em)": {
-            flexDirection: "row",
-          },
+          flexDirection: ["column", "row"],
         }}
       >
         <Box
