@@ -1,10 +1,9 @@
 /** @jsx jsx */
 import { Flex, Box, jsx, Button } from "theme-ui";
 import UserVideo from "./UserVideo";
+import { loadGetInitialProps } from "next/dist/next-server/lib/utils";
 
-const bottomHeight = 80;
-
-const Stage = () => {
+const Stage: React.FC<{ hideJoinButton?: boolean }> = (props) => {
   return (
     <Flex
       sx={{
@@ -22,16 +21,18 @@ const Stage = () => {
         />
       </Box>
 
-      <Box
-        sx={{
-          px: 2,
-          py: 3,
-          bg: "grey.400",
-          textAlign: "center",
-        }}
-      >
-        <Button sx={{ width: "100%" }}>Join Stage</Button>
-      </Box>
+      {!props.hideJoinButton && (
+        <Box
+          sx={{
+            px: 2,
+            py: 3,
+            bg: "grey.400",
+            textAlign: "center",
+          }}
+        >
+          <Button sx={{ width: "100%" }}>Join Stage</Button>
+        </Box>
+      )}
     </Flex>
   );
 };

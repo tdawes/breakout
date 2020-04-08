@@ -3,7 +3,7 @@ import * as React from "react";
 import { ChevronDown, ChevronUp } from "react-feather";
 import { Box, Flex, jsx, Text, Textarea } from "theme-ui";
 
-const ScratchPad: React.FC = (props) => {
+const Scratchpad: React.FC = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
@@ -33,6 +33,7 @@ const ScratchPad: React.FC = (props) => {
         sx={{
           height: isOpen ? "200px" : "0",
           opacity: isOpen ? 1 : 0,
+          pb: isOpen ? 2 : 0,
           overflow: "hidden",
           transition: "height 150ms ease-in-out",
         }}
@@ -41,7 +42,7 @@ const ScratchPad: React.FC = (props) => {
           placeholder="your team notes go here"
           sx={{
             height: "100%",
-            mt: 2,
+            mt: 1,
           }}
         />
       </Box>
@@ -49,4 +50,4 @@ const ScratchPad: React.FC = (props) => {
   );
 };
 
-export default ScratchPad;
+export default Scratchpad;
