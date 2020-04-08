@@ -1,5 +1,4 @@
 /** @jsx jsx */
-import { NextPage } from "next";
 import { useRouter } from "next/router";
 import * as React from "react";
 import { Box, Flex, jsx, Styled, Text } from "theme-ui";
@@ -10,14 +9,21 @@ import User from "../../components/User";
 import { useRoom } from "../../providers/room";
 
 const RoomPage = () => {
-  const { room } = useRoom();
+  const router = useRouter();
+  const roomId = router.query.roomId as string;
+
+  const { room, changeRoom } = useRoom();
+
+  React.useEffect(() => {
+    changeRoom(roomId);
+  }, [roomId]);
 
   if (room == null) {
     return <Loading />;
   }
 
   return (
-    <Layout title={room?.id}>
+    <Layout title={roomId}>
       <Box sx={{ px: [3, 4], pt: 4 }}>
         <Box sx={{ pb: 4 }}>
           <Text>You are in room</Text>
@@ -50,17 +56,4 @@ const RoomPage = () => {
   );
 };
 
-const Page: NextPage = () => {
-  const router = useRouter();
-  const roomId = router.query.roomId as string;
-
-  const { changeRoom } = useRoom();
-
-  React.useEffect(() => {
-    changeRoom(roomId);
-  }, [roomId]);
-
-  return <RoomPage />;
-};
-
-export default Page;
+export default RoomPage;

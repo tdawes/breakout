@@ -7,13 +7,18 @@ import Layout from "../../../../components/Layout";
 import Loading from "../../../../components/Loading";
 import { useRoom } from "../../../../providers/room";
 import { Table } from "../../../../types";
+import Stage from "../../../../components/Stage";
+import GameHeader from "../../../../components/GameHeader";
 
-const TableView = ({ table, roomId }: { table: Table; roomId: string }) => (
+const TableView: React.FC<{ table: Table; roomId: string }> = ({
+  table,
+  roomId,
+}) => (
   <Flex
     key={table.id}
     sx={{
       p: 3,
-      backgroundColor: "muted",
+      backgroundColor: "grey.500",
       color: "background",
       mb: 3,
       alignItems: "center",
@@ -66,49 +71,25 @@ const MasterPage = () => {
       <Flex
         sx={{
           flexDirection: ["column", "row"],
+          minHeight: "100vh",
         }}
       >
         <Box
           sx={{
-            minWidth: "100px",
-            backgroundColor: "peachpuff",
-            minHeight: ["100px", "100vh"],
-            width: ["100%", "30%"],
+            width: ["100%", "33%"],
+            minWidth: ["100%", "stage"],
           }}
         >
-          Quizmasters face goes here
-          <Text
-            sx={{
-              minWidth: "100px",
-              backgroundColor: "rgba(0, 0, 0, 0.3)",
-              position: "fixed",
-              width: ["100%", "30%"],
-              bottom: ["inherit", 0],
-            }}
-          >
-            ⭐Quizmaster
-          </Text>
+          <Stage hideJoinButton />
         </Box>
         <Box
           sx={{
             flexGrow: 1,
           }}
         >
-          <Flex
-            sx={{
-              p: 3,
-              justifyContent: "space-between",
-              borderBottom: "1px solid white",
-              alignItems: "center",
-            }}
-          >
-            <Text variant="heading">This game</Text>
-            <Text>
-              {Object.keys(room.users).length} total members in this game
-            </Text>
-          </Flex>
+          <GameHeader />
 
-          <Box sx={{ p: 4 }}>
+          <Box sx={{ py: 4, px: 3 }}>
             {Object.keys(room.tables).map((k) => (
               <TableView table={room.tables[k]} roomId={room.id} key={k} />
             ))}

@@ -87,7 +87,7 @@ const baseColors = {
   grey: {
     200: "#6A6672",
     400: "#cecece",
-    500: "#a2a2a2",
+    500: "#CAC8CD",
     600: "#737373",
     700: "#666565",
   },
@@ -101,7 +101,7 @@ const theme: Theme = {
     primary: baseColors.green[200],
     secondary: "#5990DC",
     accent: "#fbba72",
-    muted: "#dfdfdf",
+    muted: "#313030",
     error: "red",
     success: baseColors.green[200],
     ...baseColors,
@@ -131,6 +131,7 @@ const theme: Theme = {
     measure: "32em",
     narrow: "22em",
     header: "6rem",
+    stage: "300px",
   },
 
   lineHeights: {
