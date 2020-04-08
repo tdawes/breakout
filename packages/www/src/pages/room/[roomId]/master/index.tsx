@@ -71,12 +71,9 @@ const MasterPage = () => {
         <Box
           sx={{
             minWidth: "100px",
-            minHeight: "100px",
             backgroundColor: "peachpuff",
-            "@media screen and (min-width: 40em)": {
-              width: "30%",
-              minHeight: "100vh",
-            },
+            minHeight: ["100px", "100vh"],
+            width: ["100%", "30%"],
           }}
         >
           Quizmasters face goes here
@@ -85,11 +82,8 @@ const MasterPage = () => {
               minWidth: "100px",
               backgroundColor: "rgba(0, 0, 0, 0.3)",
               position: "fixed",
-              width: "100%",
-              "@media screen and (min-width: 40em)": {
-                width: "30%",
-                bottom: 0,
-              },
+              width: ["100%", "30%"],
+              bottom: ["inherit", 0],
             }}
           >
             ⭐Quizmaster
