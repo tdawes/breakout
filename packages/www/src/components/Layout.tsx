@@ -17,10 +17,7 @@ const Layout: React.FC<Props> = (props) => {
 
       <Box
         sx={{
-          maxWidth: "container",
-          mx: "auto",
           my: 0,
-          px: [3, 4],
           py: 0,
         }}
       >
@@ -29,12 +26,8 @@ const Layout: React.FC<Props> = (props) => {
             minHeight: "100vh",
           }}
         >
-          <Header />
-
-          <Box sx={{ py: 4 }}>{props.children}</Box>
+          {props.children}
         </Box>
-
-        <Footer />
       </Box>
     </>
   );

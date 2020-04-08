@@ -50,7 +50,7 @@ const useWebSockets = (roomId: string) => {
     const socket = socketRef.current;
 
     if (socket == null) {
-      return null;
+      return () => {};
     }
 
     socket.on("connect", onConnect);
