@@ -1,3 +1,6 @@
+/* eslint @typescript-eslint/no-var-requires: 0 */
+/* eslint no-undef: 0 */
+
 const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
