@@ -12,13 +12,23 @@ const RoomContext = React.createContext<RoomState>({} as RoomState);
 
 export const useRoom = () => React.useContext(RoomContext);
 
+const dummyUsers = {
+  u1: { id: "u1", name: "Alice" },
+  u2: { id: "u2", name: "Bob" },
+  u3: { id: "u3", name: "Eve" },
+};
+
 const dummyRoom: Room = {
   id: "",
   name: "Room Name",
-  users: {},
+  users: dummyUsers,
   tables: {
-    a: { id: "a", name: "Table A", users: {} },
-    b: { id: "b", name: "Table b", users: {} },
+    a: { id: "a", name: "Table A", users: { u1: dummyUsers.u1 } },
+    b: {
+      id: "b",
+      name: "Table b",
+      users: { u2: dummyUsers.u2, u3: dummyUsers.u3 },
+    },
   },
   quizMaster: null,
 };
