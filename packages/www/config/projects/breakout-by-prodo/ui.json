@@ -1,0 +1,8 @@
+{
+  "firebase": {
+    "apiKey": "AIzaSyC-PABaXkuQJNXxgFUIrsfiSxoFYkW5gK8",
+    "authDomain": "breakout-by-prodo.firebaseapp.com",
+    "databaseURL": "https://breakout-by-prodo.firebaseio.com",
+    "projectId": "breakout-by-prodo"
+  }
+}

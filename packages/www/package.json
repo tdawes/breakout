@@ -12,6 +12,7 @@
     "@emotion/styled": "^10.0.27",
     "@styled-system/css": "^5.1.5",
     "@theme-ui/presets": "^0.3.0",
+    "firebase": "^7.13.2",
     "lodash": "^4.17.15",
     "next": "9.3.4",
     "next-compose-plugins": "^2.2.0",
@@ -31,6 +32,7 @@
     "@types/socket.io-client": "^1.4.32",
     "@types/styled-system__css": "^5.0.8",
     "@types/theme-ui": "^0.3.1",
+    "firebase-tools": "^8.0.2",
     "rimraf": "^3.0.2",
     "typescript": "^3.8.3"
   }

@@ -14,3 +14,5 @@ jobs:
       - run: yarn install
       - run: yarn lint
       - run: yarn build
+        env:
+          GOOGLE_CLOUD_PROJECT: breakout-by-prodo
