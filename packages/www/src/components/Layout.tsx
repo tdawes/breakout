@@ -21,15 +21,10 @@ const Layout: React.FC<Props> = (props) => {
           py: 0,
           backgroundImage: (theme) =>
             `radial-gradient(${theme.colors.purple[200]}, ${theme.colors.purple[800]})`,
+          minHeight: "100vh",
         }}
       >
-        <Box
-          sx={{
-            minHeight: "100vh",
-          }}
-        >
-          {props.children}
-        </Box>
+        {props.children}
       </Box>
     </>
   );

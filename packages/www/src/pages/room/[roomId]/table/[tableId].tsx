@@ -1,53 +1,54 @@
 /** @jsx jsx */
-import * as React from "react";
-import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { Box, Flex, jsx, Styled, Text } from "theme-ui";
+import * as React from "react";
+import { Flex, Box, jsx, Text, Grid } from "theme-ui";
 import Layout from "../../../../components/Layout";
-import User from "../../../../components/User";
-import { RoomProvider, useRoom } from "../../../../providers/room";
-import { UserProvider } from "../../../../providers/user";
-import { useTable, TableProvider } from "../../../../providers/table";
+import Stage from "../../../../components/Stage";
+import Table from "../../../../components/Table";
 import Loading from "../../../../components/Loading";
+import User from "../../../../components/User";
+import { useRoom } from "../../../../providers/room";
+import { useTable } from "../../../../providers/table";
 
 const TablePage = () => {
-  const { room } = useRoom();
-  const { table } = useTable();
+  const router = useRouter();
+  const roomId = router.query.roomId as string;
+  const tableId = router.query.tableId as string;
+
+  const { room, changeRoom } = useRoom();
+  const { table, changeTable } = useTable();
+
+  React.useEffect(() => {
+    changeRoom(roomId);
+    changeTable(tableId);
+  }, [roomId, tableId]);
 
   if (room == null || table == null) {
     return <Loading />;
   }
 
   return (
-    <Layout title={`${table.id} - ${room.id}`}>
-      <Box sx={{ px: [3, 4], pt: 4 }}>
-        <Box sx={{ pb: 4 }}>
-          <Text>You are in table</Text>
-          <Text variant="heading" sx={{ color: "primary", fontSize: 5 }}>
-            {table.id}
-          </Text>
+    <Layout title={`${tableId} - ${roomId}`}>
+      <Box
+        sx={{
+          display: ["block", "flex"],
+          minHeight: "100vh",
+        }}
+      >
+        <Box
+          sx={{
+            width: ["100%", "33%"],
+            minWidth: ["100%", "stage"],
+          }}
+        >
+          <Stage />
         </Box>
-
-        <User />
+        <Box sx={{ flexGrow: 1 }}>
+          <Table />
+        </Box>
       </Box>
     </Layout>
   );
 };
 
-const Page: NextPage = () => {
-  const router = useRouter();
-  const roomId = router.query.roomId as string;
-  const tableId = router.query.tableId as string;
-
-  const { changeTable } = useTable();
-  const { changeRoom } = useRoom();
-
-  React.useEffect(() => {
-    changeTable(tableId);
-    changeRoom(roomId);
-  }, []);
-
-  return <TablePage />;
-};
-
-export default Page;
+export default TablePage;

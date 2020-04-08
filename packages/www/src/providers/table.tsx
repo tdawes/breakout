@@ -15,7 +15,14 @@ export const useTable = () => React.useContext(TableContext);
 const dummyTable: Table = {
   id: "",
   name: "Table Name",
-  users: {},
+  users: {
+    one: { id: "one", name: "Jake" },
+    two: { id: "two", name: "Andreja" },
+    three: { id: "three", name: "Tom" },
+    four: { id: "four", name: "Bruno" },
+    five: { id: "five", name: "Kai" },
+    six: { id: "six", name: "Sunir" },
+  },
 };
 
 export const TableProvider: React.FC = (props) => {

@@ -54,7 +54,7 @@ const Styles = () => (
 
         <Section>
           <Grid gap={2} columns={[2, 4]}>
-            <Color sx={{ bg: "primary", color: "white" }}>Primary</Color>
+            <Color sx={{ bg: "primary", color: "background" }}>Primary</Color>
             <Color sx={{ bg: "secondary", color: "background" }}>
               Secondary
             </Color>
