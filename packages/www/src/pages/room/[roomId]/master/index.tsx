@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import { Box, Flex, jsx, Styled, Text } from "theme-ui";
 import Layout from "../../../../components/Layout";
-import Link from "../../../../components/Link";
 import Loading from "../../../../components/Loading";
 import { useRoom } from "../../../../providers/room";
 import { Table } from "../../../../types";
@@ -18,12 +17,13 @@ const TableView = ({ table, roomId }: { table: Table; roomId: string }) => (
       color: "background",
       mb: 3,
       alignItems: "center",
+      flexWrap: "wrap",
     }}
   >
     <Flex
       sx={{
         flexDirection: "column",
-        px: 2,
+        p: 2,
         minWidth: "120px",
       }}
     >
@@ -60,25 +60,39 @@ const MasterPage = () => {
     return <Loading />;
   }
 
+  // A couple values here are hardcoded until we have real video
   return (
     <Layout title={room?.id}>
-      <Flex>
+      <Flex
+        sx={{
+          flexDirection: "column",
+          "@media screen and (min-width: 40em)": {
+            flexDirection: "row",
+          },
+        }}
+      >
         <Box
           sx={{
             minWidth: "100px",
-            width: "30%",
-            minHeight: "100vh",
+            minHeight: "100px",
             backgroundColor: "peachpuff",
+            "@media screen and (min-width: 40em)": {
+              width: "30%",
+              minHeight: "100vh",
+            },
           }}
         >
           Quizmaster's face goes here
           <Text
             sx={{
               minWidth: "100px",
-              width: "30%",
-              position: "fixed",
-              bottom: 0,
               backgroundColor: "rgba(0, 0, 0, 0.3)",
+              position: "fixed",
+              width: "100%",
+              "@media screen and (min-width: 40em)": {
+                width: "30%",
+                bottom: 0,
+              },
             }}
           >
             ⭐Quizmaster
@@ -94,6 +108,7 @@ const MasterPage = () => {
               p: 3,
               justifyContent: "space-between",
               borderBottom: "1px solid white",
+              alignItems: "center",
             }}
           >
             <Text variant="heading">This game</Text>
