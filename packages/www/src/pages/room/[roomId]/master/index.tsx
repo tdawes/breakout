@@ -46,7 +46,7 @@ const TableView = ({ table, roomId }: { table: Table; roomId: string }) => (
             mr: 2,
           }}
         >
-          {user.name}'s face goes here
+          {user.name}s face goes here
         </Text>
       ))}
     </Flex>
@@ -82,7 +82,7 @@ const MasterPage = () => {
             },
           }}
         >
-          Quizmaster's face goes here
+          Quizmasters face goes here
           <Text
             sx={{
               minWidth: "100px",
