@@ -3,7 +3,7 @@ import { Flex, Grid, Box, jsx, Button } from "theme-ui";
 import GameHeader from "./GameHeader";
 import TableHeader from "./TableHeader";
 import UserVideo from "./UserVideo";
-import ScratchPad from "./Scratchpad";
+import Scratchpad from "./Scratchpad";
 import { useTable } from "../providers/table";
 import { LoadingCenter } from "./Loading";
 
@@ -11,7 +11,14 @@ const Table = () => {
   const { table } = useTable();
 
   return (
-    <Box sx={{ width: "100%", height: "100%", position: "relative" }}>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        maxHeight: "100vh",
+        overflowY: "auto",
+      }}
+    >
       {table == null ? (
         <LoadingCenter />
       ) : (
@@ -40,7 +47,7 @@ const Table = () => {
       )}
 
       {table != null && (
-        <ScratchPad sx={{ position: "absolute", bottom: 0, right: 0 }} />
+        <Scratchpad sx={{ position: "fixed", bottom: 0, right: 0 }} />
       )}
     </Box>
   );
