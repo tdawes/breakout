@@ -40,8 +40,6 @@ const Nav: React.FC = () => {
       <NavLink as={Link} href="/styles">
         styles
       </NavLink>
-
-      <ThemeSwitcher />
     </Flex>
   );
 };

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import * as React from "react";
-import { jsx, Styled, Box, Button, Input } from "theme-ui";
+import { jsx, Text, Styled, Box, Button, Input } from "theme-ui";
 import Layout from "../components/Layout";
 import Router from "next/router";
 import Header from "../components/Header";
@@ -13,6 +13,9 @@ const Home = () => {
     <Layout>
       <Box
         sx={{
+          display: "flex",
+          justifyContent: "center",
+          minHeight: "100vh",
           maxWidth: "container",
           mx: "auto",
           my: 0,
@@ -20,35 +23,33 @@ const Home = () => {
           py: 0,
         }}
       >
-        <Box sx={{ minHeight: "100vh" }}>
-          <Header />
+        <Box sx={{ pt: 6, width: "measure", mx: "auto" }}>
+          <Text variant="display" sx={{ mt: 0, mb: 5, textAlign: "center" }}>
+            Breakout
+          </Text>
 
-          <Box sx={{ pt: 4 }}>
-            <Styled.h1>Breakout Chat</Styled.h1>
-
-            <Box
-              as="form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (roomId.trim() !== "") {
-                  Router.push("/room/[roomId]", `/room/${roomId}`);
-                }
+          <Box
+            as="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (roomId.trim() !== "") {
+                Router.push("/room/[roomId]", `/room/${roomId}`);
+              }
+            }}
+          >
+            <Input
+              value={roomId}
+              placeholder="Room name"
+              onChange={(e) => {
+                setRoomId(e.target.value);
               }}
-            >
-              <Input
-                value={roomId}
-                placeholder="any text can be a room"
-                onChange={(e) => {
-                  setRoomId(e.target.value);
-                }}
-              />
+            />
 
-              <Button sx={{ mt: 2 }}>Join</Button>
-            </Box>
+            <Button variant="subtle" sx={{ mt: 3 }}>
+              Enter
+            </Button>
           </Box>
         </Box>
-
-        <Footer />
       </Box>
     </Layout>
   );

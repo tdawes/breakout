@@ -37,11 +37,16 @@ const baseLink: SystemStyleObject = {
 };
 
 const baseInput: SystemStyleObject = {
+  pl: 0,
   borderRadius: 0,
   borderWidth: 2,
+  border: "none",
+  borderBottom: "solid 2px",
+  borderColor: "grey.200",
+  transition: "border 150ms ease-in-out",
 
   "&:focus": {
-    borderColor: "accent",
+    borderColor: "text",
     outline: "none",
   },
 
@@ -51,50 +56,55 @@ const baseInput: SystemStyleObject = {
 };
 
 const baseButton: SystemStyleObject = {
-  color: "background",
-  bg: "primary",
+  color: "text",
+  backgroundImage: ({ colors }) =>
+    `linear-gradient(to bottom, ${colors.green[200]}, ${colors.green[600]})`,
   cursor: "pointer",
   py: 1,
   borderRadius: 2,
   transition: "all 150ms ease-in-out",
 
   "&:hover,&:focus,&:active": {
-    bg: "secondary",
+    backgroundImage: ({ colors }) =>
+      `linear-gradient(to bottom, ${colors.green[600]}, ${colors.green[200]})`,
   },
 };
 
-const darkColor = "#171717";
-const lightColor = "white";
+const baseColors = {
+  purple: {
+    100: "#504A5C",
+    200: "#3B344B",
+    800: "#231E2C",
+  },
+  green: {
+    200: "#A9D35E",
+    600: "#5D9338",
+  },
+  orange: {
+    200: "#F0A05D",
+    600: "#E67739",
+  },
+  grey: {
+    200: "#6A6672",
+    400: "#cecece",
+    500: "#a2a2a2",
+    600: "#737373",
+    700: "#666565",
+  },
+};
 
 const theme: Theme = {
   ...system,
   colors: {
-    text: darkColor,
-    background: lightColor,
-    primary: "#3772ff",
-    secondary: darkColor,
+    text: "white",
+    background: "#26212E",
+    primary: baseColors.green[200],
+    secondary: "#5990DC",
     accent: "#fbba72",
     muted: "#dfdfdf",
-    grey: {
-      200: "#dfdfdf",
-      400: "#cecece",
-      500: "#a2a2a2",
-      600: "#737373",
-      700: "#666565",
-    },
     error: "red",
-    success: "green",
-
-    modes: {
-      dark: {
-        text: lightColor,
-        background: darkColor,
-        primary: "#4a7fff",
-        secondary: lightColor,
-        muted: "#313030",
-        accent: "#c37620",
-      },
-    },
+    success: baseColors.green[200],
+    ...baseColors,
   },
 
   breakpoints: ["40em", "52em", "64em"],
@@ -132,11 +142,25 @@ const theme: Theme = {
     primary: baseButton,
     secondary: {
       ...baseButton,
-      color: "text",
-      bg: "muted",
+      backgroundImage: ({ colors }) =>
+        `linear-gradient(to bottom, ${colors.orange[200]}, ${colors.orange[600]})`,
 
-      "&:hover": {
-        color: "background",
+      "&:hover,&:focus,&:active": {
+        backgroundImage: ({ colors }) =>
+          `linear-gradient(to bottom, ${colors.orange[600]}, ${colors.orange[200]})`,
+      },
+    },
+    subtle: {
+      color: "text",
+      border: "solid 1px",
+      borderColor: "text",
+      borderRadius: 0,
+      cursor: "pointer",
+      bg: "purple.100",
+      transition: "all 150ms ease-in-out",
+
+      "&:hover,&:focus,&:active": {
+        borderColor: "green.200",
       },
     },
     icon: {
@@ -194,7 +218,7 @@ const theme: Theme = {
     heading,
     display: {
       variant: "textStyles.heading",
-      fontSize: [5, 6],
+      fontSize: [7, 8],
       fontWeight: "heading",
       letterSpacing: "-0.03em",
       mt: 3,

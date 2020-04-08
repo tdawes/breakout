@@ -19,6 +19,8 @@ const Layout: React.FC<Props> = (props) => {
         sx={{
           my: 0,
           py: 0,
+          backgroundImage: (theme) =>
+            `radial-gradient(${theme.colors.purple[200]}, ${theme.colors.purple[800]})`,
         }}
       >
         <Box
