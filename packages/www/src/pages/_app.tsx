@@ -11,6 +11,10 @@ if (process.env.CONFIG) {
   const config = JSON.parse(process.env.CONFIG);
   if (!firebase.apps.length) {
     firebase.initializeApp(config.firebase);
+
+    if (process.env.NODE_ENV === "development") {
+      console.log("Initialing firebase for", config.firebase.projectId);
+    }
   }
 }
 

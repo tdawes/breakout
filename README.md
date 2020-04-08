@@ -39,12 +39,10 @@ The rest of this README will assume that you created an environment with a proje
 
 ### Configuring your environment locally
 
-1. Add a file named _envrc.local_ with the following contents:
+1. Add a file named _packages/www/.env.local_ with the following contents:
 
    ```
-   #!/bin/bash
-
-   export GOOGLE_CLOUD_PROJECT='breakout-development-FOOBAR'
+   GOOGLE_CLOUD_PROJECT=breakout-development-FOOBAR
    ```
 
 2. Create a folder under _packages/www/config/projects/breakout-development-FOOBAR_.

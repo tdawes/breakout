@@ -1,0 +1,11 @@
+{
+  "firebase": {
+    "apiKey": "AIzaSyDoovuBU_nmOGdcq15hzuoWzhtnjG4nJ8U",
+    "authDomain": "breakout-development-jake.firebaseapp.com",
+    "databaseURL": "https://breakout-development-jake.firebaseio.com",
+    "projectId": "breakout-development-jake",
+    "storageBucket": "breakout-development-jake.appspot.com",
+    "messagingSenderId": "763227994868",
+    "appId": "1:763227994868:web:2316750475675efdbcfca1"
+  }
+}
