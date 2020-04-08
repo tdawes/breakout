@@ -24,6 +24,7 @@ const Table = () => {
             sx={{
               gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
               px: 3,
+              pb: 5,
             }}
           >
             {Object.keys(table.users).map((k) => (
