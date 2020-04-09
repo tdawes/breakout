@@ -2,12 +2,12 @@
 import { useRouter } from "next/router";
 import * as React from "react";
 import { Box, jsx } from "theme-ui";
-import Layout from "../../../../components/Layout";
-import Loading from "../../../../components/Loading";
-import Stage from "../../../../components/Stage";
-import Table from "../../../../components/Table";
-import { useRoom } from "../../../../providers/room";
-import { useTable } from "../../../../providers/table";
+import Layout from "../../../../../components/Layout";
+import Loading from "../../../../../components/Loading";
+import Stage from "../../../../../components/Stage";
+import Table from "../../../../../components/Table";
+import { useRoom } from "../../../../../providers/room";
+import { useTable } from "../../../../../providers/table";
 
 const TablePage = () => {
   const router = useRouter();

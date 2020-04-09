@@ -9,6 +9,12 @@ import { useRoom } from "../../../../providers/room";
 import { Table } from "../../../../types";
 import Stage from "../../../../components/Stage";
 import GameHeader from "../../../../components/GameHeader";
+import {
+  NotQuizMaster,
+  quizmasterHeaderHeight,
+} from "../table/[tableId]/master";
+import { useUser } from "../../../../providers/user";
+import Link from "../../../../components/Link";
 
 const TableView: React.FC<{ table: Table; roomId: string }> = ({
   table,
@@ -23,6 +29,7 @@ const TableView: React.FC<{ table: Table; roomId: string }> = ({
       mb: 3,
       alignItems: "center",
       flexWrap: "wrap",
+      position: "relative",
     }}
   >
     <Flex
@@ -55,14 +62,42 @@ const TableView: React.FC<{ table: Table; roomId: string }> = ({
         </Text>
       ))}
     </Flex>
+    <Flex
+      sx={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        justifyContent: "center",
+        alignItems: "center",
+        opacity: 0,
+        width: "100%",
+        height: "100%",
+        backgroundColor: "rgba(0,0,0,0.5)",
+        "&:hover": { opacity: 1 },
+        transition: "opacity 100ms ease",
+      }}
+    >
+      <Link
+        as={`/room/${roomId}/table/${table.id}/master`}
+        href="/room/[roomId]/table/[tableId]/master"
+        variant="button"
+      >
+        Visit table
+      </Link>
+    </Flex>
   </Flex>
 );
 
 const MasterPage = () => {
   const { room } = useRoom();
+  const { user } = useUser();
 
   if (room == null) {
     return <Loading />;
+  }
+
+  if (!user || room.quizMaster != user.id) {
+    return <NotQuizMaster />;
   }
 
   // A couple values here are hardcoded until we have real video
@@ -70,8 +105,21 @@ const MasterPage = () => {
     <Layout title={room?.id}>
       <Flex
         sx={{
+          justifyContent: "space-around",
+          alignContent: "center",
+          p: 2,
+          height: quizmasterHeaderHeight,
+          borderBottom: "1px solid",
+          borderColor: "grey.500",
+        }}
+      >
+        This game has {Object.keys(room.tables).length} tables and{" "}
+        {Object.keys(room.users).length} players
+      </Flex>
+      <Flex
+        sx={{
           flexDirection: ["column", "row"],
-          minHeight: "100vh",
+          minHeight: `calc(100vh - ${quizmasterHeaderHeight})`,
         }}
       >
         <Box
@@ -87,8 +135,6 @@ const MasterPage = () => {
             flexGrow: 1,
           }}
         >
-          <GameHeader />
-
           <Box sx={{ py: 4, px: 3 }}>
             {Object.keys(room.tables).map((k) => (
               <TableView table={room.tables[k]} roomId={room.id} key={k} />

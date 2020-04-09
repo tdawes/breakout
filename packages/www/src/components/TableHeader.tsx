@@ -23,7 +23,7 @@ const TableStats: React.FC = (props) => {
       }}
     >
       <Text sx={{ fontWeight: "bold" }}>Table {table.name}</Text>
-      <Text>{Object.keys(table.users).length} memebers</Text>
+      <Text>{Object.keys(table.users).length} members</Text>
     </Flex>
   );
 };
