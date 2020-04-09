@@ -2,8 +2,7 @@
 import { useRouter } from "next/router";
 import * as React from "react";
 import { Box, Flex, jsx } from "theme-ui";
-import { faAngleLeft, faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ChevronDown, ChevronLeft } from "react-feather";
 import Loading from "../../../../../../components/Loading";
 import Stage from "../../../../../../components/Stage";
 import Table from "../../../../../../components/Table";
@@ -58,6 +57,7 @@ const TablePage = () => {
       <Flex
         sx={{
           justifyContent: "space-between",
+          alignItems: "center",
           p: 2,
           height: quizmasterHeaderHeight,
         }}
@@ -67,7 +67,9 @@ const TablePage = () => {
           href="/room/[roomId]/master"
           sx={{ textDecoration: "none" }}
         >
-          <FontAwesomeIcon icon={faAngleLeft} /> Back
+          <Flex sx={{ alignItems: "center" }}>
+            <ChevronLeft /> Back
+          </Flex>
         </Link>
         <Box>Currently visiting: {table.name.toUpperCase()}</Box>
         <Link
@@ -75,7 +77,9 @@ const TablePage = () => {
           href="/room/[roomId]/master"
           sx={{ textDecoration: "none" }}
         >
-          Go to table <FontAwesomeIcon icon={faAngleDown} />
+          <Flex sx={{ alignItems: "center" }}>
+            Go to table <ChevronDown />
+          </Flex>
         </Link>
       </Flex>
       <Box
