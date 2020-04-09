@@ -1,10 +1,11 @@
 import * as React from "react";
+import { roomsCollection } from "../db";
 
 const useAllRooms = () => {
   const [roomIds, setRoomIds] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    const unsubscribe = db.roomsCollection.onSnapshot((snapshot) => {
+    const unsubscribe = roomsCollection.onSnapshot((snapshot) => {
       setRoomIds(snapshot.docs.map((d) => d.id));
     });
 
