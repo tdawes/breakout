@@ -4,6 +4,7 @@ import { Room } from "../types";
 
 export interface RoomState {
   room: Room | null;
+  loading: boolean;
   changeRoom: (roomId: string) => void;
 }
 
@@ -13,12 +14,13 @@ export const useRoom = () => React.useContext(RoomContext);
 
 export const RoomProvider: React.FC = (props) => {
   const [roomId, setRoomId] = React.useState<string | undefined>(undefined);
-  const room = useData(roomId);
+  const { room, loading } = useData(roomId);
 
   const changeRoom = (roomId: string) => setRoomId(roomId);
 
   const value: RoomState = {
     room,
+    loading,
     changeRoom,
   };
 

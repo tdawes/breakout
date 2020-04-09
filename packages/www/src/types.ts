@@ -1,6 +1,8 @@
 export interface User {
   id: string;
   name: string;
+  roomId: string | null;
+  tableId: string | null;
 }
 
 export interface Room {
@@ -19,6 +21,12 @@ export interface Table {
 }
 
 export type Keyed<T> = { [id: string]: T };
+
+export interface DBUser {
+  name: string;
+  roomId: string | null;
+  tableId: string | null;
+}
 
 export interface DBRoom {
   name: string;

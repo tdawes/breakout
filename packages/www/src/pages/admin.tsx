@@ -85,7 +85,7 @@ const RoomItem: React.FC<{
   roomId: string;
 }> = (props) => {
   const [tableName, setTableName] = React.useState("");
-  const room = useData(props.roomId);
+  const { room } = useData(props.roomId);
 
   if (room == null) {
     return null;

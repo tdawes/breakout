@@ -98,6 +98,7 @@ const theme: Theme = {
   ...system,
   colors: {
     text: "white",
+    textDark: "black",
     background: "#26212E",
     primary: baseColors.green[200],
     secondary: "#5990DC",

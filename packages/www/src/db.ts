@@ -1,6 +1,6 @@
 import * as firebase from "firebase/app";
 import "firebase/firestore";
-import { DBRoom, DBTable, Room, Table } from "./types";
+import { User, DBRoom, DBTable, Room, Table, DBUser } from "./types";
 
 if (process.env.CONFIG && firebase.apps.length === 0) {
   const config = JSON.parse(process.env.CONFIG);
@@ -34,13 +34,46 @@ export const createRoom = async (name: string) => {
 };
 
 export const deleteRoom = async (room: Room) => {
+  const batch = firestore.batch();
+
   Object.keys(room.tables).forEach((tableId) => {
-    tablesCollection.doc(tableId).delete();
+    const ref = tablesCollection.doc(tableId);
+    batch.delete(ref);
   });
 
-  roomsCollection.doc(room.id).delete();
+  Object.keys(room.users).forEach((userId) => {
+    const ref = usersCollection.doc(userId);
+    batch.delete(ref);
+  });
+
+  batch.delete(roomsCollection.doc(room.id));
+
+  batch.commit();
 };
 
 export const deleteTable = async (table: Table) => {
   tablesCollection.doc(table.id).delete();
+};
+
+export const getUser = (userId: string) => usersCollection.doc(userId);
+
+export const createUser = async (
+  name: string,
+  roomId: string,
+  tableId?: string,
+): Promise<User> => {
+  const dbUser: DBUser = {
+    name,
+    roomId,
+    tableId: tableId ?? null,
+  };
+
+  const result = await usersCollection.add(dbUser);
+
+  const user: User = {
+    id: result.id,
+    ...dbUser,
+  };
+
+  return user;
 };

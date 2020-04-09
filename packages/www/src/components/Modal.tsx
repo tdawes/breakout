@@ -33,6 +33,7 @@ const Modal: React.FC<Props> = (props) => {
     >
       <Box
         sx={{
+          p: 2,
           color: "textDark",
         }}
       >

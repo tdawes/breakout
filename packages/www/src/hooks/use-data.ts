@@ -1,13 +1,14 @@
 import * as React from "react";
-import { roomsCollection, tablesCollection } from "../db";
-import { DBRoom, DBTable, Room, Table } from "../types";
+import { roomsCollection, tablesCollection, usersCollection } from "../db";
+import { DBRoom, DBTable, Room, Table, Keyed, User, DBUser } from "../types";
 
 const createRoom = (
   roomId: string,
   dbRoom: DBRoom,
-  dbTables: { [id: string]: DBTable },
+  dbTables: Keyed<DBTable>,
+  dbRoomUsers: Keyed<DBUser>,
 ): Room | null => {
-  const tables: { [id: string]: Table } = {};
+  const tables: Keyed<Table> = {};
   for (const [tableId, dbTable] of Object.entries(dbTables)) {
     tables[tableId] = {
       id: tableId,
@@ -17,29 +18,57 @@ const createRoom = (
     };
   }
 
+  const roomUsers: Keyed<User> = {};
+  for (const [userId, dbUser] of Object.entries(dbRoomUsers)) {
+    const user: User = {
+      id: userId,
+      ...dbUser,
+    };
+
+    roomUsers[userId] = user;
+    if (user.tableId != null && tables[user.tableId] != null) {
+      tables[user.tableId][userId] = user;
+    }
+  }
+
   const room: Room = {
     id: roomId,
     name: dbRoom.name,
     quizMaster: dbRoom.quizMaster ?? null,
     tables,
-    users: {},
+    users: roomUsers,
   };
 
   return room;
 };
 
+const dbKeyBy = <T>(snapshot: firebase.firestore.QuerySnapshot): Keyed<T> => {
+  const obj: Keyed<T> = {};
+  for (const doc of snapshot.docs) {
+    obj[doc.id] = doc.data() as T;
+  }
+  return obj;
+};
+
 const useData = (roomId?: string) => {
   const [dbRoom, setDBRoom] = React.useState<DBRoom | null>(null);
-  const [dbTables, setDBTables] = React.useState<{ [id: string]: DBTable }>({});
+  const [dbTables, setDBTables] = React.useState<Keyed<DBTable>>({});
+  const [dbRoomUsers, setDBRoomUsers] = React.useState<Keyed<DBUser>>({});
+  const [roomLoading, setRoomLoading] = React.useState(true);
+  const [tablesLoading, setTablesLoading] = React.useState(true);
+  const [usersLoading, setUsersLoading] = React.useState(true);
 
+  // subscription for room
   React.useEffect(() => {
     if (roomId == null) {
       return;
     }
 
+    setRoomLoading(true);
     const unsubscribe = roomsCollection.doc(roomId).onSnapshot((snapshot) => {
       const data = snapshot.data() as DBRoom;
       setDBRoom(data);
+      setRoomLoading(false);
     });
 
     return () => {
@@ -47,21 +76,18 @@ const useData = (roomId?: string) => {
     };
   }, [roomId]);
 
+  // subscription for tables
   React.useEffect(() => {
     if (roomId == null) {
       return;
     }
 
+    setTablesLoading(true);
     const unsubscribe = tablesCollection
       .where("roomId", "==", roomId)
       .onSnapshot((snapshot) => {
-        const dbTables: { [id: string]: DBTable } = {};
-
-        for (const doc of snapshot.docs) {
-          dbTables[doc.id] = doc.data() as DBTable;
-        }
-
-        setDBTables(dbTables);
+        setDBTables(dbKeyBy<DBTable>(snapshot));
+        setTablesLoading(false);
       });
 
     return () => {
@@ -69,15 +95,33 @@ const useData = (roomId?: string) => {
     };
   }, [roomId]);
 
+  // subscription for users
+  React.useEffect(() => {
+    if (roomId == null) {
+      return;
+    }
+
+    setUsersLoading(true);
+    const unsubscribe = usersCollection
+      .where("roomId", "==", roomId)
+      .onSnapshot((snapshot) => {
+        setDBRoomUsers(dbKeyBy<DBUser>(snapshot));
+        setUsersLoading(false);
+      });
+  }, [roomId]);
+
   const room: Room | null = React.useMemo(() => {
     if (dbRoom == null || roomId == null) {
       return null;
     }
 
-    return createRoom(roomId, dbRoom, dbTables);
-  }, [roomId, dbRoom, dbTables]);
+    return createRoom(roomId, dbRoom, dbTables, dbRoomUsers);
+  }, [roomId, dbRoom, dbTables, dbRoomUsers]);
 
-  return room;
+  return {
+    room,
+    loading: roomLoading || tablesLoading || usersLoading,
+  };
 };
 
 export default useData;

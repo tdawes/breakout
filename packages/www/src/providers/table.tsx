@@ -4,7 +4,9 @@ import { useRoom } from "./room";
 
 export interface TableState {
   table: Table | null;
-  changeTable: (tableId: string) => void;
+  loading: boolean;
+  error: string | null;
+  changeTable: (tableId: string | null) => void;
 }
 
 const TableContext = React.createContext<TableState>({} as TableState);
@@ -13,20 +15,30 @@ export const useTable = () => React.useContext(TableContext);
 
 export const TableProvider: React.FC = (props) => {
   const [tableId, setTableId] = React.useState<string | null>(null);
-  const { room } = useRoom();
+  const [table, setTable] = React.useState<Table | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+  const { room, loading } = useRoom();
 
-  const table: Table | null = React.useMemo(() => {
+  React.useEffect(() => {
     if (room == null || tableId == null) {
-      return null;
+      setTable(null);
+      return;
     }
 
-    return room.tables[tableId] ?? null;
+    if (room.tables[tableId] != null) {
+      setTable(room.tables[tableId]);
+      setError(null);
+    } else {
+      setError("Table not found");
+    }
   }, [tableId, room]);
 
-  const changeTable = (tableId: string) => setTableId(tableId);
+  const changeTable = (tableId: string | null) => setTableId(tableId);
 
   const value: TableState = {
     table,
+    loading,
+    error,
     changeTable,
   };
 

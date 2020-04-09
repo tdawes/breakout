@@ -8,15 +8,15 @@ import theme from "../styles";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <UserProvider>
-        <RoomProvider>
-          <TableProvider>
+      <RoomProvider>
+        <TableProvider>
+          <UserProvider>
             <Styled.root>
               <Component {...pageProps} />
             </Styled.root>
-          </TableProvider>
-        </RoomProvider>
-      </UserProvider>
+          </UserProvider>
+        </TableProvider>
+      </RoomProvider>
     </ThemeProvider>
   );
 }

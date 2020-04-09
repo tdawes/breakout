@@ -7,15 +7,19 @@ import Link from "../../components/Link";
 import Loading from "../../components/Loading";
 import User from "../../components/User";
 import { useRoom } from "../../providers/room";
+import { useTable } from "../../providers/table";
+import JoinRoom from "../../components/JoinRoom";
 
 const RoomPage = () => {
   const router = useRouter();
   const roomId = router.query.roomId as string;
 
   const { room, changeRoom } = useRoom();
+  const { changeTable } = useTable();
 
   React.useEffect(() => {
     changeRoom(roomId);
+    changeTable(null);
   }, [roomId]);
 
   if (room == null) {
@@ -24,6 +28,7 @@ const RoomPage = () => {
 
   return (
     <Layout title={room.name}>
+      <JoinRoom />
       <Box sx={{ px: [3, 4], pt: 4 }}>
         <Box sx={{ pb: 4 }}>
           <Text>You are in room</Text>
