@@ -9,6 +9,7 @@ import {
   Button,
   Input,
   IconButton,
+  Divider,
 } from "theme-ui";
 import Layout from "../components/Layout";
 import Container from "../components/Container";
@@ -20,6 +21,7 @@ import Avatar from "../components/Avatar";
 import Footer from "../components/Footer";
 import { Trash2 } from "react-feather";
 import Link from "../components/Link";
+import AvatarList from "../components/AvatarList";
 
 const Section: React.FC = (props) => <Box sx={{ py: 3 }} {...props} />;
 
@@ -27,8 +29,11 @@ const TableItem: React.FC<{ table: Table }> = ({ table }) => {
   return (
     <Box
       sx={{
-        py: 2,
+        my: 2,
+        p: 2,
         position: "relative",
+        border: "solid 1px",
+        borderColor: "grey.200",
 
         "&:hover": {
           ".deleteTable": { opacity: 1 },
@@ -66,17 +71,7 @@ const TableItem: React.FC<{ table: Table }> = ({ table }) => {
         </Flex>
       </Box>
 
-      <Flex
-        sx={{
-          flexGrow: 1,
-          flexWrap: "wrap",
-          pl: [0, 0, 4],
-        }}
-      >
-        {Object.keys(table.users).map((k) => (
-          <Avatar key={k} name={table.users[k].name} sx={{ mr: 3 }} />
-        ))}
-      </Flex>
+      <AvatarList users={Object.values(table.users)} sx={{ pt: 2 }} />
     </Box>
   );
 };
@@ -90,6 +85,10 @@ const RoomItem: React.FC<{
   if (room == null) {
     return null;
   }
+
+  const usersNoTable = Object.values(room.users).filter(
+    (user) => user.tableId == null,
+  );
 
   return (
     <Flex
@@ -123,7 +122,7 @@ const RoomItem: React.FC<{
         <Trash2 size={18} />
       </IconButton>
 
-      <Box sx={{ pr: [0, 6], pb: [4, 0] }}>
+      <Box sx={{ pr: [0, 4, 6], pb: [2, 0] }}>
         <Text sx={{ fontSize: 3 }}>Room {room.name}</Text>
         <Box sx={{ fontSize: 1, color: "muted" }}>
           <Text>{Object.keys(room.users).length} members</Text>
@@ -131,6 +130,25 @@ const RoomItem: React.FC<{
           <Link href="/room/[roomId]" as={`/room/${room.id}`} variant="dark">
             go to room
           </Link>
+
+          {usersNoTable.length > 0 && (
+            <Box sx={{ py: 3 }}>
+              <Text>These users have no table</Text>
+              <Text>Click to promote to quizmaster</Text>
+
+              <AvatarList
+                users={usersNoTable}
+                quizMaster={room.quizMaster}
+                onUserClick={(userId) => {
+                  db.setRoom(room.id, {
+                    name: room.name,
+                    quizMaster: userId,
+                  });
+                }}
+                sx={{ pt: 2 }}
+              />
+            </Box>
+          )}
         </Box>
       </Box>
       <Box sx={{ flexGrow: 1 }}>

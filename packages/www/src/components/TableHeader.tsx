@@ -18,7 +18,11 @@ const TableStats: React.FC = (props) => {
         flexDirection: "column",
         justifyContent: "center",
         pr: 4,
-        borderRight: ["none", "none", "solid 1px"],
+        borderRight: [
+          "none",
+          "none",
+          Object.keys(table.users).length > 0 ? "solid 1px" : "none",
+        ],
         borderColor: "grey.400",
       }}
     >

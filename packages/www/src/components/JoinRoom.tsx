@@ -25,8 +25,6 @@ const JoinRoom: React.FC = () => {
       return;
     }
 
-    console.log("USER", user, userLoading);
-
     if (user == null) {
       setIsModalOpen(true);
     } else {

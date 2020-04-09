@@ -8,6 +8,8 @@ import Stage from "../../../../../components/Stage";
 import Table from "../../../../../components/Table";
 import { useRoom } from "../../../../../providers/room";
 import { useTable } from "../../../../../providers/table";
+import { useUser } from "../../../../../providers/user";
+import JoinRoom from "../../../../../components/JoinRoom";
 
 const TablePage = () => {
   const router = useRouter();
@@ -16,11 +18,26 @@ const TablePage = () => {
 
   const { room, changeRoom } = useRoom();
   const { table, changeTable } = useTable();
+  const { user } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);
     changeTable(tableId);
   }, [roomId, tableId]);
+
+  React.useEffect(() => {
+    if (
+      room != null &&
+      table != null &&
+      user != null &&
+      room.quizMaster === user.id
+    ) {
+      router.replace(
+        "/room/[roomId]/table/[tableId]/master",
+        `/room/${room.id}/table/${table.id}/master`,
+      );
+    }
+  }, [room, user]);
 
   if (room == null || table == null) {
     return <Loading />;
@@ -28,6 +45,7 @@ const TablePage = () => {
 
   return (
     <Layout title={`${table.name} - ${room.name}`}>
+      <JoinRoom />
       <Box
         sx={{
           display: ["block", "flex"],

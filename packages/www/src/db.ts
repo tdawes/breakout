@@ -33,6 +33,10 @@ export const createRoom = async (name: string) => {
   const doc = await roomsCollection.add(dbRoom);
 };
 
+export const setRoom = async (roomId: string, dbRoom: DBRoom) => {
+  roomsCollection.doc(roomId).set(dbRoom);
+};
+
 export const deleteRoom = async (room: Room) => {
   const batch = firestore.batch();
 
@@ -83,5 +87,5 @@ export const setUser = async (user: User) => {
     ...user,
   };
 
-  await usersCollection.doc(user.id).set(dbUser);
+  usersCollection.doc(user.id).set(dbUser);
 };

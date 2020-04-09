@@ -82,11 +82,18 @@ const RoomPage = () => {
 
   const { room, changeRoom } = useRoom();
   const { changeTable } = useTable();
+  const { user } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);
     changeTable(null);
   }, [roomId]);
+
+  React.useEffect(() => {
+    if (room != null && user != null && room.quizMaster === user.id) {
+      router.replace("/room/[roomId]/master", `/room/${room.id}/master`);
+    }
+  }, [room, user]);
 
   if (room == null) {
     return <LoadingCenter />;
