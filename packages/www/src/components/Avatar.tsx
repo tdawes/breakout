@@ -13,7 +13,6 @@ const Avatar: React.FC<{ name: string; size?: number }> = (props) => {
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
-        color: "grey.500",
       }}
     >
       <Box
@@ -21,7 +20,7 @@ const Avatar: React.FC<{ name: string; size?: number }> = (props) => {
           width: size,
           height: size,
           borderRadius: size * size,
-          bg: "grey.400",
+          bg: "peachpuff",
         }}
       />
       <Text sx={{ fontSize: 1, pt: 0 }}>{props.name}</Text>

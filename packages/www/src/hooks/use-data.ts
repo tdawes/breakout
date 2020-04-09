@@ -19,6 +19,7 @@ const createRoom = (
   }
 
   const roomUsers: Keyed<User> = {};
+
   for (const [userId, dbUser] of Object.entries(dbRoomUsers)) {
     const user: User = {
       id: userId,
@@ -26,8 +27,9 @@ const createRoom = (
     };
 
     roomUsers[userId] = user;
+
     if (user.tableId != null && tables[user.tableId] != null) {
-      tables[user.tableId][userId] = user;
+      tables[user.tableId].users[user.id] = user;
     }
   }
 

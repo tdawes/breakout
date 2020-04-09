@@ -13,7 +13,6 @@ export const getItem = async <T>(
 ): Promise<T> => {
   try {
     const item = await localForage.getItem<any>(key);
-    console.log(key, item);
 
     if (item == null) {
       return defaultValue;

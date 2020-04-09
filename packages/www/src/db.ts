@@ -77,3 +77,11 @@ export const createUser = async (
 
   return user;
 };
+
+export const setUser = async (user: User) => {
+  const dbUser: DBUser = {
+    ...user,
+  };
+
+  await usersCollection.doc(user.id).set(dbUser);
+};

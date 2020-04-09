@@ -11,6 +11,7 @@ export interface UserState {
   loading: boolean;
   changeName: (name: string) => void;
   createUser: (name: string, roomId: string, tableId?: string) => void;
+  setTable: (tableId: string | null) => void;
 }
 
 const UserContext = React.createContext<UserState>({} as UserState);
@@ -95,13 +96,7 @@ export const UserProvider: React.FC = (props) => {
 
   const changeName = (name: string) => {
     saveName(name);
-
-    if (user != null) {
-      setUser({
-        ...user,
-        name,
-      });
-    }
+    throw new Error("not implemented");
   };
 
   const createUser = async (name: string, roomId: string, tableId?: string) => {
@@ -119,12 +114,22 @@ export const UserProvider: React.FC = (props) => {
     saveName(user.name);
   };
 
+  const setTable = async (tableId: string | null) => {
+    if (user != null) {
+      db.setUser({
+        ...user,
+        tableId,
+      });
+    }
+  };
+
   const value: UserState = {
     user,
     preferredName,
     loading,
     changeName,
     createUser,
+    setTable,
   };
 
   return (
