@@ -23,14 +23,10 @@ const nameKey = (): string => "@breakout/name";
 
 const getLocalUserIdForRoom = (roomId: string): Promise<string | null> =>
   getItem<string | null>(userKey(roomId), null);
-
 const saveUserIdForRoom = (roomId: string, userId: string) =>
   saveItem(userKey(roomId), userId);
-
 const deleteUserIdForRoom = (roomId: string) => clearItem(userKey(roomId));
-
 const getLocalName = (): Promise<string> => getItem<string>(nameKey(), "");
-
 const saveName = (name: string) => saveItem(nameKey(), name);
 
 export const UserProvider: React.FC = (props) => {

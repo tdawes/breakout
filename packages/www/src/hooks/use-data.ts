@@ -110,6 +110,10 @@ const useData = (roomId?: string) => {
         setDBRoomUsers(dbKeyBy<DBUser>(snapshot));
         setUsersLoading(false);
       });
+
+    return () => {
+      unsubscribe();
+    };
   }, [roomId]);
 
   const room: Room | null = React.useMemo(() => {
