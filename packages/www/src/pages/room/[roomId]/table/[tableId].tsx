@@ -27,7 +27,7 @@ const TablePage = () => {
   }
 
   return (
-    <Layout title={`${tableId} - ${roomId}`}>
+    <Layout title={`${table.name} - ${room.name}`}>
       <Box
         sx={{
           display: ["block", "flex"],

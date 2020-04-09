@@ -19,6 +19,7 @@ import { Table } from "../types";
 import Avatar from "../components/Avatar";
 import Footer from "../components/Footer";
 import { Trash2 } from "react-feather";
+import Link from "../components/Link";
 
 const Section: React.FC = (props) => <Box sx={{ py: 3 }} {...props} />;
 
@@ -39,7 +40,7 @@ const TableItem: React.FC<{ table: Table }> = ({ table }) => {
         sx={{
           position: "absolute",
           top: 2,
-          right: 2,
+          right: 4,
           opacity: 0,
           transition: "opacity 150ms ease-in-out",
         }}
@@ -50,9 +51,19 @@ const TableItem: React.FC<{ table: Table }> = ({ table }) => {
 
       <Box>
         <Text>Table {table.name}</Text>
-        <Text sx={{ fontSize: 1, color: "muted" }}>
-          {Object.keys(table.users).length} members
-        </Text>
+        <Flex>
+          <Text sx={{ fontSize: 1, color: "muted", mr: 3 }}>
+            {Object.keys(table.users).length} members
+          </Text>
+          <Link
+            href="/room/[roomId]/table/[tableId]"
+            as={`/room/${table.roomId}/table/${table.id}`}
+            variant="dark"
+            sx={{ fontSize: 1, color: "muted" }}
+          >
+            go to table
+          </Link>
+        </Flex>
       </Box>
 
       <Flex
@@ -101,9 +112,10 @@ const RoomItem: React.FC<{
         className="deleteRoom"
         sx={{
           position: "absolute",
-          top: 2,
-          right: 2,
+          top: 1,
+          right: 1,
           opacity: 0,
+          zIndex: 2,
           transition: "opacity 150ms ease-in-out",
         }}
         onClick={() => db.deleteRoom(room)}
@@ -116,6 +128,9 @@ const RoomItem: React.FC<{
         <Box sx={{ fontSize: 1, color: "muted" }}>
           <Text>{Object.keys(room.users).length} members</Text>
           <Text>{Object.keys(room.tables).length} tables</Text>
+          <Link href="/room/[roomId]" as={`/room/${room.id}`} variant="dark">
+            go to room
+          </Link>
         </Box>
       </Box>
       <Box sx={{ flexGrow: 1 }}>

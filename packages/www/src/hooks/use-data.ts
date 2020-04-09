@@ -1,6 +1,6 @@
 import * as React from "react";
-import { DBRoom, DBTable, Room, Table, User } from "../types";
 import { roomsCollection, tablesCollection } from "../db";
+import { DBRoom, DBTable, Room, Table } from "../types";
 
 const createRoom = (
   roomId: string,
@@ -13,6 +13,7 @@ const createRoom = (
       id: tableId,
       name: dbTable.name,
       users: {},
+      roomId,
     };
   }
 
@@ -27,11 +28,15 @@ const createRoom = (
   return room;
 };
 
-const useData = (roomId: string) => {
+const useData = (roomId?: string) => {
   const [dbRoom, setDBRoom] = React.useState<DBRoom | null>(null);
   const [dbTables, setDBTables] = React.useState<{ [id: string]: DBTable }>({});
 
   React.useEffect(() => {
+    if (roomId == null) {
+      return;
+    }
+
     const unsubscribe = roomsCollection.doc(roomId).onSnapshot((snapshot) => {
       const data = snapshot.data() as DBRoom;
       setDBRoom(data);
@@ -43,6 +48,10 @@ const useData = (roomId: string) => {
   }, [roomId]);
 
   React.useEffect(() => {
+    if (roomId == null) {
+      return;
+    }
+
     const unsubscribe = tablesCollection
       .where("roomId", "==", roomId)
       .onSnapshot((snapshot) => {
@@ -61,7 +70,7 @@ const useData = (roomId: string) => {
   }, [roomId]);
 
   const room: Room | null = React.useMemo(() => {
-    if (dbRoom == null) {
+    if (dbRoom == null || roomId == null) {
       return null;
     }
 

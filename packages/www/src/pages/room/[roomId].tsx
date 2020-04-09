@@ -23,12 +23,12 @@ const RoomPage = () => {
   }
 
   return (
-    <Layout title={roomId}>
+    <Layout title={room.name}>
       <Box sx={{ px: [3, 4], pt: 4 }}>
         <Box sx={{ pb: 4 }}>
           <Text>You are in room</Text>
           <Text variant="heading" sx={{ color: "primary", fontSize: 5 }}>
-            {room.id}
+            {room.name}
           </Text>
         </Box>
 

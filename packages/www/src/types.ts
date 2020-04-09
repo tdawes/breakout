@@ -15,6 +15,7 @@ export interface Table {
   id: string;
   name: string;
   users: Keyed<User>;
+  roomId: string;
 }
 
 export type Keyed<T> = { [id: string]: T };

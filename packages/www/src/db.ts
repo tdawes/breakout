@@ -1,6 +1,15 @@
 import * as firebase from "firebase/app";
 import "firebase/firestore";
-import { Room, DBRoom, DBTable, Table } from "./types";
+import { DBRoom, DBTable, Room, Table } from "./types";
+
+if (process.env.CONFIG && firebase.apps.length === 0) {
+  const config = JSON.parse(process.env.CONFIG);
+  firebase.initializeApp(config.firebase);
+
+  if (process.env.NODE_ENV === "development") {
+    console.log("Initialing firebase for", config.firebase.projectId);
+  }
+}
 
 const firestore = firebase.firestore();
 

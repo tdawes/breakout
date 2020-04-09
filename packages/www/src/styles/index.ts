@@ -177,6 +177,15 @@ const theme: Theme = {
   },
 
   links: {
+    dark: {
+      ...baseLink,
+      color: "black",
+
+      "&:hover,&:focus,&:active": {
+        color: "currentColor",
+        bg: "accent",
+      },
+    },
     button: {
       ...baseButton,
       px: 3,

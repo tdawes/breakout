@@ -22,7 +22,7 @@ const TableStats: React.FC = (props) => {
         borderColor: "grey.400",
       }}
     >
-      <Text sx={{ fontWeight: "bold" }}>Table {table.id}</Text>
+      <Text sx={{ fontWeight: "bold" }}>Table {table.name}</Text>
       <Text>{Object.keys(table.users).length} memebers</Text>
     </Flex>
   );
