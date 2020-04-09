@@ -4,6 +4,7 @@ import { jsx, Text, Styled, Box, Button, Input } from "theme-ui";
 import Layout from "../components/Layout";
 import Router from "next/router";
 import Container from "../components/Container";
+import Link from "../components/Link";
 
 const Home = () => {
   const [roomId, setRoomId] = React.useState("");
@@ -36,6 +37,10 @@ const Home = () => {
             <Button variant="subtle" sx={{ mt: 3 }}>
               Enter
             </Button>
+          </Box>
+
+          <Box sx={{ pt: 4 }}>
+            <Link href="/admin">Admin page</Link>
           </Box>
         </Box>
       </Container>

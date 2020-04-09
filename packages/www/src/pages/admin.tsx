@@ -124,6 +124,7 @@ const RoomItem: React.FC<{
 
       <Box sx={{ pr: [0, 4, 6], pb: [2, 0] }}>
         <Text sx={{ fontSize: 3 }}>Room {room.name}</Text>
+
         <Box sx={{ fontSize: 1, color: "muted" }}>
           <Text>{Object.keys(room.users).length} members</Text>
           <Text>{Object.keys(room.tables).length} tables</Text>
@@ -151,13 +152,9 @@ const RoomItem: React.FC<{
           )}
         </Box>
       </Box>
-      <Box sx={{ flexGrow: 1 }}>
-        {Object.keys(room.tables).map((tableId) => (
-          <TableItem key={tableId} table={room.tables[tableId]} />
-        ))}
 
+      <Box sx={{ flexGrow: 1 }}>
         <Box
-          sx={{ pt: 4 }}
           as="form"
           onSubmit={(e) => {
             e.preventDefault();
@@ -176,10 +173,18 @@ const RoomItem: React.FC<{
             }}
           />
 
-          <Button variant="subtle" sx={{ mt: 3, py: 1 }}>
+          <Button variant="subtle" sx={{ mt: 2, py: 1 }}>
             Create
           </Button>
         </Box>
+
+        {Object.keys(room.tables).length > 0 && (
+          <Box sx={{ pt: 2 }}>
+            {Object.keys(room.tables).map((tableId) => (
+              <TableItem key={tableId} table={room.tables[tableId]} />
+            ))}
+          </Box>
+        )}
       </Box>
     </Flex>
   );
