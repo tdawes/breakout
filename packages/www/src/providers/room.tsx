@@ -30,7 +30,7 @@ const dummyRoom: Room = {
       users: { u2: dummyUsers.u2, u3: dummyUsers.u3 },
     },
   },
-  quizMaster: null,
+  quizMaster: "12345",
 };
 
 export const RoomProvider: React.FC = (props) => {
