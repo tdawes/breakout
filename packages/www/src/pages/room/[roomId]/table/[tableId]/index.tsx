@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import { Box, jsx } from "theme-ui";
 import Layout from "../../../../../components/Layout";
-import Loading from "../../../../../components/Loading";
+import { LoadingCenter } from "../../../../../components/Loading";
 import Stage from "../../../../../components/Stage";
 import Table from "../../../../../components/Table";
 import { useRoom } from "../../../../../providers/room";
@@ -18,7 +18,7 @@ const TablePage = () => {
 
   const { room, changeRoom } = useRoom();
   const { table, changeTable } = useTable();
-  const { user } = useUser();
+  const { user, loading: userLoading } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);
@@ -39,8 +39,8 @@ const TablePage = () => {
     }
   }, [room, user]);
 
-  if (room == null || table == null) {
-    return <Loading />;
+  if (room == null || table == null || userLoading) {
+    return <LoadingCenter />;
   }
 
   return (

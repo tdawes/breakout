@@ -82,7 +82,7 @@ const RoomPage = () => {
 
   const { room, changeRoom } = useRoom();
   const { changeTable } = useTable();
-  const { user } = useUser();
+  const { user, loading: userLoading } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);
@@ -95,7 +95,7 @@ const RoomPage = () => {
     }
   }, [room, user]);
 
-  if (room == null) {
+  if (room == null || userLoading) {
     return <LoadingCenter />;
   }
 

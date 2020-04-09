@@ -33,7 +33,11 @@ const JoinRoom: React.FC = () => {
   }, [room, table, roomLoading, user, userLoading]);
 
   return (
-    <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
+    <Modal
+      isOpen={isModalOpen}
+      onRequestClose={() => setIsModalOpen(false)}
+      disableClose={false}
+    >
       {room != null && (
         <Box>
           <Text variant="heading" sx={{ fontSize: 4 }}>

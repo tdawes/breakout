@@ -6,7 +6,7 @@ import ReactModal from "react-modal";
 export interface Props {
   isOpen: boolean;
   onRequestClose: () => void;
-  allowClose?: boolean;
+  disableClose?: boolean;
 }
 
 const customStyles = {
@@ -28,8 +28,8 @@ const Modal: React.FC<Props> = (props) => {
       isOpen={props.isOpen}
       onRequestClose={props.onRequestClose}
       style={customStyles}
-      shouldCloseOnEsc={props.allowClose}
-      shouldCloseOnOverlayClick={props.allowClose}
+      shouldCloseOnEsc={props.disableClose}
+      shouldCloseOnOverlayClick={props.disableClose}
     >
       <Box
         sx={{
