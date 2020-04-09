@@ -2,7 +2,6 @@ import { AppProps } from "next/app";
 import { Styled, ThemeProvider } from "theme-ui";
 import theme from "../styles";
 import * as firebase from "firebase/app";
-
 import { UserProvider } from "../providers/user";
 import { RoomProvider } from "../providers/room";
 import { TableProvider } from "../providers/table";

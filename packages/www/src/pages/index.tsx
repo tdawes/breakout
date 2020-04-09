@@ -3,26 +3,14 @@ import * as React from "react";
 import { jsx, Text, Styled, Box, Button, Input } from "theme-ui";
 import Layout from "../components/Layout";
 import Router from "next/router";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Container from "../components/Container";
 
 const Home = () => {
   const [roomId, setRoomId] = React.useState("");
 
   return (
     <Layout>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          minHeight: "100vh",
-          maxWidth: "container",
-          mx: "auto",
-          my: 0,
-          px: [3, 4],
-          py: 0,
-        }}
-      >
+      <Container>
         <Box sx={{ pt: 6, width: "measure", mx: "auto" }}>
           <Text variant="display" sx={{ mt: 0, mb: 5, textAlign: "center" }}>
             Breakout
@@ -50,7 +38,7 @@ const Home = () => {
             </Button>
           </Box>
         </Box>
-      </Box>
+      </Container>
     </Layout>
   );
 };

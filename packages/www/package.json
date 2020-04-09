@@ -22,7 +22,8 @@
     "react-dom": "16.13.1",
     "react-feather": "^2.0.3",
     "socket.io-client": "^2.3.0",
-    "theme-ui": "^0.3.1"
+    "theme-ui": "^0.3.1",
+    "use-immer": "^0.4.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.149",

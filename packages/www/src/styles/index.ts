@@ -85,6 +85,7 @@ const baseColors = {
     600: "#E67739",
   },
   grey: {
+    100: "#DCDDDE",
     200: "#6A6672",
     400: "#cecece",
     500: "#CAC8CD",

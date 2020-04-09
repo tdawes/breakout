@@ -18,3 +18,13 @@ export interface Table {
 }
 
 export type Keyed<T> = { [id: string]: T };
+
+export interface DBRoom {
+  name: string;
+  quizMaster?: string;
+}
+
+export interface DBTable {
+  name: string;
+  roomId: string;
+}
