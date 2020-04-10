@@ -95,7 +95,7 @@ const TablePage = () => {
             minWidth: ["100%", "stage"],
           }}
         >
-          <Stage hideJoinButton />
+          <Stage />
         </Box>
         <Flex sx={{ flexGrow: 1, flexDirection: "column" }}>
           <Table sx={{ maxHeight: "calc(100vh - 100px)" }} />

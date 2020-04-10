@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import { Box, Flex, jsx, Text, Button } from "theme-ui";
 import AvatarList from "../../components/AvatarList";
-import GameHeader from "../../components/GameHeader";
+import RoomHeader from "../../components/RoomHeader";
 import Layout from "../../components/Layout";
 import { LoadingCenter } from "../../components/Loading";
 import Stage from "../../components/Stage";
@@ -13,10 +13,60 @@ import { useUser } from "../../providers/user";
 import ListItem, { ListItemHover } from "../../components/ListItem";
 import Link from "../../components/Link";
 import JoinRoom from "../../components/JoinRoom";
+import { Table } from "../../types";
+
+const TableItem: React.FC<{ table: Table }> = ({ table }) => {
+  const { room } = useRoom();
+  const { setTable, user } = useUser();
+  const isUsersTable = user != null && user.tableId === table.id;
+
+  if (room == null) return null;
+
+  return (
+    <ListItem key={table.id}>
+      <Box>
+        {isUsersTable && (
+          <Text sx={{ fontWeight: "bold", textAlign: "center", pb: 2 }}>
+            You are currently in this room
+          </Text>
+        )}
+        <Flex>
+          <Box sx={{ pr: 5 }}>
+            <Text>Table {table.name}</Text>
+            <Text sx={{ fontSize: 1, color: "muted", mr: 3 }}>
+              {Object.keys(table.users).length} members
+            </Text>
+          </Box>
+          <Flex>
+            <AvatarList users={Object.values(table.users)} sx={{ pt: 2 }} />
+          </Flex>
+        </Flex>
+      </Box>
+
+      <ListItemHover>
+        {isUsersTable ? (
+          <Flex>
+            <Button onClick={() => setTable(null)} sx={{ mr: 2 }}>
+              Leave Table
+            </Button>
+            <Link
+              as={`/room/${room.id}/table/${table.id}`}
+              href="/room/[roomId]/table/[tableId]"
+              variant="button"
+            >
+              Go to table
+            </Link>
+          </Flex>
+        ) : (
+          <Button onClick={() => setTable(table.id)}>Join Table</Button>
+        )}
+      </ListItemHover>
+    </ListItem>
+  );
+};
 
 const TableList: React.FC = (props) => {
   const { room } = useRoom();
-  const { setTable, user } = useUser();
 
   if (room == null) {
     return null;
@@ -24,54 +74,9 @@ const TableList: React.FC = (props) => {
 
   return (
     <Box {...props}>
-      {Object.values(room.tables).map((table) => {
-        const isUsersTable = user != null && user.tableId === table.id;
-
-        return (
-          <ListItem key={table.id}>
-            <Box>
-              {isUsersTable && (
-                <Text sx={{ fontWeight: "bold", textAlign: "center", pb: 2 }}>
-                  You are currently in this room
-                </Text>
-              )}
-              <Flex>
-                <Box sx={{ pr: 5 }}>
-                  <Text>Table {table.name}</Text>
-                  <Text sx={{ fontSize: 1, color: "muted", mr: 3 }}>
-                    {Object.keys(table.users).length} members
-                  </Text>
-                </Box>
-                <Flex>
-                  <AvatarList
-                    users={Object.values(table.users)}
-                    sx={{ pt: 2 }}
-                  />
-                </Flex>
-              </Flex>
-            </Box>
-
-            <ListItemHover>
-              {isUsersTable ? (
-                <Flex>
-                  <Button onClick={() => setTable(null)} sx={{ mr: 2 }}>
-                    Leave Table
-                  </Button>
-                  <Link
-                    as={`/room/${room.id}/table/${table.id}`}
-                    href="/room/[roomId]/table/[tableId]"
-                    variant="button"
-                  >
-                    Go to table
-                  </Link>
-                </Flex>
-              ) : (
-                <Button onClick={() => setTable(table.id)}>Join Table</Button>
-              )}
-            </ListItemHover>
-          </ListItem>
-        );
-      })}
+      {Object.values(room.tables).map((table) => (
+        <TableItem key={table.id} table={table} />
+      ))}
     </Box>
   );
 };
@@ -104,7 +109,7 @@ const RoomPage = () => {
   );
 
   return (
-    <Layout title={room?.id}>
+    <Layout title={room?.name}>
       <JoinRoom />
       <Flex
         sx={{
@@ -118,14 +123,14 @@ const RoomPage = () => {
             minWidth: ["100%", "stage"],
           }}
         >
-          <Stage hideJoinButton />
+          <Stage />
         </Box>
         <Box
           sx={{
             flexGrow: 1,
           }}
         >
-          <GameHeader />
+          <RoomHeader />
 
           {usersNoTable.length !== 0 && (
             <Box sx={{ pt: 4, px: 3 }}>

@@ -1,8 +1,9 @@
 /** @jsx jsx */
 import * as React from "react";
-import { Box, Flex, Grid, jsx, Text } from "theme-ui";
+import { Box, Flex, Grid, jsx, Text, Button } from "theme-ui";
 import { useTable } from "../providers/table";
 import Avatar from "./Avatar";
+import { pluralize } from "../utils";
 
 const TableStats: React.FC = (props) => {
   const { table } = useTable();
@@ -39,6 +40,8 @@ const TableHeader = () => {
     return null;
   }
 
+  const numUsers = Object.keys(table.users).length;
+
   return (
     <Box
       sx={{
@@ -50,25 +53,17 @@ const TableHeader = () => {
       }}
     >
       <Flex sx={{ justifyContent: "space-between", pb: [3, 3, 0] }}>
-        <Text sx={{ fontSize: 4, pr: 4 }}>This table</Text>
-        <TableStats sx={{ display: ["flex", "flex", "none"] }} />
+        <Text>
+          Your Table:{" "}
+          <span sx={{ fontWeight: "bold" }}>
+            {table.name}, {numUsers} {pluralize("member", numUsers)}
+          </span>
+        </Text>
       </Flex>
 
-      <Flex sx={{ justifyContent: "flex-end" }}>
-        <TableStats sx={{ display: ["none", "none", "flex"] }} />
+      <Button>Join Stage</Button>
 
-        <Flex
-          sx={{
-            flexGrow: 1,
-            flexWrap: "wrap",
-            pl: [0, 0, 4],
-          }}
-        >
-          {Object.keys(table.users).map((k) => (
-            <Avatar key={k} name={table.users[k].name} sx={{ mr: 3 }} />
-          ))}
-        </Flex>
-      </Flex>
+      <Text sx={{ color: "grey.600" }}>This game</Text>
     </Box>
   );
 };

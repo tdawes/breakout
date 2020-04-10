@@ -36,8 +36,10 @@ export const ListItemHover: React.FC = (props) => (
       width: "100%",
       height: "100%",
       backgroundColor: "rgba(0,0,0,0.5)",
+
       "&:hover": { opacity: 1 },
-      transition: "opacity 100ms ease",
+
+      transition: "opacity 150ms ease-in-out",
     }}
   >
     {props.children}

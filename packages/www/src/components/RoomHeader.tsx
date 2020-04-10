@@ -1,8 +1,9 @@
 /** @jsx jsx */
-import { Flex, jsx, Text } from "theme-ui";
+import { Box, Flex, jsx, Text } from "theme-ui";
 import { useRoom } from "../providers/room";
+import { pluralize } from "../utils";
 
-const GameHeader = () => {
+const RoomHeader = () => {
   const { room } = useRoom();
 
   if (room == null) {
@@ -19,24 +20,23 @@ const GameHeader = () => {
         justifyContent: "space-between",
         px: 3,
         py: 2,
-        fontSize: 4,
         borderBottom: "solid 1px",
         borderColor: "grey.600",
       }}
     >
-      <Text>This game</Text>
+      <Text>
+        This is room <span sx={{ color: "primary" }}>{room.name}</span>
+      </Text>
       <Flex sx={{ alignItems: "center" }}>
-        <Flex sx={{ alignItems: "flex-end", mr: 4 }}>
-          <Text sx={{ fontSize: 5, pr: 2 }}>{numTables}</Text>
-          <Text sx={{ fontSize: 1 }}>total tables</Text>
-        </Flex>
-        <Flex sx={{ alignItems: "flex-end" }}>
-          <Text sx={{ fontSize: 5, pr: 2 }}>{numUsers}</Text>
-          <Text sx={{ fontSize: 1 }}>total members</Text>
-        </Flex>
+        <Box sx={{ mr: 4 }}>
+          {numTables} {pluralize("table", numTables)}
+        </Box>
+        <Box>
+          {numUsers} {pluralize("member", numUsers)}
+        </Box>
       </Flex>
     </Flex>
   );
 };
 
-export default GameHeader;
+export default RoomHeader;

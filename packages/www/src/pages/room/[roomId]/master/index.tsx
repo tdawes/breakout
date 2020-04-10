@@ -8,7 +8,7 @@ import Loading from "../../../../components/Loading";
 import { useRoom } from "../../../../providers/room";
 import { Table } from "../../../../types";
 import Stage from "../../../../components/Stage";
-import GameHeader from "../../../../components/GameHeader";
+import RoomHeader from "../../../../components/RoomHeader";
 import {
   NotQuizMaster,
   quizmasterHeaderHeight,
@@ -138,7 +138,7 @@ const MasterPage = () => {
             minWidth: ["100%", "stage"],
           }}
         >
-          <Stage hideJoinButton />
+          <Stage />
         </Box>
         <Box
           sx={{
