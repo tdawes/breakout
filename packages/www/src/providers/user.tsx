@@ -30,15 +30,31 @@ const deleteUserIdForRoom = (roomId: string) => clearItem(userKey(roomId));
 const getLocalName = (): Promise<string> => getItem<string>(nameKey(), "");
 const saveName = (name: string) => saveItem(nameKey(), name);
 
+const usePreferredName = (): [string, (name: string) => void] => {
+  const [preferredName, setPreferredName] = React.useState<string>("");
+
+  // get preferred name from local storage when we start
+  useAsyncEffect(async () => {
+    setPreferredName(await getLocalName());
+  }, []);
+
+  const setName = (name: string) => {
+    setPreferredName(name);
+    saveName(name);
+  };
+
+  return [preferredName, setName];
+};
+
 export const UserProvider: React.FC = (props) => {
   const [userLoadedState, setUserLoadedState] = React.useState<LoadedState>(
     LoadedState.NOT_LOADED,
   );
   const [user, setUser] = React.useState<User | null>(null);
   const [userId, setUserId] = React.useState<string | null>(null);
-  const [preferredName, setPreferredName] = React.useState<string>("");
   const [loading, setLoading] = React.useState(true);
   const { roomId, room, loading: roomLoading, error: roomError } = useRoom();
+  const [preferredName, setPreferredName] = usePreferredName();
 
   React.useEffect(() => {
     if (roomId == null) {
@@ -48,11 +64,6 @@ export const UserProvider: React.FC = (props) => {
       setLoading(true);
     }
   }, [roomId]);
-
-  // get preferred name from local storage when we start
-  useAsyncEffect(async () => {
-    setPreferredName(await getLocalName());
-  }, []);
 
   // get local userId for room whenever the room changes
   useAsyncEffect(async () => {
@@ -106,7 +117,7 @@ export const UserProvider: React.FC = (props) => {
   }, [userId, userLoadedState]);
 
   const changeName = (name: string) => {
-    saveName(name);
+    setPreferredName(name);
     throw new Error("not implemented");
   };
 
@@ -123,7 +134,7 @@ export const UserProvider: React.FC = (props) => {
     setUser(user);
     setUserId(user.id);
     saveUserIdForRoom(roomId, user.id);
-    saveName(user.name);
+    setPreferredName(user.name);
   };
 
   const setTable = async (tableId: string | null) => {

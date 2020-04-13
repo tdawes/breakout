@@ -13,13 +13,7 @@ const maxNameLength = 20;
 const JoinRoom: React.FC = () => {
   const { room, loading: roomLoading } = useRoom();
   const { table } = useTable();
-  const {
-    user,
-    loading: userLoading,
-    loadingState: userLoadingState,
-    preferredName,
-    createUser,
-  } = useUser();
+  const { user, loading: userLoading, preferredName, createUser } = useUser();
 
   const [name, setName] = React.useState(preferredName);
   React.useEffect(() => setName(preferredName), [preferredName]);
@@ -37,7 +31,7 @@ const JoinRoom: React.FC = () => {
     } else {
       setIsModalOpen(false);
     }
-  }, [room, table, roomLoading, user, userLoading, userLoadingState]);
+  }, [room, table, roomLoading, user, userLoading]);
 
   return (
     <Modal
