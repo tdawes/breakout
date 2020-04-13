@@ -4,6 +4,7 @@ import { Room } from "../types";
 import * as db from "../db";
 
 export interface RoomState {
+  roomId: string | null;
   room: Room | null;
   loading: boolean;
   error: string | null;
@@ -31,6 +32,7 @@ export const RoomProvider: React.FC = (props) => {
   };
 
   const value: RoomState = {
+    roomId,
     room,
     loading,
     error,

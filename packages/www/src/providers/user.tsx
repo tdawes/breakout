@@ -1,5 +1,5 @@
 import * as React from "react";
-import { User, DBUser } from "../types";
+import { User, DBUser, LoadedState } from "../types";
 import { getItem, saveItem, clearItem } from "../local";
 import useAsyncEffect from "use-async-effect";
 import { useRoom } from "./room";
@@ -9,15 +9,10 @@ export interface UserState {
   user: User | null;
   preferredName: string;
   loading: boolean;
+  loadingState: LoadedState;
   changeName: (name: string) => void;
   createUser: (name: string, roomId: string, tableId?: string) => void;
   setTable: (tableId: string | null) => void;
-}
-
-export enum UserLoadedState {
-  INIT = 0,
-  EMPTY = 1,
-  FOUND = 2,
 }
 
 const UserContext = React.createContext<UserState>({} as UserState);
@@ -36,14 +31,23 @@ const getLocalName = (): Promise<string> => getItem<string>(nameKey(), "");
 const saveName = (name: string) => saveItem(nameKey(), name);
 
 export const UserProvider: React.FC = (props) => {
-  const [userLoadedState, setUserLoadedState] = React.useState<UserLoadedState>(
-    UserLoadedState.INIT,
+  const [userLoadedState, setUserLoadedState] = React.useState<LoadedState>(
+    LoadedState.NOT_LOADED,
   );
   const [user, setUser] = React.useState<User | null>(null);
   const [userId, setUserId] = React.useState<string | null>(null);
   const [preferredName, setPreferredName] = React.useState<string>("");
   const [loading, setLoading] = React.useState(true);
-  const { room, loading: roomLoading, error: roomError } = useRoom();
+  const { roomId, room, loading: roomLoading, error: roomError } = useRoom();
+
+  React.useEffect(() => {
+    if (roomId == null) {
+      setUserLoadedState(LoadedState.NOT_LOADED);
+      setUser(null);
+      setUserId(null);
+      setLoading(true);
+    }
+  }, [roomId]);
 
   // get preferred name from local storage when we start
   useAsyncEffect(async () => {
@@ -58,7 +62,7 @@ export const UserProvider: React.FC = (props) => {
 
     if (room == null || roomError) {
       setUserId(null);
-      setUserLoadedState(UserLoadedState.EMPTY);
+      setUserLoadedState(LoadedState.NOT_LOADED);
       return;
     }
 
@@ -66,16 +70,16 @@ export const UserProvider: React.FC = (props) => {
 
     if (userId == null) {
       setUserId(null);
-      setUserLoadedState(UserLoadedState.EMPTY);
+      setUserLoadedState(LoadedState.ERROR);
     } else {
       setUserId(userId);
-      setUserLoadedState(UserLoadedState.FOUND);
+      setUserLoadedState(LoadedState.ERROR);
     }
   }, [room, roomLoading, userId]);
 
   // subscribe to firestore user object when userId changes
   React.useEffect(() => {
-    if (userLoadedState === UserLoadedState.INIT) {
+    if (userLoadedState === LoadedState.NOT_LOADED) {
       return;
     }
 
@@ -135,6 +139,7 @@ export const UserProvider: React.FC = (props) => {
     user,
     preferredName,
     loading,
+    loadingState: userLoadedState,
     changeName,
     createUser,
     setTable,
