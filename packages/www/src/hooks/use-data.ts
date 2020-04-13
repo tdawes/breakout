@@ -1,6 +1,7 @@
 import * as React from "react";
 import { roomsCollection, tablesCollection, usersCollection } from "../db";
 import { DBRoom, DBTable, Room, Table, Keyed, User, DBUser } from "../types";
+import useAsyncEffect from "use-async-effect";
 
 const createRoom = (
   roomId: string,
@@ -52,7 +53,8 @@ const dbKeyBy = <T>(snapshot: firebase.firestore.QuerySnapshot): Keyed<T> => {
   return obj;
 };
 
-const useData = (roomId?: string) => {
+const useData = (roomId: string | null) => {
+  const [error, setError] = React.useState<string | null>(null);
   const [dbRoom, setDBRoom] = React.useState<DBRoom | null>(null);
   const [dbTables, setDBTables] = React.useState<Keyed<DBTable>>({});
   const [dbRoomUsers, setDBRoomUsers] = React.useState<Keyed<DBUser>>({});
@@ -60,18 +62,41 @@ const useData = (roomId?: string) => {
   const [tablesLoading, setTablesLoading] = React.useState(true);
   const [usersLoading, setUsersLoading] = React.useState(true);
 
+  useAsyncEffect(async () => {
+    if (roomId == null) {
+      setError(null);
+      return null;
+    }
+
+    const roomRef = await roomsCollection.doc(roomId).get();
+    if (!roomRef.exists) {
+      setError("Room does not exist");
+    } else {
+      setError(null);
+    }
+  }, [roomId]);
+
   // subscription for room
   React.useEffect(() => {
     if (roomId == null) {
+      setDBRoom(null);
       return;
     }
 
     setRoomLoading(true);
-    const unsubscribe = roomsCollection.doc(roomId).onSnapshot((snapshot) => {
-      const data = snapshot.data() as DBRoom;
-      setDBRoom(data);
-      setRoomLoading(false);
-    });
+    const unsubscribe = roomsCollection.doc(roomId).onSnapshot(
+      (snapshot) => {
+        const data = snapshot.data() as DBRoom;
+        setDBRoom(data);
+        setRoomLoading(false);
+      },
+      (error) => {
+        console.log("ERROR", error);
+      },
+      () => {
+        console.log("complete");
+      },
+    );
 
     return () => {
       unsubscribe();
@@ -81,6 +106,7 @@ const useData = (roomId?: string) => {
   // subscription for tables
   React.useEffect(() => {
     if (roomId == null) {
+      setDBTables({});
       return;
     }
 
@@ -100,6 +126,7 @@ const useData = (roomId?: string) => {
   // subscription for users
   React.useEffect(() => {
     if (roomId == null) {
+      setDBRoomUsers({});
       return;
     }
 
@@ -126,7 +153,8 @@ const useData = (roomId?: string) => {
 
   return {
     room,
-    loading: roomLoading || tablesLoading || usersLoading,
+    error,
+    loading: error == null && (roomLoading || tablesLoading || usersLoading),
   };
 };
 

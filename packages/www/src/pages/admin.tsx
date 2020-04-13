@@ -22,6 +22,8 @@ import Footer from "../components/Footer";
 import { Trash2 } from "react-feather";
 import Link from "../components/Link";
 import AvatarList from "../components/AvatarList";
+import { useRoom } from "../providers/room";
+import { useTable } from "../providers/table";
 
 const Section: React.FC = (props) => <Box sx={{ py: 3 }} {...props} />;
 
@@ -193,6 +195,13 @@ const RoomItem: React.FC<{
 const Admin = () => {
   const [roomName, setRoomName] = React.useState("");
   const roomIds = useAllRooms();
+  const { changeRoom } = useRoom();
+  const { changeTable } = useTable();
+
+  React.useEffect(() => {
+    changeRoom(null);
+    changeTable(null);
+  }, []);
 
   return (
     <Layout>

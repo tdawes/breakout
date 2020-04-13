@@ -6,7 +6,8 @@ import * as db from "../db";
 export interface RoomState {
   room: Room | null;
   loading: boolean;
-  changeRoom: (roomId: string) => void;
+  error: string | null;
+  changeRoom: (roomId: string | null) => void;
   setQuizMaster: (userId: string) => void;
 }
 
@@ -15,10 +16,10 @@ const RoomContext = React.createContext<RoomState>({} as RoomState);
 export const useRoom = () => React.useContext(RoomContext);
 
 export const RoomProvider: React.FC = (props) => {
-  const [roomId, setRoomId] = React.useState<string | undefined>(undefined);
-  const { room, loading } = useData(roomId);
+  const [roomId, setRoomId] = React.useState<string | null>(null);
+  const { room, loading, error } = useData(roomId);
 
-  const changeRoom = (roomId: string) => setRoomId(roomId);
+  const changeRoom = (roomId: string | null) => setRoomId(roomId);
 
   const setQuizMaster = (userId: string) => {
     if (room != null) {
@@ -32,6 +33,7 @@ export const RoomProvider: React.FC = (props) => {
   const value: RoomState = {
     room,
     loading,
+    error,
     changeRoom,
     setQuizMaster,
   };

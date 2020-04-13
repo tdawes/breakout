@@ -14,6 +14,12 @@ export interface UserState {
   setTable: (tableId: string | null) => void;
 }
 
+export enum UserLoadedState {
+  INIT = 0,
+  EMPTY = 1,
+  FOUND = 2,
+}
+
 const UserContext = React.createContext<UserState>({} as UserState);
 
 export const useUser = () => React.useContext(UserContext);
@@ -30,12 +36,14 @@ const getLocalName = (): Promise<string> => getItem<string>(nameKey(), "");
 const saveName = (name: string) => saveItem(nameKey(), name);
 
 export const UserProvider: React.FC = (props) => {
+  const [userLoadedState, setUserLoadedState] = React.useState<UserLoadedState>(
+    UserLoadedState.INIT,
+  );
   const [user, setUser] = React.useState<User | null>(null);
   const [userId, setUserId] = React.useState<string | null>(null);
   const [preferredName, setPreferredName] = React.useState<string>("");
   const [loading, setLoading] = React.useState(true);
-  const { room, loading: roomLoading } = useRoom();
-  const [loadedFromLocal, setLoadedFromLocal] = React.useState(false);
+  const { room, loading: roomLoading, error: roomError } = useRoom();
 
   // get preferred name from local storage when we start
   useAsyncEffect(async () => {
@@ -44,7 +52,13 @@ export const UserProvider: React.FC = (props) => {
 
   // get local userId for room whenever the room changes
   useAsyncEffect(async () => {
-    if (roomLoading || room == null) {
+    if (roomLoading) {
+      return;
+    }
+
+    if (room == null || roomError) {
+      setUserId(null);
+      setUserLoadedState(UserLoadedState.EMPTY);
       return;
     }
 
@@ -52,19 +66,16 @@ export const UserProvider: React.FC = (props) => {
 
     if (userId == null) {
       setUserId(null);
-    } else if (room.users[userId] == null) {
-      // user is not actually in the room
-      setUserId(null);
-      deleteUserIdForRoom(room.id);
+      setUserLoadedState(UserLoadedState.EMPTY);
     } else {
       setUserId(userId);
+      setUserLoadedState(UserLoadedState.FOUND);
     }
-
-    setLoadedFromLocal(true);
   }, [room, roomLoading, userId]);
 
+  // subscribe to firestore user object when userId changes
   React.useEffect(() => {
-    if (!loadedFromLocal) {
+    if (userLoadedState === UserLoadedState.INIT) {
       return;
     }
 
@@ -88,7 +99,7 @@ export const UserProvider: React.FC = (props) => {
     return () => {
       unsubscribe();
     };
-  }, [userId, loadedFromLocal]);
+  }, [userId, userLoadedState]);
 
   const changeName = (name: string) => {
     saveName(name);
@@ -105,6 +116,7 @@ export const UserProvider: React.FC = (props) => {
       room.users[user.id] = user;
     }
 
+    setUser(user);
     setUserId(user.id);
     saveUserIdForRoom(roomId, user.id);
     saveName(user.name);

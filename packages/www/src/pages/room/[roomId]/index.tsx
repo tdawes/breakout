@@ -2,18 +2,19 @@
 import { useRouter } from "next/router";
 import * as React from "react";
 import { Box, Flex, jsx, Text, Button } from "theme-ui";
-import AvatarList from "../../components/AvatarList";
-import RoomHeader from "../../components/RoomHeader";
-import Layout from "../../components/Layout";
-import { LoadingCenter } from "../../components/Loading";
-import Stage from "../../components/Stage";
-import { useRoom } from "../../providers/room";
-import { useTable } from "../../providers/table";
-import { useUser } from "../../providers/user";
-import ListItem, { ListItemHover } from "../../components/ListItem";
-import Link from "../../components/Link";
-import JoinRoom from "../../components/JoinRoom";
-import { Table } from "../../types";
+import AvatarList from "../../../components/AvatarList";
+import RoomHeader from "../../../components/RoomHeader";
+import Layout from "../../../components/Layout";
+import { LoadingCenter } from "../../../components/Loading";
+import Stage from "../../../components/Stage";
+import { useRoom } from "../../../providers/room";
+import { useTable } from "../../../providers/table";
+import { useUser } from "../../../providers/user";
+import ListItem, { ListItemHover } from "../../../components/ListItem";
+import Link from "../../../components/Link";
+import JoinRoom from "../../../components/JoinRoom";
+import { Table } from "../../../types";
+import ErrorPage from "../../../components/ErrorPage";
 
 const TableItem: React.FC<{ table: Table }> = ({ table }) => {
   const { room } = useRoom();
@@ -85,7 +86,7 @@ const RoomPage = () => {
   const router = useRouter();
   const roomId = router.query.roomId as string;
 
-  const { room, changeRoom } = useRoom();
+  const { room, error, changeRoom, loading: roomLoading } = useRoom();
   const { changeTable } = useTable();
   const { user, loading: userLoading } = useUser();
 
@@ -100,11 +101,15 @@ const RoomPage = () => {
     }
   }, [room, user]);
 
-  if (room == null || userLoading) {
-    return <LoadingCenter />;
+  if (userLoading || roomLoading) {
+    return <LoadingCenter sx={{ minHeight: "100vh" }} />;
   }
 
-  const usersNoTable = Object.values(room.users).filter(
+  if (error != null) {
+    return <ErrorPage>{error}</ErrorPage>;
+  }
+
+  const usersNoTable = Object.values(room?.users ?? {}).filter(
     (u) => u.tableId == null,
   );
 
