@@ -57,7 +57,7 @@ const JoinRoom: React.FC = () => {
           >
             <Text>
               Do you want to join the room{" "}
-              <span sx={{ fontWeight: "bold" }}>{room.name}</span>
+              <span sx={{ fontWeight: "bold" }}>{room.name}</span>?
             </Text>
 
             <Input

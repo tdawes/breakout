@@ -20,6 +20,7 @@ const Avatar: React.FC<{
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
+        cursor: props.onClick != null ? "pointer" : "initial",
       }}
     >
       <Box

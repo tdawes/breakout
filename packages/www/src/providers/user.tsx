@@ -84,7 +84,7 @@ export const UserProvider: React.FC = (props) => {
       setUserLoadedState(LoadedState.ERROR);
     } else {
       setUserId(userId);
-      setUserLoadedState(LoadedState.ERROR);
+      setUserLoadedState(LoadedState.LOADED);
     }
   }, [room, roomLoading, userId]);
 

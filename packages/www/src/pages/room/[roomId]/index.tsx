@@ -101,12 +101,12 @@ const RoomPage = () => {
     }
   }, [room, user]);
 
-  if (userLoading || roomLoading) {
-    return <LoadingCenter sx={{ minHeight: "100vh" }} />;
-  }
-
   if (error != null) {
     return <ErrorPage>{error}</ErrorPage>;
+  }
+
+  if (userLoading || roomLoading) {
+    return <LoadingCenter sx={{ minHeight: "100vh" }} />;
   }
 
   const usersNoTable = Object.values(room?.users ?? {}).filter(
