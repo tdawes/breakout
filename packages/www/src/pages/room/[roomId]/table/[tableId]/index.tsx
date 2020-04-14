@@ -10,15 +10,16 @@ import { useRoom } from "../../../../../providers/room";
 import { useTable } from "../../../../../providers/table";
 import { useUser } from "../../../../../providers/user";
 import JoinRoom from "../../../../../components/JoinRoom";
+import ErrorPage from "../../../../../components/ErrorPage";
 
 const TablePage = () => {
   const router = useRouter();
   const roomId = router.query.roomId as string;
   const tableId = router.query.tableId as string;
 
-  const { room, changeRoom } = useRoom();
-  const { table, changeTable } = useTable();
-  const { user, loading: userLoading } = useUser();
+  const { data: room, error: roomError, changeRoom } = useRoom();
+  const { data: table, error: tableError, changeTable } = useTable();
+  const { data: user, loading: userLoading } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);
@@ -39,8 +40,12 @@ const TablePage = () => {
     }
   }, [room, user]);
 
+  if (roomError != null || tableError != null) {
+    return <ErrorPage>{roomError ?? tableError}</ErrorPage>;
+  }
+
   if (room == null || table == null || userLoading) {
-    return <LoadingCenter />;
+    return <LoadingCenter sx={{ minHeight: "100vh" }} />;
   }
 
   return (

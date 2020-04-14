@@ -1,23 +1,24 @@
 import * as React from "react";
+import useAsyncEffect from "use-async-effect";
 import { roomsCollection, tablesCollection, usersCollection } from "../db";
 import {
   DBRoom,
   DBTable,
+  DBUser,
+  Keyed,
+  LoadingValue,
   Room,
   Table,
-  Keyed,
   User,
-  DBUser,
-  LoadedState,
 } from "../types";
-import useAsyncEffect from "use-async-effect";
+import { dataValue, errorValue, loadingValue } from "../utils";
 
 const createRoom = (
   roomId: string,
   dbRoom: DBRoom,
   dbTables: Keyed<DBTable>,
   dbRoomUsers: Keyed<DBUser>,
-): Room | null => {
+): Room => {
   const tables: Keyed<Table> = {};
   for (const [tableId, dbTable] of Object.entries(dbTables)) {
     tables[tableId] = {
@@ -62,7 +63,11 @@ const dbKeyBy = <T>(snapshot: firebase.firestore.QuerySnapshot): Keyed<T> => {
   return obj;
 };
 
-const useData = (roomId: string | null) => {
+type Result = LoadingValue<Room> & {
+  roomId: string | null;
+};
+
+const useData = (roomId: string | null): Result => {
   const [error, setError] = React.useState<string | null>(null);
   const [dbRoom, setDBRoom] = React.useState<DBRoom | null>(null);
   const [dbTables, setDBTables] = React.useState<Keyed<DBTable>>({});
@@ -70,9 +75,6 @@ const useData = (roomId: string | null) => {
   const [roomLoading, setRoomLoading] = React.useState(true);
   const [tablesLoading, setTablesLoading] = React.useState(true);
   const [usersLoading, setUsersLoading] = React.useState(true);
-  const [loadedState, setLoadedState] = React.useState<LoadedState>(
-    LoadedState.NOT_LOADED,
-  );
 
   // reset state when roomId is set to null
   React.useEffect(() => {
@@ -84,7 +86,6 @@ const useData = (roomId: string | null) => {
       setRoomLoading(true);
       setTablesLoading(true);
       setUsersLoading(true);
-      setLoadedState(LoadedState.NOT_LOADED);
     }
   }, [roomId]);
 
@@ -159,32 +160,35 @@ const useData = (roomId: string | null) => {
     };
   }, [roomId]);
 
-  const room: Room | null = React.useMemo(() => {
-    if (dbRoom == null || roomId == null) {
-      return null;
+  const result: Result = React.useMemo(() => {
+    if (error != null) {
+      return { roomId, ...errorValue(error) };
     }
 
-    return createRoom(roomId, dbRoom, dbTables, dbRoomUsers);
-  }, [roomId, dbRoom, dbTables, dbRoomUsers]);
-
-  React.useEffect(() => {
-    if (roomLoading || tablesLoading || usersLoading) {
-      setLoadedState(LoadedState.LOADING);
-    } else if (error != null) {
-      setLoadedState(LoadedState.ERROR);
-    } else {
-      setLoadedState(LoadedState.LOADED);
+    if (
+      dbRoom == null ||
+      roomId == null ||
+      roomLoading ||
+      tablesLoading ||
+      usersLoading
+    ) {
+      return { roomId, ...loadingValue() };
     }
-  }, [roomId, roomLoading, tablesLoading, usersLoading, error]);
 
-  return {
-    room,
+    const room = createRoom(roomId, dbRoom, dbTables, dbRoomUsers);
+    return { roomId, ...dataValue(room) };
+  }, [
+    roomId,
+    dbRoom,
+    dbTables,
+    dbRoomUsers,
+    roomLoading,
+    tablesLoading,
+    usersLoading,
     error,
-    loading:
-      loadedState === LoadedState.NOT_LOADED ||
-      loadedState === LoadedState.LOADING,
-    setLoadedState,
-  };
+  ]);
+
+  return result;
 };
 
 export default useData;

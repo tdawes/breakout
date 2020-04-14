@@ -1,13 +1,11 @@
 import * as React from "react";
-import { Table } from "../types";
+import { Table, LoadingValue } from "../types";
 import { useRoom } from "./room";
+import { loadingValue, errorValue, dataValue } from "../utils";
 
-export interface TableState {
-  table: Table | null;
-  loading: boolean;
-  error: string | null;
+export type TableState = LoadingValue<Table> & {
   changeTable: (tableId: string | null) => void;
-}
+};
 
 const TableContext = React.createContext<TableState>({} as TableState);
 
@@ -15,30 +13,26 @@ export const useTable = () => React.useContext(TableContext);
 
 export const TableProvider: React.FC = (props) => {
   const [tableId, setTableId] = React.useState<string | null>(null);
-  const [table, setTable] = React.useState<Table | null>(null);
-  const [error, setError] = React.useState<string | null>(null);
-  const { room, loading } = useRoom();
+  const [table, setTable] = React.useState<LoadingValue<Table>>(loadingValue());
+  const { data: room, loading: roomLoading } = useRoom();
 
   React.useEffect(() => {
     if (room == null || tableId == null) {
-      setTable(null);
+      setTable(loadingValue());
       return;
     }
 
     if (room.tables[tableId] != null) {
-      setTable(room.tables[tableId]);
-      setError(null);
+      setTable(dataValue(room.tables[tableId]));
     } else {
-      setError("Table not found");
+      setTable(errorValue("Table not found"));
     }
-  }, [tableId, room]);
+  }, [tableId, room, roomLoading]);
 
   const changeTable = (tableId: string | null) => setTableId(tableId);
 
   const value: TableState = {
-    table,
-    loading,
-    error,
+    ...table,
     changeTable,
   };
 

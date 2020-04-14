@@ -38,9 +38,19 @@ export interface DBTable {
   roomId: string;
 }
 
-export enum LoadedState {
-  NOT_LOADED = 0,
-  LOADING = 1,
-  LOADED = 2,
-  ERROR = 3,
-}
+export type LoadingValue<T> =
+  | {
+      loading: true;
+      error: null;
+      data: null;
+    }
+  | {
+      loading: false;
+      error: string;
+      data: null;
+    }
+  | {
+      loading: false;
+      error: null;
+      data: T;
+    };

@@ -6,7 +6,7 @@ import Avatar from "./Avatar";
 import { pluralize } from "../utils";
 
 const TableStats: React.FC = (props) => {
-  const { table } = useTable();
+  const { data: table } = useTable();
 
   if (table == null) {
     return null;
@@ -34,7 +34,7 @@ const TableStats: React.FC = (props) => {
 };
 
 const TableHeader = () => {
-  const { table } = useTable();
+  const { data: table } = useTable();
 
   if (table == null) {
     return null;

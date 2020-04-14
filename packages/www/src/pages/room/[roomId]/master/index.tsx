@@ -1,21 +1,19 @@
 /** @jsx jsx */
-import { NextPage } from "next";
 import { useRouter } from "next/router";
 import * as React from "react";
-import { Box, Flex, jsx, Styled, Text } from "theme-ui";
+import { Box, Flex, jsx, Text } from "theme-ui";
 import Layout from "../../../../components/Layout";
+import Link from "../../../../components/Link";
 import Loading from "../../../../components/Loading";
-import { useRoom } from "../../../../providers/room";
-import { Table } from "../../../../types";
 import Stage from "../../../../components/Stage";
-import RoomHeader from "../../../../components/RoomHeader";
+import { useRoom } from "../../../../providers/room";
+import { useTable } from "../../../../providers/table";
+import { useUser } from "../../../../providers/user";
+import { Table } from "../../../../types";
 import {
   NotQuizMaster,
   quizmasterHeaderHeight,
 } from "../table/[tableId]/master";
-import { useUser } from "../../../../providers/user";
-import Link from "../../../../components/Link";
-import { useTable } from "../../../../providers/table";
 
 const TableView: React.FC<{ table: Table; roomId: string }> = ({
   table,
@@ -93,9 +91,9 @@ const MasterPage = () => {
   const router = useRouter();
   const roomId = router.query.roomId as string;
 
-  const { room, changeRoom } = useRoom();
+  const { data: room, changeRoom } = useRoom();
   const { changeTable } = useTable();
-  const { user } = useUser();
+  const { data: user } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);

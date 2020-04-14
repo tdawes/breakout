@@ -7,6 +7,7 @@ if (process.env.CONFIG && firebase.apps.length === 0) {
   firebase.initializeApp(config.firebase);
 
   if (process.env.NODE_ENV === "development") {
+    // eslint-disable-next-line no-console
     console.log("Initialing firebase for", config.firebase.projectId);
   }
 }

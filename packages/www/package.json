@@ -13,6 +13,7 @@
     "@styled-system/css": "^5.1.5",
     "@theme-ui/presets": "^0.3.0",
     "firebase": "^7.13.2",
+    "immer": "^6.0.3",
     "localforage": "^1.7.3",
     "lodash": "^4.17.15",
     "next": "9.3.4",

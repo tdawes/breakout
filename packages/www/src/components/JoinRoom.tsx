@@ -1,19 +1,22 @@
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import * as React from "react";
-import { Box, Flex, jsx, Styled, Text, Input, Button } from "theme-ui";
+import { Box, Button, Input, jsx, Text } from "theme-ui";
 import { useRoom } from "../providers/room";
 import { useTable } from "../providers/table";
-import Modal from "./Modal";
 import { useUser } from "../providers/user";
-import { LoadedState } from "../types";
+import Modal from "./Modal";
 
 const maxNameLength = 20;
 
 const JoinRoom: React.FC = () => {
-  const { room, loading: roomLoading } = useRoom();
-  const { table } = useTable();
-  const { user, loading: userLoading, preferredName, createUser } = useUser();
+  const { data: room, loading: roomLoading } = useRoom();
+  const { data: table } = useTable();
+  const {
+    data: user,
+    loading: userLoading,
+    preferredName,
+    createUser,
+  } = useUser();
 
   const [name, setName] = React.useState(preferredName);
   React.useEffect(() => setName(preferredName), [preferredName]);
