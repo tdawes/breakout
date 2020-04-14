@@ -16,6 +16,7 @@ module.exports = {
     "prettier/prettier": "error",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-empty-function": "off",
     "no-unused-vars": "off",
     "react/react-in-jsx-scope": "off",

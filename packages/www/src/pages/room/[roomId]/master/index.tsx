@@ -8,13 +8,14 @@ import Loading from "../../../../components/Loading";
 import { useRoom } from "../../../../providers/room";
 import { Table } from "../../../../types";
 import Stage from "../../../../components/Stage";
-import GameHeader from "../../../../components/GameHeader";
+import RoomHeader from "../../../../components/RoomHeader";
 import {
   NotQuizMaster,
   quizmasterHeaderHeight,
 } from "../table/[tableId]/master";
 import { useUser } from "../../../../providers/user";
 import Link from "../../../../components/Link";
+import { useTable } from "../../../../providers/table";
 
 const TableView: React.FC<{ table: Table; roomId: string }> = ({
   table,
@@ -89,8 +90,17 @@ const TableView: React.FC<{ table: Table; roomId: string }> = ({
 );
 
 const MasterPage = () => {
-  const { room } = useRoom();
+  const router = useRouter();
+  const roomId = router.query.roomId as string;
+
+  const { room, changeRoom } = useRoom();
+  const { changeTable } = useTable();
   const { user } = useUser();
+
+  React.useEffect(() => {
+    changeRoom(roomId);
+    changeTable(null);
+  }, [roomId]);
 
   if (room == null) {
     return <Loading />;
@@ -128,7 +138,7 @@ const MasterPage = () => {
             minWidth: ["100%", "stage"],
           }}
         >
-          <Stage hideJoinButton />
+          <Stage />
         </Box>
         <Box
           sx={{
@@ -146,17 +156,4 @@ const MasterPage = () => {
   );
 };
 
-const Page: NextPage = () => {
-  const router = useRouter();
-  const roomId = router.query.roomId as string;
-
-  const { changeRoom } = useRoom();
-
-  React.useEffect(() => {
-    changeRoom(roomId);
-  }, [roomId]);
-
-  return <MasterPage />;
-};
-
-export default Page;
+export default MasterPage;

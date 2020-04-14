@@ -18,12 +18,15 @@ const isExternalLink = (href: string): boolean =>
 const Link: React.FC<Props> = (props) => {
   const href = props.href;
 
-  const as = props.as;
+  const nextAs = props.as;
 
   const tProps = {
     ...props,
-    as: undefined,
   } as Omit<Props, "as">;
+
+  if ((tProps as any).as != null) {
+    delete (tProps as any).as;
+  }
 
   if (isExternalLink(href)) {
     return (
@@ -34,8 +37,10 @@ const Link: React.FC<Props> = (props) => {
   }
 
   return (
-    <NLink href={href} as={as}>
-      <TLink {...tProps}>{props.children}</TLink>
+    <NLink href={href} as={nextAs}>
+      <TLink {...tProps} href={nextAs ?? href}>
+        {props.children}
+      </TLink>
     </NLink>
   );
 };

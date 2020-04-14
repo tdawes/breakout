@@ -1,54 +1,45 @@
 import * as React from "react";
 import { Table } from "../types";
+import { useRoom } from "./room";
 
 export interface TableState {
   table: Table | null;
   loading: boolean;
-  changeTable: (tableId: string) => void;
-  changeName: (name: string) => void;
+  error: string | null;
+  changeTable: (tableId: string | null) => void;
 }
 
 const TableContext = React.createContext<TableState>({} as TableState);
 
 export const useTable = () => React.useContext(TableContext);
 
-const dummyTable: Table = {
-  id: "",
-  name: "Table Name",
-  users: {
-    one: { id: "one", name: "Jake" },
-    two: { id: "two", name: "Andreja" },
-    three: { id: "three", name: "Tom" },
-    four: { id: "four", name: "Bruno" },
-    // five: { id: "five", name: "Kai" },
-    // six: { id: "six", name: "Sunir" },
-  },
-};
-
 export const TableProvider: React.FC = (props) => {
+  const [tableId, setTableId] = React.useState<string | null>(null);
   const [table, setTable] = React.useState<Table | null>(null);
-  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const { room, loading } = useRoom();
 
-  const changeTable = (tableId: string) =>
-    setTable({
-      ...dummyTable,
-      id: tableId,
-    });
-
-  const changeName = (name: string) => {
-    if (table != null) {
-      setTable({
-        ...table,
-        name,
-      });
+  React.useEffect(() => {
+    if (room == null || tableId == null) {
+      setTable(null);
+      return;
     }
-  };
+
+    if (room.tables[tableId] != null) {
+      setTable(room.tables[tableId]);
+      setError(null);
+    } else {
+      setError("Table not found");
+    }
+  }, [tableId, room]);
+
+  const changeTable = (tableId: string | null) => setTableId(tableId);
 
   const value: TableState = {
     table,
     loading,
+    error,
     changeTable,
-    changeName,
   };
 
   return (

@@ -85,6 +85,7 @@ const baseColors = {
     600: "#E67739",
   },
   grey: {
+    100: "#DCDDDE",
     200: "#6A6672",
     400: "#cecece",
     500: "#CAC8CD",
@@ -97,6 +98,7 @@ const theme: Theme = {
   ...system,
   colors: {
     text: "white",
+    textDark: "black",
     background: "#26212E",
     primary: baseColors.green[200],
     secondary: "#5990DC",
@@ -176,6 +178,15 @@ const theme: Theme = {
   },
 
   links: {
+    dark: {
+      ...baseLink,
+      color: "black",
+
+      "&:hover,&:focus,&:active": {
+        color: "currentColor",
+        bg: "accent",
+      },
+    },
     button: {
       ...baseButton,
       px: 3,

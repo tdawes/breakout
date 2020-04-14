@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { Flex, Grid, Box, jsx, Button } from "theme-ui";
-import GameHeader from "./GameHeader";
+import RoomHeader from "./RoomHeader";
 import TableHeader from "./TableHeader";
 import UserVideo from "./UserVideo";
 import Scratchpad from "./Scratchpad";
@@ -23,7 +23,6 @@ const Table = () => {
         <LoadingCenter />
       ) : (
         <Box>
-          <GameHeader />
           <TableHeader />
 
           <Grid

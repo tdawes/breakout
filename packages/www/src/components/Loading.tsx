@@ -18,8 +18,9 @@ const Loading = () => {
 
 export default Loading;
 
-export const LoadingCenter = () => (
+export const LoadingCenter: React.FC = (props) => (
   <Flex
+    {...props}
     sx={{
       width: "100%",
       height: "100%",

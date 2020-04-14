@@ -3,11 +3,13 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import { Box, jsx } from "theme-ui";
 import Layout from "../../../../../components/Layout";
-import Loading from "../../../../../components/Loading";
+import { LoadingCenter } from "../../../../../components/Loading";
 import Stage from "../../../../../components/Stage";
 import Table from "../../../../../components/Table";
 import { useRoom } from "../../../../../providers/room";
 import { useTable } from "../../../../../providers/table";
+import { useUser } from "../../../../../providers/user";
+import JoinRoom from "../../../../../components/JoinRoom";
 
 const TablePage = () => {
   const router = useRouter();
@@ -16,18 +18,34 @@ const TablePage = () => {
 
   const { room, changeRoom } = useRoom();
   const { table, changeTable } = useTable();
+  const { user, loading: userLoading } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);
     changeTable(tableId);
   }, [roomId, tableId]);
 
-  if (room == null || table == null) {
-    return <Loading />;
+  React.useEffect(() => {
+    if (
+      room != null &&
+      table != null &&
+      user != null &&
+      room.quizMaster === user.id
+    ) {
+      router.replace(
+        "/room/[roomId]/table/[tableId]/master",
+        `/room/${room.id}/table/${table.id}/master`,
+      );
+    }
+  }, [room, user]);
+
+  if (room == null || table == null || userLoading) {
+    return <LoadingCenter />;
   }
 
   return (
-    <Layout title={`${tableId} - ${roomId}`}>
+    <Layout title={`${table.name} - ${room.name}`}>
+      <JoinRoom />
       <Box
         sx={{
           display: ["block", "flex"],
