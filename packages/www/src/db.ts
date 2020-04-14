@@ -71,6 +71,7 @@ export const createUser = async (
     name,
     roomId,
     tableId: tableId ?? null,
+    onStage: false,
   };
 
   const result = await usersCollection.add(dbUser);
@@ -83,10 +84,10 @@ export const createUser = async (
   return user;
 };
 
-export const setUser = async (user: User) => {
-  const dbUser: DBUser = {
+export const updateUser = async (userId: string, user: Partial<User>) => {
+  const dbUser: Partial<DBUser> = {
     ...user,
   };
 
-  usersCollection.doc(user.id).set(dbUser);
+  usersCollection.doc(userId).update(dbUser);
 };

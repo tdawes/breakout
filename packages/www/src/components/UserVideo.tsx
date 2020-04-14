@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { Flex, Box, jsx } from "theme-ui";
 
-const UserVideo: React.FC<{ title: string; image: string }> = (props) => {
+const UserVideo: React.FC<{ image: string }> = (props) => {
   return (
     <Flex
       {...props}
@@ -24,7 +24,7 @@ const UserVideo: React.FC<{ title: string; image: string }> = (props) => {
           fontSize: 1,
         }}
       >
-        {props.title}
+        {props.children}
       </Box>
     </Flex>
   );

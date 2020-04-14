@@ -3,6 +3,7 @@ export interface User {
   name: string;
   roomId: string | null;
   tableId: string | null;
+  onStage: boolean;
 }
 
 export interface Room {
@@ -26,6 +27,7 @@ export interface DBUser {
   name: string;
   roomId: string | null;
   tableId: string | null;
+  onStage: boolean;
 }
 
 export interface DBRoom {

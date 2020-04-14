@@ -43,8 +43,7 @@ export const RoomProvider: React.FC = (props) => {
 
   const setQuizMaster = (userId: string) => {
     if (room.data != null) {
-      db.setRoom(room.data.id, {
-        name: room.data.name,
+      db.roomsCollection.doc(room.data.id).update({
         quizMaster: userId,
       });
     }
