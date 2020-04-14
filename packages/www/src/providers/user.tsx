@@ -116,7 +116,7 @@ export const UserProvider: React.FC = (props) => {
 
   const setTable = async (tableId: string | null) => {
     if (user.data != null) {
-      db.updateUser(user.data.id, { tableId });
+      db.updateUser(user.data.id, { tableId, onStage: false });
     }
   };
 

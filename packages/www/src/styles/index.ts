@@ -70,6 +70,17 @@ const baseButton: SystemStyleObject = {
   },
 };
 
+const secondaryButton: SystemStyleObject = {
+  ...baseButton,
+  backgroundImage: ({ colors }) =>
+    `linear-gradient(to bottom, ${colors.orange[200]}, ${colors.orange[600]})`,
+
+  "&:hover,&:focus,&:active": {
+    backgroundImage: ({ colors }) =>
+      `linear-gradient(to bottom, ${colors.orange[600]}, ${colors.orange[200]})`,
+  },
+};
+
 const baseColors = {
   purple: {
     100: "#504A5C",
@@ -143,16 +154,7 @@ const theme: Theme = {
 
   buttons: {
     primary: baseButton,
-    secondary: {
-      ...baseButton,
-      backgroundImage: ({ colors }) =>
-        `linear-gradient(to bottom, ${colors.orange[200]}, ${colors.orange[600]})`,
-
-      "&:hover,&:focus,&:active": {
-        backgroundImage: ({ colors }) =>
-          `linear-gradient(to bottom, ${colors.orange[600]}, ${colors.orange[200]})`,
-      },
-    },
+    secondary: secondaryButton,
     subtle: {
       color: "text",
       border: "solid 1px",
@@ -189,6 +191,12 @@ const theme: Theme = {
     },
     button: {
       ...baseButton,
+      px: 3,
+      textDecoration: "none",
+      display: "inline-block",
+    },
+    buttonSecondary: {
+      ...secondaryButton,
       px: 3,
       textDecoration: "none",
       display: "inline-block",
