@@ -5,7 +5,6 @@ import UserVideo from "./UserVideo";
 import Scratchpad from "./Scratchpad";
 import { useTable } from "../providers/table";
 import { LoadingCenter } from "./Loading";
-import { setTable } from "../db";
 
 const Table = () => {
   const { data: table } = useTable();
