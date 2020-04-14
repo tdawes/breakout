@@ -39,7 +39,9 @@ const JoinTable: React.FC = () => {
             You are not at this table
           </Text>
 
-          <Text>Do you want to leave your table and join this one?</Text>
+          <Text sx={{ py: 1 }}>
+            Do you want to leave your current table and join this one?
+          </Text>
 
           <Flex sx={{ pt: 2 }}>
             <Link
