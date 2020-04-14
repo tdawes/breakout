@@ -53,7 +53,12 @@ export const UserProvider: React.FC = (props) => {
   const [user, setUser] = React.useState<User | null>(null);
   const [userId, setUserId] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
-  const { roomId, room, loading: roomLoading, error: roomError } = useRoom();
+  const {
+    roomId,
+    data: room,
+    loading: roomLoading,
+    error: roomError,
+  } = useRoom();
   const [preferredName, setPreferredName] = usePreferredName();
 
   React.useEffect(() => {

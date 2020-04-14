@@ -1,29 +1,27 @@
 /** @jsx jsx */
 import * as React from "react";
+import { Trash2 } from "react-feather";
 import {
-  Flex,
-  jsx,
-  Text,
-  Styled,
   Box,
   Button,
-  Input,
+  Flex,
   IconButton,
-  Divider,
+  Input,
+  jsx,
+  Styled,
+  Text,
 } from "theme-ui";
-import Layout from "../components/Layout";
-import Container from "../components/Container";
-import useAllRooms from "../hooks/useAllRooms";
-import useData from "../hooks/use-data";
-import * as db from "../db";
-import { Table } from "../types";
-import Avatar from "../components/Avatar";
-import Footer from "../components/Footer";
-import { Trash2 } from "react-feather";
-import Link from "../components/Link";
 import AvatarList from "../components/AvatarList";
+import Container from "../components/Container";
+import Footer from "../components/Footer";
+import Layout from "../components/Layout";
+import Link from "../components/Link";
+import * as db from "../db";
+import useData from "../hooks/use-data";
+import useAllRooms from "../hooks/useAllRooms";
 import { useRoom } from "../providers/room";
 import { useTable } from "../providers/table";
+import { Table } from "../types";
 
 const Section: React.FC = (props) => <Box sx={{ py: 3 }} {...props} />;
 
@@ -82,7 +80,7 @@ const RoomItem: React.FC<{
   roomId: string;
 }> = (props) => {
   const [tableName, setTableName] = React.useState("");
-  const { room } = useData(props.roomId);
+  const { data: room } = useData(props.roomId);
 
   if (room == null) {
     return null;

@@ -17,7 +17,7 @@ export const TableProvider: React.FC = (props) => {
   const [tableId, setTableId] = React.useState<string | null>(null);
   const [table, setTable] = React.useState<Table | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const { room, loading } = useRoom();
+  const { data: room, loading } = useRoom();
 
   React.useEffect(() => {
     if (room == null || tableId == null) {
