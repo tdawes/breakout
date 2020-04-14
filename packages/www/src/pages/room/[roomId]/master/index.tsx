@@ -93,9 +93,9 @@ const MasterPage = () => {
   const router = useRouter();
   const roomId = router.query.roomId as string;
 
-  const { room, changeRoom } = useRoom();
+  const { data: room, changeRoom } = useRoom();
   const { changeTable } = useTable();
-  const { user } = useUser();
+  const { data: user } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);

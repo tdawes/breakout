@@ -1,19 +1,17 @@
 import * as React from "react";
-import { User, DBUser, LoadedState } from "../types";
-import { getItem, saveItem, clearItem } from "../local";
 import useAsyncEffect from "use-async-effect";
-import { useRoom } from "./room";
 import * as db from "../db";
+import { clearItem, getItem, saveItem } from "../local";
+import { DBUser, LoadingValue, User } from "../types";
+import { dataValue, loadingValue } from "../utils";
+import { useRoom } from "./room";
 
-export interface UserState {
-  user: User | null;
+export type UserState = LoadingValue<User | null> & {
   preferredName: string;
-  loading: boolean;
-  loadingState: LoadedState;
   changeName: (name: string) => void;
   createUser: (name: string, roomId: string, tableId?: string) => void;
   setTable: (tableId: string | null) => void;
-}
+};
 
 const UserContext = React.createContext<UserState>({} as UserState);
 
@@ -47,79 +45,59 @@ const usePreferredName = (): [string, (name: string) => void] => {
 };
 
 export const UserProvider: React.FC = (props) => {
-  const [userLoadedState, setUserLoadedState] = React.useState<LoadedState>(
-    LoadedState.NOT_LOADED,
+  const [user, setUser] = React.useState<LoadingValue<User | null>>(
+    loadingValue(),
   );
-  const [user, setUser] = React.useState<User | null>(null);
   const [userId, setUserId] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(true);
-  const {
-    roomId,
-    data: room,
-    loading: roomLoading,
-    error: roomError,
-  } = useRoom();
   const [preferredName, setPreferredName] = usePreferredName();
+  const { roomId, data: room, loading: roomLoading } = useRoom();
 
+  // reset user state when no room
   React.useEffect(() => {
     if (roomId == null) {
-      setUserLoadedState(LoadedState.NOT_LOADED);
-      setUser(null);
+      setUser(loadingValue());
       setUserId(null);
-      setLoading(true);
     }
   }, [roomId]);
 
   // get local userId for room whenever the room changes
   useAsyncEffect(async () => {
-    if (roomLoading) {
+    if (roomLoading || room == null) {
       return;
     }
 
-    if (room == null || roomError) {
-      setUserId(null);
-      setUserLoadedState(LoadedState.NOT_LOADED);
-      return;
-    }
+    const localUserId = await getLocalUserIdForRoom(room.id);
 
-    const userId = await getLocalUserIdForRoom(room.id);
-
-    if (userId == null) {
+    if (localUserId == null) {
       setUserId(null);
-      setUserLoadedState(LoadedState.ERROR);
+      setUser(dataValue(null));
     } else {
-      setUserId(userId);
-      setUserLoadedState(LoadedState.LOADED);
+      setUserId(localUserId);
     }
-  }, [room, roomLoading, userId]);
+  }, [room, roomLoading]);
 
   // subscribe to firestore user object when userId changes
   React.useEffect(() => {
-    if (userLoadedState === LoadedState.NOT_LOADED) {
-      return;
-    }
-
     if (userId == null) {
-      setLoading(false);
-      setUser(null);
       return;
     }
 
-    setLoading(true);
+    setUser(loadingValue());
 
     const unsubscribe = db.getUser(userId).onSnapshot((snapshot) => {
       const dbUser = snapshot.data() as DBUser;
-      setUser({
-        id: snapshot.id,
-        ...dbUser,
-      });
-      setLoading(false);
+      setUser(
+        dataValue({
+          id: snapshot.id,
+          ...dbUser,
+        }),
+      );
     });
 
     return () => {
       unsubscribe();
     };
-  }, [userId, userLoadedState]);
+  }, [userId]);
 
   const changeName = (name: string) => {
     setPreferredName(name);
@@ -129,33 +107,24 @@ export const UserProvider: React.FC = (props) => {
   const createUser = async (name: string, roomId: string, tableId?: string) => {
     const user = await db.createUser(name, roomId, tableId);
 
-    // firestore update for room.users will not happen immediately
-    // so we add the user manually for our local checks
-    // this will not trigger a react state update and that is okay
-    if (room != null) {
-      room.users[user.id] = user;
-    }
-
-    setUser(user);
+    setUser(dataValue(user));
     setUserId(user.id);
     saveUserIdForRoom(roomId, user.id);
     setPreferredName(user.name);
   };
 
   const setTable = async (tableId: string | null) => {
-    if (user != null) {
+    if (user.data != null) {
       db.setUser({
-        ...user,
+        ...user.data,
         tableId,
       });
     }
   };
 
   const value: UserState = {
-    user,
+    ...user,
     preferredName,
-    loading,
-    loadingState: userLoadedState,
     changeName,
     createUser,
     setTable,

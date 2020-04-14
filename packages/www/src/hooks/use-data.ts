@@ -1,17 +1,17 @@
 import * as React from "react";
+import useAsyncEffect from "use-async-effect";
 import { roomsCollection, tablesCollection, usersCollection } from "../db";
 import {
   DBRoom,
   DBTable,
+  DBUser,
+  Keyed,
+  LoadingValue,
   Room,
   Table,
-  Keyed,
   User,
-  DBUser,
-  LoadedState,
-  LoadingValue,
 } from "../types";
-import useAsyncEffect from "use-async-effect";
+import { dataValue, errorValue, loadingValue } from "../utils";
 
 const createRoom = (
   roomId: string,
@@ -66,24 +66,6 @@ const dbKeyBy = <T>(snapshot: firebase.firestore.QuerySnapshot): Keyed<T> => {
 type Result = LoadingValue<Room> & {
   roomId: string | null;
 };
-
-const loadingValue = (): LoadingValue<Room> => ({
-  loading: true,
-  error: null,
-  data: null,
-});
-
-const errorValue = (error: string): LoadingValue<Room> => ({
-  loading: false,
-  error,
-  data: null,
-});
-
-const dataValue = (data: Room): LoadingValue<Room> => ({
-  loading: false,
-  error: null,
-  data,
-});
 
 const useData = (roomId: string | null): Result => {
   const [error, setError] = React.useState<string | null>(null);
@@ -179,6 +161,10 @@ const useData = (roomId: string | null): Result => {
   }, [roomId]);
 
   const result: Result = React.useMemo(() => {
+    if (error != null) {
+      return { roomId, ...errorValue(error) };
+    }
+
     if (
       dbRoom == null ||
       roomId == null ||
@@ -187,10 +173,6 @@ const useData = (roomId: string | null): Result => {
       usersLoading
     ) {
       return { roomId, ...loadingValue() };
-    }
-
-    if (error != null) {
-      return { roomId, ...errorValue(error) };
     }
 
     const room = createRoom(roomId, dbRoom, dbTables, dbRoomUsers);

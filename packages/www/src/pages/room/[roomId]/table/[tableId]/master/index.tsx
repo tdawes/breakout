@@ -35,9 +35,9 @@ const TablePage = () => {
   const roomId = router.query.roomId as string;
   const tableId = router.query.tableId as string;
 
-  const { room, changeRoom } = useRoom();
+  const { data: room, changeRoom } = useRoom();
   const { table, changeTable } = useTable();
-  const { user } = useUser();
+  const { data: user } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);

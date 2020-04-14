@@ -18,7 +18,7 @@ import ErrorPage from "../../../components/ErrorPage";
 
 const TableItem: React.FC<{ table: Table }> = ({ table }) => {
   const { data: room } = useRoom();
-  const { setTable, user } = useUser();
+  const { setTable, data: user } = useUser();
   const isUsersTable = user != null && user.tableId === table.id;
 
   if (room == null) return null;
@@ -93,7 +93,7 @@ const RoomPage = () => {
     changeRoom,
   } = useRoom();
   const { changeTable } = useTable();
-  const { user, loading: userLoading } = useUser();
+  const { data: user, loading: userLoading } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);

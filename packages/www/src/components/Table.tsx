@@ -8,7 +8,7 @@ import { useTable } from "../providers/table";
 import { LoadingCenter } from "./Loading";
 
 const Table = () => {
-  const { table } = useTable();
+  const { data: table } = useTable();
 
   return (
     <Box

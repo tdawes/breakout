@@ -1,8 +1,8 @@
 import * as React from "react";
-import useData from "../hooks/use-data";
-import { Room, LoadingValue } from "../types";
-import * as db from "../db";
 import { useImmer } from "use-immer";
+import * as db from "../db";
+import useData from "../hooks/use-data";
+import { LoadingValue, Room } from "../types";
 
 export type RoomState = LoadingValue<Room> & {
   roomId: string | null;
@@ -32,6 +32,7 @@ export const RoomProvider: React.FC = (props) => {
       : rooms[roomId];
 
   React.useEffect(() => {
+    console.log("RESULT", result);
     updateRooms((rooms) => {
       if (result.roomId != null) {
         rooms[result.roomId] = result;

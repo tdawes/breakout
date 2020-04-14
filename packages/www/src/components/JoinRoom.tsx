@@ -10,8 +10,13 @@ const maxNameLength = 20;
 
 const JoinRoom: React.FC = () => {
   const { data: room, loading: roomLoading } = useRoom();
-  const { table } = useTable();
-  const { user, loading: userLoading, preferredName, createUser } = useUser();
+  const { data: table } = useTable();
+  const {
+    data: user,
+    loading: userLoading,
+    preferredName,
+    createUser,
+  } = useUser();
 
   const [name, setName] = React.useState(preferredName);
   React.useEffect(() => setName(preferredName), [preferredName]);
