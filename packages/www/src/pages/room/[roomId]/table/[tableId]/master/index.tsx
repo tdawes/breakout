@@ -37,12 +37,21 @@ const TablePage = () => {
 
   const { data: room, changeRoom } = useRoom();
   const { data: table, changeTable } = useTable();
-  const { data: user } = useUser();
+  const { data: user, setStage } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);
     changeTable(tableId);
   }, [roomId, tableId]);
+
+  // the quizmaster is removed from stage when visiting a table
+  React.useEffect(() => {
+    if (room == null || user == null || room.quizMaster !== user.id) {
+      return;
+    }
+
+    setStage(false);
+  }, [room, user]);
 
   if (room == null || table == null) {
     return <Loading />;

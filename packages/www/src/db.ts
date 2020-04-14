@@ -38,6 +38,10 @@ export const setRoom = async (roomId: string, dbRoom: DBRoom) => {
   roomsCollection.doc(roomId).set(dbRoom);
 };
 
+export const updateRoom = (roomId: string, dbRoom: Partial<DBRoom>) => {
+  roomsCollection.doc(roomId).update(dbRoom);
+};
+
 export const deleteRoom = async (room: Room) => {
   const batch = firestore.batch();
 
