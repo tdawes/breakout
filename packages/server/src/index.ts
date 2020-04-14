@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+
 import * as http from "http";
 import socketIO from "socket.io";
 

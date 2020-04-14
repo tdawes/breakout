@@ -32,7 +32,6 @@ export const RoomProvider: React.FC = (props) => {
       : rooms[roomId];
 
   React.useEffect(() => {
-    console.log("RESULT", result);
     updateRooms((rooms) => {
       if (result.roomId != null) {
         rooms[result.roomId] = result;
