@@ -4,6 +4,8 @@ import { Box, Flex, Grid, jsx, Text, Button } from "theme-ui";
 import { useTable } from "../providers/table";
 import Avatar from "./Avatar";
 import { pluralize } from "../utils";
+import { useUser } from "../providers/user";
+import { useRoom } from "../providers/room";
 
 const TableStats: React.FC = (props) => {
   const { data: table } = useTable();
@@ -35,8 +37,10 @@ const TableStats: React.FC = (props) => {
 
 const TableHeader = () => {
   const { data: table } = useTable();
+  const { data: user, setStage } = useUser();
+  const { data: room } = useRoom();
 
-  if (table == null) {
+  if (table == null || user == null || room == null) {
     return null;
   }
 
@@ -54,14 +58,23 @@ const TableHeader = () => {
     >
       <Flex sx={{ justifyContent: "space-between", pb: [3, 3, 0] }}>
         <Text>
-          Your Table:{" "}
+          This Table:{" "}
           <span sx={{ fontWeight: "bold" }}>
             {table.name}, {numUsers} {pluralize("member", numUsers)}
           </span>
         </Text>
       </Flex>
 
-      <Button>Join Stage</Button>
+      {room.quizMaster !== user.id && (
+        <Button
+          variant={user.onStage ? "secondary" : "primary"}
+          onClick={() => {
+            setStage(!user.onStage);
+          }}
+        >
+          {user.onStage ? "Leave Stage" : "Join Stage"}
+        </Button>
+      )}
 
       <Text sx={{ color: "grey.600" }}>This game</Text>
     </Box>

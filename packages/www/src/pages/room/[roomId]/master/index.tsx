@@ -93,12 +93,21 @@ const MasterPage = () => {
 
   const { data: room, changeRoom } = useRoom();
   const { changeTable } = useTable();
-  const { data: user } = useUser();
+  const { data: user, setStage } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);
     changeTable(null);
   }, [roomId]);
+
+  // quizmasters are automatically added to the stage
+  React.useEffect(() => {
+    if (room == null || user == null || room.quizMaster !== user.id) {
+      return;
+    }
+
+    setStage(true);
+  }, [room, user]);
 
   if (room == null) {
     return <Loading />;

@@ -11,6 +11,7 @@ export type UserState = LoadingValue<User | null> & {
   changeName: (name: string) => void;
   createUser: (name: string, roomId: string, tableId?: string) => void;
   setTable: (tableId: string | null) => void;
+  setStage: (onStage: boolean) => void;
 };
 
 const UserContext = React.createContext<UserState>({} as UserState);
@@ -115,10 +116,13 @@ export const UserProvider: React.FC = (props) => {
 
   const setTable = async (tableId: string | null) => {
     if (user.data != null) {
-      db.setUser({
-        ...user.data,
-        tableId,
-      });
+      db.updateUser(user.data.id, { tableId, onStage: false });
+    }
+  };
+
+  const setStage = (onStage: boolean) => {
+    if (user.data != null) {
+      db.updateUser(user.data.id, { onStage });
     }
   };
 
@@ -128,6 +132,7 @@ export const UserProvider: React.FC = (props) => {
     changeName,
     createUser,
     setTable,
+    setStage,
   };
 
   return (

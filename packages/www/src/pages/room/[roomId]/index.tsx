@@ -1,20 +1,20 @@
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import * as React from "react";
-import { Box, Flex, jsx, Text, Button } from "theme-ui";
+import { Box, Button, Flex, jsx, Text } from "theme-ui";
 import AvatarList from "../../../components/AvatarList";
-import RoomHeader from "../../../components/RoomHeader";
-import Layout from "../../../components/Layout";
-import { LoadingCenter } from "../../../components/Loading";
-import Stage from "../../../components/Stage";
-import { useRoom } from "../../../providers/room";
-import { useTable } from "../../../providers/table";
-import { useUser } from "../../../providers/user";
-import ListItem, { ListItemHover } from "../../../components/ListItem";
-import Link from "../../../components/Link";
-import JoinRoom from "../../../components/JoinRoom";
-import { Table } from "../../../types";
 import ErrorPage from "../../../components/ErrorPage";
+import JoinRoom from "../../../components/JoinRoom";
+import Layout from "../../../components/Layout";
+import Link from "../../../components/Link";
+import ListItem, { ListItemHover } from "../../../components/ListItem";
+import { LoadingCenter } from "../../../components/Loading";
+import RoomHeader from "../../../components/RoomHeader";
+import Stage from "../../../components/Stage";
+import { useEnsureMasterRoom } from "../../../hooks/use-ensure-master";
+import useRoomTablePage from "../../../hooks/use-room-table-page";
+import { useRoom } from "../../../providers/room";
+import { useUser } from "../../../providers/user";
+import { Table } from "../../../types";
 
 const TableItem: React.FC<{ table: Table }> = ({ table }) => {
   const { data: room } = useRoom();
@@ -83,35 +83,26 @@ const TableList: React.FC = (props) => {
 };
 
 const RoomPage = () => {
-  const router = useRouter();
-  const roomId = router.query.roomId as string;
+  useEnsureMasterRoom();
+  useRoomTablePage();
 
-  const {
-    data: room,
-    error: roomError,
-    loading: roomLoading,
-    changeRoom,
-  } = useRoom();
-  const { changeTable } = useTable();
-  const { data: user, loading: userLoading } = useUser();
-
-  React.useEffect(() => {
-    changeRoom(roomId);
-    changeTable(null);
-  }, [roomId]);
-
-  React.useEffect(() => {
-    if (room != null && user != null && room.quizMaster === user.id) {
-      router.replace("/room/[roomId]/master", `/room/${room.id}/master`);
-    }
-  }, [room, user]);
+  const { data: room, error: roomError, loading: roomLoading } = useRoom();
+  const { loading: userLoading } = useUser();
 
   if (roomError != null) {
-    return <ErrorPage>{roomError}</ErrorPage>;
+    return (
+      <Layout>
+        <ErrorPage>{roomError}</ErrorPage>
+      </Layout>
+    );
   }
 
   if (userLoading || roomLoading) {
-    return <LoadingCenter sx={{ minHeight: "100vh" }} />;
+    return (
+      <Layout>
+        <LoadingCenter sx={{ minHeight: "100vh" }} />
+      </Layout>
+    );
   }
 
   const usersNoTable = Object.values(room?.users ?? {}).filter(

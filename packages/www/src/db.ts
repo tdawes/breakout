@@ -38,6 +38,10 @@ export const setRoom = async (roomId: string, dbRoom: DBRoom) => {
   roomsCollection.doc(roomId).set(dbRoom);
 };
 
+export const updateRoom = (roomId: string, dbRoom: Partial<DBRoom>) => {
+  roomsCollection.doc(roomId).update(dbRoom);
+};
+
 export const deleteRoom = async (room: Room) => {
   const batch = firestore.batch();
 
@@ -71,6 +75,7 @@ export const createUser = async (
     name,
     roomId,
     tableId: tableId ?? null,
+    onStage: false,
   };
 
   const result = await usersCollection.add(dbUser);
@@ -83,12 +88,12 @@ export const createUser = async (
   return user;
 };
 
-export const setUser = async (user: User) => {
-  const dbUser: DBUser = {
+export const updateUser = async (userId: string, user: Partial<User>) => {
+  const dbUser: Partial<DBUser> = {
     ...user,
   };
 
-  usersCollection.doc(user.id).set(dbUser);
+  usersCollection.doc(userId).update(dbUser);
 };
 
 export const setTable = async (table: Table) => {
