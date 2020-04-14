@@ -1,6 +1,5 @@
 /** @jsx jsx */
-import { Flex, Grid, Box, jsx, Button } from "theme-ui";
-import RoomHeader from "./RoomHeader";
+import { Grid, Box, jsx } from "theme-ui";
 import TableHeader from "./TableHeader";
 import UserVideo from "./UserVideo";
 import Scratchpad from "./Scratchpad";

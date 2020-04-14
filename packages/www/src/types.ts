@@ -18,6 +18,7 @@ export interface Table {
   name: string;
   users: Keyed<User>;
   roomId: string;
+  scratchpad: string;
 }
 
 export type Keyed<T> = { [id: string]: T };
@@ -36,6 +37,7 @@ export interface DBRoom {
 export interface DBTable {
   name: string;
   roomId: string;
+  scratchpad?: string;
 }
 
 export type LoadingValue<T> =

@@ -26,6 +26,7 @@ const createRoom = (
       name: dbTable.name,
       users: {},
       roomId,
+      scratchpad: dbTable.scratchpad ?? "",
     };
   }
 
