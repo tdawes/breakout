@@ -46,13 +46,7 @@ const Table = () => {
       )}
 
       {table != null && (
-        <Scratchpad
-          sx={{ position: "fixed", bottom: 0, right: 0 }}
-          contents={table.scratchpad}
-          saveContents={(contents: string) =>
-            setTable({ ...table, scratchpad: contents })
-          }
-        />
+        <Scratchpad sx={{ position: "fixed", bottom: 0, right: 0 }} />
       )}
     </Box>
   );

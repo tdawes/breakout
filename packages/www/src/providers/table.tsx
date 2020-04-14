@@ -2,9 +2,11 @@ import * as React from "react";
 import { Table, LoadingValue } from "../types";
 import { useRoom } from "./room";
 import { loadingValue, errorValue, dataValue } from "../utils";
+import * as db from "../db";
 
 export type TableState = LoadingValue<Table> & {
   changeTable: (tableId: string | null) => void;
+  setScratchpad: (contents: string) => void;
 };
 
 const TableContext = React.createContext<TableState>({} as TableState);
@@ -31,9 +33,19 @@ export const TableProvider: React.FC = (props) => {
 
   const changeTable = (tableId: string | null) => setTableId(tableId);
 
+  const setScratchpad = async (contents: string) => {
+    if (table.data != null) {
+      db.setTable({
+        ...table.data,
+        scratchpad: contents,
+      });
+    }
+  };
+
   const value: TableState = {
     ...table,
     changeTable,
+    setScratchpad,
   };
 
   return (
