@@ -3,7 +3,12 @@ import * as React from "react";
 import { ChevronDown, ChevronUp } from "react-feather";
 import { Box, Flex, jsx, Text, Textarea } from "theme-ui";
 
-const Scratchpad: React.FC = (props) => {
+export interface Props {
+  contents: string;
+  saveContents: (newContents: string) => any;
+}
+
+const Scratchpad: React.FC<Props> = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
@@ -39,7 +44,8 @@ const Scratchpad: React.FC = (props) => {
         }}
       >
         <Textarea
-          placeholder="your team notes go here"
+          value={props.contents}
+          onChange={(e) => props.saveContents(e.target.value)}
           sx={{
             height: "100%",
             mt: 1,

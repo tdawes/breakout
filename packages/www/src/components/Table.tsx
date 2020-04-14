@@ -1,11 +1,11 @@
 /** @jsx jsx */
-import { Flex, Grid, Box, jsx, Button } from "theme-ui";
-import RoomHeader from "./RoomHeader";
+import { Grid, Box, jsx } from "theme-ui";
 import TableHeader from "./TableHeader";
 import UserVideo from "./UserVideo";
 import Scratchpad from "./Scratchpad";
 import { useTable } from "../providers/table";
 import { LoadingCenter } from "./Loading";
+import { setTable } from "../db";
 
 const Table = () => {
   const { data: table } = useTable();
@@ -46,7 +46,13 @@ const Table = () => {
       )}
 
       {table != null && (
-        <Scratchpad sx={{ position: "fixed", bottom: 0, right: 0 }} />
+        <Scratchpad
+          sx={{ position: "fixed", bottom: 0, right: 0 }}
+          contents={table.scratchpad}
+          saveContents={(contents: string) =>
+            setTable({ ...table, scratchpad: contents })
+          }
+        />
       )}
     </Box>
   );

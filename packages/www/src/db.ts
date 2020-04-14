@@ -90,3 +90,11 @@ export const setUser = async (user: User) => {
 
   usersCollection.doc(user.id).set(dbUser);
 };
+
+export const setTable = async (table: Table) => {
+  const dbTable: DBTable = {
+    ...table,
+  };
+
+  tablesCollection.doc(table.id).set(dbTable);
+};
