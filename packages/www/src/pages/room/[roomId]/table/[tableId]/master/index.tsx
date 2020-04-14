@@ -1,15 +1,15 @@
 /** @jsx jsx */
 import { useRouter } from "next/router";
 import * as React from "react";
-import { Box, Flex, jsx } from "theme-ui";
 import { ChevronDown, ChevronLeft } from "react-feather";
+import { Box, Flex, jsx } from "theme-ui";
+import Layout from "../../../../../../components/Layout";
+import Link from "../../../../../../components/Link";
 import Loading from "../../../../../../components/Loading";
 import Stage from "../../../../../../components/Stage";
 import Table from "../../../../../../components/Table";
 import { useRoom } from "../../../../../../providers/room";
 import { useTable } from "../../../../../../providers/table";
-import Link from "../../../../../../components/Link";
-import Layout from "../../../../../../components/Layout";
 import { useUser } from "../../../../../../providers/user";
 
 export const quizmasterHeaderHeight = "40px";
@@ -36,7 +36,7 @@ const TablePage = () => {
   const tableId = router.query.tableId as string;
 
   const { data: room, changeRoom } = useRoom();
-  const { table, changeTable } = useTable();
+  const { data: table, changeTable } = useTable();
   const { data: user } = useUser();
 
   React.useEffect(() => {
