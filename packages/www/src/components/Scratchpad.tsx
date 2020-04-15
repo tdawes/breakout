@@ -2,11 +2,14 @@
 import * as React from "react";
 import { ChevronDown, ChevronUp } from "react-feather";
 import { Box, Flex, jsx, Text, Textarea } from "theme-ui";
-import { useTable } from "../providers/table";
+import { useRoom } from "../providers/room";
 
 const Scratchpad: React.FC = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const { data: table, setScratchpad } = useTable();
+  const {
+    currentTable: { data: table },
+    setScratchpad,
+  } = useRoom();
 
   return (
     <Box

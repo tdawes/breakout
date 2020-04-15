@@ -4,7 +4,9 @@ import UserVideo from "./UserVideo";
 import { useRoom } from "../providers/room";
 
 const Stage: React.FC = (props) => {
-  const { data: room } = useRoom();
+  const {
+    currentRoom: { data: room },
+  } = useRoom();
 
   if (room == null) {
     return null;

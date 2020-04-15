@@ -2,15 +2,16 @@
 import * as React from "react";
 import { Box, Button, Flex, jsx, Text } from "theme-ui";
 import { useRoom } from "../providers/room";
-import { useTable } from "../providers/table";
-import { useUser } from "../providers/user";
 import Modal from "./Modal";
 import Link from "./Link";
 
 const JoinTable: React.FC = () => {
-  const { data: room } = useRoom();
-  const { data: table } = useTable();
-  const { data: user, setTable } = useUser();
+  const {
+    currentRoom: { data: room },
+    currentTable: { data: table },
+    currentUser: { data: user },
+    setTable,
+  } = useRoom();
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 

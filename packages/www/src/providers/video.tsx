@@ -4,16 +4,18 @@ import { useRoom } from "./room";
 import { loadingValue, errorValue, dataValue } from "../utils";
 import * as db from "../db";
 
-export type TableState = LoadingValue<Table> & {
-  changeTable: (tableId: string | null) => void;
-  setScratchpad: (contents: string) => void;
+export type VideoState = {
+  stream: MediaStream;
 };
 
-const TableContext = React.createContext<TableState>({} as TableState);
+const VideoContext = React.createContext<VideoState>({} as VideoState);
 
-export const useTable = () => React.useContext(TableContext);
+export const useVideo = (userId: string): MediaStream => {
+  const state = React.useContext(VideoContext);
+  return state.videos[userId];
+};
 
-export const TableProvider: React.FC = (props) => {
+export const VideoProvider: React.FC = (props) => {
   const [tableId, setTableId] = React.useState<string | null>(null);
   const [table, setTable] = React.useState<LoadingValue<Table>>(loadingValue());
   const { data: room, loading: roomLoading } = useRoom();

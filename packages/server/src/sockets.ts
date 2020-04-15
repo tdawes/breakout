@@ -26,6 +26,10 @@ export default (
       logger.log("socket - join room");
       roomController.joinRoom(room, userId);
     });
+    socket.on("join room stage", ({ room }: { room: string }) => {
+      logger.log("socket - join room stage");
+      roomController.joinRoomStage(room, userId);
+    });
     socket.on(
       "join table",
       ({ room, table }: { room: string; table: string }) => {
@@ -37,6 +41,17 @@ export default (
       logger.log("socket - leave room");
       roomController.leaveRoom(room, userId);
     });
+    socket.on("leave room stage", ({ room }: { room: string }) => {
+      logger.log("socket - leave room stage");
+      roomController.leaveRoomStage(room, userId);
+    });
+    socket.on(
+      "leave table",
+      ({ room, table }: { room: string; table: string }) => {
+        logger.log("socket - leave table");
+        roomController.leaveTable(room, table, userId);
+      },
+    );
 
     // Handle termination
     socket.on("disconnect", () => {

@@ -3,13 +3,14 @@ import { Grid, Box, jsx } from "theme-ui";
 import TableHeader from "./TableHeader";
 import UserVideo from "./UserVideo";
 import Scratchpad from "./Scratchpad";
-import { useTable } from "../providers/table";
 import { LoadingCenter } from "./Loading";
-import { useUser } from "../providers/user";
+import { useRoom } from "../providers/room";
 
 const Table = () => {
-  const { data: table } = useTable();
-  const { data: user } = useUser();
+  const {
+    currentTable: { data: table },
+    currentUser: { data: user },
+  } = useRoom();
 
   return (
     <Box

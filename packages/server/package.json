@@ -4,7 +4,7 @@
   "main": "build/index.js",
   "scripts": {
     "build": "tsc -p .",
-    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' -p . src/index.ts",
     "start:prod": "node build/index.js",
     "clean": "rimraf build"
   },
