@@ -28,7 +28,7 @@ const TableItem: React.FC<{ table: Table }> = ({ table }) => {
       <Box>
         {isUsersTable && (
           <Text sx={{ fontWeight: "bold", textAlign: "center", pb: 2 }}>
-            You are currently in this room
+            You are currently on this table
           </Text>
         )}
         <Flex>
