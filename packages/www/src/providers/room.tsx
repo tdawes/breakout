@@ -9,6 +9,7 @@ export type RoomState = LoadingValue<Room> & {
   changeRoom: (roomId: string | null) => void;
   setQuizMaster: (userId: string) => void;
   setAllScratchpads: (contents: string) => void;
+  setScratchpadsEditable: (value: boolean) => void;
 };
 
 const RoomContext = React.createContext<RoomState>({} as RoomState);
@@ -62,12 +63,21 @@ export const RoomProvider: React.FC = (props) => {
     }
   };
 
+  const setScratchpadsEditable = (value: boolean) => {
+    if (room.data != null) {
+      db.updateRoom(room.data.id, {
+        scratchpadsEditable: value,
+      });
+    }
+  };
+
   const value: RoomState = {
     ...room,
     roomId,
     changeRoom,
     setQuizMaster,
     setAllScratchpads,
+    setScratchpadsEditable,
   };
 
   return (

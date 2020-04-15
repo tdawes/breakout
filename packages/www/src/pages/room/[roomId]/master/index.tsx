@@ -14,7 +14,7 @@ import {
   NotQuizMaster,
   quizmasterHeaderHeight,
 } from "../table/[tableId]/master";
-import { Delete } from "react-feather";
+import { Delete, PauseCircle, PlayCircle, XCircle } from "react-feather";
 
 const TableView: React.FC<{ table: Table; roomId: string }> = ({
   table,
@@ -92,7 +92,12 @@ const MasterPage = () => {
   const router = useRouter();
   const roomId = router.query.roomId as string;
 
-  const { data: room, changeRoom, setAllScratchpads } = useRoom();
+  const {
+    data: room,
+    changeRoom,
+    setAllScratchpads,
+    setScratchpadsEditable,
+  } = useRoom();
   const { changeTable } = useTable();
   const { data: user } = useUser();
 
@@ -125,14 +130,32 @@ const MasterPage = () => {
         <div />
         This game has {Object.keys(room.tables).length} tables and{" "}
         {Object.keys(room.users).length} players
-        <IconButton
-          title="Clear all scratchpads"
-          onClick={() => {
-            setAllScratchpads("");
-          }}
-        >
-          <Delete size={18} />
-        </IconButton>
+        <Flex sx={{ alignItems: "center" }}>
+          Scratchpads:{" "}
+          {room?.scratchpadsEditable ? (
+            <IconButton
+              title="Freeze all scratchpads"
+              onClick={() => setScratchpadsEditable(false)}
+            >
+              <PauseCircle size={18} />
+            </IconButton>
+          ) : (
+            <IconButton
+              title="Unfreeze all scratchpads"
+              onClick={() => setScratchpadsEditable(true)}
+            >
+              <PlayCircle size={18} />
+            </IconButton>
+          )}
+          <IconButton
+            title="Clear all scratchpads"
+            onClick={() => {
+              setAllScratchpads("");
+            }}
+          >
+            <XCircle size={18} />
+          </IconButton>
+        </Flex>
       </Flex>
       <Flex
         sx={{

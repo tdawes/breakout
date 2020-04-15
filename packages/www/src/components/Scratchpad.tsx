@@ -4,9 +4,11 @@ import { ChevronDown, ChevronUp, Delete } from "react-feather";
 import { Box, Flex, jsx, Text, Textarea, IconButton } from "theme-ui";
 import { useTable } from "../providers/table";
 import { useUser } from "../providers/user";
+import { useRoom } from "../providers/room";
 
 const Scratchpad: React.FC = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const { data: room } = useRoom();
   const { data: table, setScratchpad } = useTable();
   const { data: user } = useUser();
   const canClear = table && user && table.users[user.id];
@@ -30,7 +32,9 @@ const Scratchpad: React.FC = (props) => {
         }}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <Text>Team notes</Text>
+        <Text>
+          Team notes {room?.scratchpadsEditable === false && " (frozen)"}
+        </Text>
         <div>
           {isOpen && canClear && (
             <IconButton
@@ -60,6 +64,7 @@ const Scratchpad: React.FC = (props) => {
         <Textarea
           value={table?.scratchpad}
           onChange={(e) => setScratchpad(e.target.value)}
+          readOnly={room?.scratchpadsEditable === false}
           sx={{
             height: "100%",
             mt: 1,
