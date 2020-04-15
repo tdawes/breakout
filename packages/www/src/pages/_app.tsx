@@ -1,35 +1,22 @@
 import { AppProps } from "next/app";
 import { Styled, ThemeProvider } from "theme-ui";
-import theme from "../styles";
-import * as firebase from "firebase/app";
-
-import { UserProvider } from "../providers/user";
 import { RoomProvider } from "../providers/room";
 import { TableProvider } from "../providers/table";
-
-if (process.env.CONFIG) {
-  const config = JSON.parse(process.env.CONFIG);
-  if (!firebase.apps.length) {
-    firebase.initializeApp(config.firebase);
-
-    if (process.env.NODE_ENV === "development") {
-      console.log("Initialing firebase for", config.firebase.projectId);
-    }
-  }
-}
+import { UserProvider } from "../providers/user";
+import theme from "../styles";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <UserProvider>
-        <RoomProvider>
-          <TableProvider>
+      <RoomProvider>
+        <TableProvider>
+          <UserProvider>
             <Styled.root>
               <Component {...pageProps} />
             </Styled.root>
-          </TableProvider>
-        </RoomProvider>
-      </UserProvider>
+          </UserProvider>
+        </TableProvider>
+      </RoomProvider>
     </ThemeProvider>
   );
 }

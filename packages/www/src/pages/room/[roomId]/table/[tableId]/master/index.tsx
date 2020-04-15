@@ -1,15 +1,15 @@
 /** @jsx jsx */
 import { useRouter } from "next/router";
 import * as React from "react";
-import { Box, Flex, jsx } from "theme-ui";
 import { ChevronDown, ChevronLeft } from "react-feather";
+import { Box, Flex, jsx } from "theme-ui";
+import Layout from "../../../../../../components/Layout";
+import Link from "../../../../../../components/Link";
 import Loading from "../../../../../../components/Loading";
 import Stage from "../../../../../../components/Stage";
 import Table from "../../../../../../components/Table";
 import { useRoom } from "../../../../../../providers/room";
 import { useTable } from "../../../../../../providers/table";
-import Link from "../../../../../../components/Link";
-import Layout from "../../../../../../components/Layout";
 import { useUser } from "../../../../../../providers/user";
 
 export const quizmasterHeaderHeight = "40px";
@@ -35,14 +35,23 @@ const TablePage = () => {
   const roomId = router.query.roomId as string;
   const tableId = router.query.tableId as string;
 
-  const { room, changeRoom } = useRoom();
-  const { table, changeTable } = useTable();
-  const { user } = useUser();
+  const { data: room, changeRoom } = useRoom();
+  const { data: table, changeTable } = useTable();
+  const { data: user, setStage } = useUser();
 
   React.useEffect(() => {
     changeRoom(roomId);
     changeTable(tableId);
   }, [roomId, tableId]);
+
+  // the quizmaster is removed from stage when visiting a table
+  React.useEffect(() => {
+    if (room == null || user == null || room.quizMaster !== user.id) {
+      return;
+    }
+
+    setStage(false);
+  }, [room, user]);
 
   if (room == null || table == null) {
     return <Loading />;
@@ -95,7 +104,7 @@ const TablePage = () => {
             minWidth: ["100%", "stage"],
           }}
         >
-          <Stage hideJoinButton />
+          <Stage />
         </Box>
         <Flex sx={{ flexGrow: 1, flexDirection: "column" }}>
           <Table sx={{ maxHeight: "calc(100vh - 100px)" }} />

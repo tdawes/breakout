@@ -2,9 +2,11 @@
 import * as React from "react";
 import { ChevronDown, ChevronUp } from "react-feather";
 import { Box, Flex, jsx, Text, Textarea } from "theme-ui";
+import { useTable } from "../providers/table";
 
 const Scratchpad: React.FC = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const { data: table, setScratchpad } = useTable();
 
   return (
     <Box
@@ -39,7 +41,8 @@ const Scratchpad: React.FC = (props) => {
         }}
       >
         <Textarea
-          placeholder="your team notes go here"
+          value={table?.scratchpad}
+          onChange={(e) => setScratchpad(e.target.value)}
           sx={{
             height: "100%",
             mt: 1,

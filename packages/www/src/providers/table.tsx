@@ -1,54 +1,51 @@
 import * as React from "react";
-import { Table } from "../types";
+import { Table, LoadingValue } from "../types";
+import { useRoom } from "./room";
+import { loadingValue, errorValue, dataValue } from "../utils";
+import * as db from "../db";
 
-export interface TableState {
-  table: Table | null;
-  loading: boolean;
-  changeTable: (tableId: string) => void;
-  changeName: (name: string) => void;
-}
+export type TableState = LoadingValue<Table> & {
+  changeTable: (tableId: string | null) => void;
+  setScratchpad: (contents: string) => void;
+};
 
 const TableContext = React.createContext<TableState>({} as TableState);
 
 export const useTable = () => React.useContext(TableContext);
 
-const dummyTable: Table = {
-  id: "",
-  name: "Table Name",
-  users: {
-    one: { id: "one", name: "Jake" },
-    two: { id: "two", name: "Andreja" },
-    three: { id: "three", name: "Tom" },
-    four: { id: "four", name: "Bruno" },
-    // five: { id: "five", name: "Kai" },
-    // six: { id: "six", name: "Sunir" },
-  },
-};
-
 export const TableProvider: React.FC = (props) => {
-  const [table, setTable] = React.useState<Table | null>(null);
-  const [loading, setLoading] = React.useState(false);
+  const [tableId, setTableId] = React.useState<string | null>(null);
+  const [table, setTable] = React.useState<LoadingValue<Table>>(loadingValue());
+  const { data: room, loading: roomLoading } = useRoom();
 
-  const changeTable = (tableId: string) =>
-    setTable({
-      ...dummyTable,
-      id: tableId,
-    });
+  React.useEffect(() => {
+    if (room == null || tableId == null) {
+      setTable(loadingValue());
+      return;
+    }
 
-  const changeName = (name: string) => {
-    if (table != null) {
-      setTable({
-        ...table,
-        name,
+    if (room.tables[tableId] != null) {
+      setTable(dataValue(room.tables[tableId]));
+    } else {
+      setTable(errorValue("Table not found"));
+    }
+  }, [tableId, room, roomLoading]);
+
+  const changeTable = (tableId: string | null) => setTableId(tableId);
+
+  const setScratchpad = async (contents: string) => {
+    if (table.data != null) {
+      db.setTable({
+        ...table.data,
+        scratchpad: contents,
       });
     }
   };
 
   const value: TableState = {
-    table,
-    loading,
+    ...table,
     changeTable,
-    changeName,
+    setScratchpad,
   };
 
   return (

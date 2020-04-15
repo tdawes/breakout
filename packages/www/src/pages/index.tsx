@@ -3,26 +3,24 @@ import * as React from "react";
 import { jsx, Text, Styled, Box, Button, Input } from "theme-ui";
 import Layout from "../components/Layout";
 import Router from "next/router";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Container from "../components/Container";
+import Link from "../components/Link";
+import { useRoom } from "../providers/room";
+import { useTable } from "../providers/table";
 
 const Home = () => {
   const [roomId, setRoomId] = React.useState("");
+  const { changeRoom } = useRoom();
+  const { changeTable } = useTable();
+
+  React.useEffect(() => {
+    changeRoom(null);
+    changeTable(null);
+  }, []);
 
   return (
     <Layout>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          minHeight: "100vh",
-          maxWidth: "container",
-          mx: "auto",
-          my: 0,
-          px: [3, 4],
-          py: 0,
-        }}
-      >
+      <Container>
         <Box sx={{ pt: 6, width: "measure", mx: "auto" }}>
           <Text variant="display" sx={{ mt: 0, mb: 5, textAlign: "center" }}>
             Breakout
@@ -49,8 +47,12 @@ const Home = () => {
               Enter
             </Button>
           </Box>
+
+          <Box sx={{ pt: 4 }}>
+            <Link href="/admin">Admin page</Link>
+          </Box>
         </Box>
-      </Box>
+      </Container>
     </Layout>
   );
 };

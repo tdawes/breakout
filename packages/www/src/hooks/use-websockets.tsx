@@ -13,14 +13,12 @@ const useWebSockets = (roomId: string) => {
   const [messages, setMessages] = React.useState<string[]>([]);
 
   const onConnect = () => {
-    console.log("ws connected");
     socketRef.current?.emit("join", { roomId });
     setInRoom(roomId);
     setConnected(true);
   };
 
   const onDisconnect = () => {
-    console.log("ws disconnected");
     setConnected(false);
   };
 

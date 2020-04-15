@@ -1,11 +1,14 @@
 /** @jsx jsx */
 import * as React from "react";
-import { Box, Flex, Grid, jsx, Text } from "theme-ui";
+import { Box, Flex, Grid, jsx, Text, Button } from "theme-ui";
 import { useTable } from "../providers/table";
 import Avatar from "./Avatar";
+import { pluralize } from "../utils";
+import { useUser } from "../providers/user";
+import { useRoom } from "../providers/room";
 
 const TableStats: React.FC = (props) => {
-  const { table } = useTable();
+  const { data: table } = useTable();
 
   if (table == null) {
     return null;
@@ -18,22 +21,30 @@ const TableStats: React.FC = (props) => {
         flexDirection: "column",
         justifyContent: "center",
         pr: 4,
-        borderRight: ["none", "none", "solid 1px"],
+        borderRight: [
+          "none",
+          "none",
+          Object.keys(table.users).length > 0 ? "solid 1px" : "none",
+        ],
         borderColor: "grey.400",
       }}
     >
-      <Text sx={{ fontWeight: "bold" }}>Table {table.id}</Text>
+      <Text sx={{ fontWeight: "bold" }}>Table {table.name}</Text>
       <Text>{Object.keys(table.users).length} members</Text>
     </Flex>
   );
 };
 
 const TableHeader = () => {
-  const { table } = useTable();
+  const { data: table } = useTable();
+  const { data: user, setStage } = useUser();
+  const { data: room } = useRoom();
 
-  if (table == null) {
+  if (table == null || user == null || room == null) {
     return null;
   }
+
+  const numUsers = Object.keys(table.users).length;
 
   return (
     <Box
@@ -46,25 +57,26 @@ const TableHeader = () => {
       }}
     >
       <Flex sx={{ justifyContent: "space-between", pb: [3, 3, 0] }}>
-        <Text sx={{ fontSize: 4, pr: 4 }}>This table</Text>
-        <TableStats sx={{ display: ["flex", "flex", "none"] }} />
+        <Text>
+          This Table:{" "}
+          <span sx={{ fontWeight: "bold" }}>
+            {table.name}, {numUsers} {pluralize("member", numUsers)}
+          </span>
+        </Text>
       </Flex>
 
-      <Flex sx={{ justifyContent: "flex-end" }}>
-        <TableStats sx={{ display: ["none", "none", "flex"] }} />
-
-        <Flex
-          sx={{
-            flexGrow: 1,
-            flexWrap: "wrap",
-            pl: [0, 0, 4],
+      {room.quizMaster !== user.id && (
+        <Button
+          variant={user.onStage ? "secondary" : "primary"}
+          onClick={() => {
+            setStage(!user.onStage);
           }}
         >
-          {Object.keys(table.users).map((k) => (
-            <Avatar key={k} name={table.users[k].name} sx={{ mr: 3 }} />
-          ))}
-        </Flex>
-      </Flex>
+          {user.onStage ? "Leave Stage" : "Join Stage"}
+        </Button>
+      )}
+
+      <Text sx={{ color: "grey.600" }}>This game</Text>
     </Box>
   );
 };

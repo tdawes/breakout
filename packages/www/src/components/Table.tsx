@@ -1,14 +1,15 @@
 /** @jsx jsx */
-import { Flex, Grid, Box, jsx, Button } from "theme-ui";
-import GameHeader from "./GameHeader";
+import { Grid, Box, jsx } from "theme-ui";
 import TableHeader from "./TableHeader";
 import UserVideo from "./UserVideo";
 import Scratchpad from "./Scratchpad";
 import { useTable } from "../providers/table";
 import { LoadingCenter } from "./Loading";
+import { useUser } from "../providers/user";
 
 const Table = () => {
-  const { table } = useTable();
+  const { data: table } = useTable();
+  const { data: user } = useUser();
 
   return (
     <Box
@@ -23,7 +24,6 @@ const Table = () => {
         <LoadingCenter />
       ) : (
         <Box>
-          <GameHeader />
           <TableHeader />
 
           <Grid
@@ -34,14 +34,31 @@ const Table = () => {
               pb: 5,
             }}
           >
-            {Object.keys(table.users).map((k) => (
-              <UserVideo
-                key={k}
-                image={`https://source.unsplash.com/random/300x300`}
-                title={table.users[k].name}
-                sx={{ height: 300 }}
-              />
-            ))}
+            {Object.keys(table.users).map((k) => {
+              const tableUser = table.users[k];
+
+              return (
+                <UserVideo
+                  key={k}
+                  image={`https://source.unsplash.com/random/300x300`}
+                  sx={{ height: 300 }}
+                >
+                  {tableUser.name}
+                  {user != null && user?.id === tableUser.id && (
+                    <span> (YOU) </span>
+                  )}
+                  {tableUser.onStage && (
+                    <span>
+                      {" "}
+                      -{" "}
+                      <span sx={{ color: "success", fontWeight: "bold" }}>
+                        on stage
+                      </span>
+                    </span>
+                  )}
+                </UserVideo>
+              );
+            })}
           </Grid>
         </Box>
       )}
