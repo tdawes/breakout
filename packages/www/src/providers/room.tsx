@@ -8,6 +8,7 @@ export type RoomState = LoadingValue<Room> & {
   roomId: string | null;
   changeRoom: (roomId: string | null) => void;
   setQuizMaster: (userId: string) => void;
+  setAllScratchpads: (contents: string) => void;
 };
 
 const RoomContext = React.createContext<RoomState>({} as RoomState);
@@ -50,11 +51,23 @@ export const RoomProvider: React.FC = (props) => {
     }
   };
 
+  const setAllScratchpads = (contents: string) => {
+    if (room.data != null) {
+      Object.values(room.data.tables).map((table) => {
+        db.setTable({
+          ...table,
+          scratchpad: contents,
+        });
+      });
+    }
+  };
+
   const value: RoomState = {
     ...room,
     roomId,
     changeRoom,
     setQuizMaster,
+    setAllScratchpads,
   };
 
   return (
