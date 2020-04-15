@@ -9,7 +9,8 @@
     "clean": "rimraf build"
   },
   "dependencies": {
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "wrtc": "^0.4.4"
   },
   "devDependencies": {
     "@types/node": "^13.11.0",
