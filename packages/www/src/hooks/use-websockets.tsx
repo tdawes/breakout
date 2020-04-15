@@ -6,68 +6,34 @@ const wsUrl =
     ? "NO PROD URL YET"
     : "http://localhost:4000";
 
-const useWebSockets = (roomId: string) => {
-  const socketRef = React.useRef<SocketIOClient.Socket | null>(null);
-  const [connected, setConnected] = React.useState(false);
-  const [inRoom, setInRoom] = React.useState<string | null>(null);
-  const [messages, setMessages] = React.useState<string[]>([]);
-
-  const onConnect = () => {
-    socketRef.current?.emit("join", { roomId });
-    setInRoom(roomId);
-    setConnected(true);
-  };
-
-  const onDisconnect = () => {
-    setConnected(false);
-  };
-
-  const onMessage = ({ text }: { text: string }) => {
-    setMessages([text, ...messages]);
-  };
-
-  const sendMessage = (text: string) => {
-    socketRef.current?.emit("message", { text, roomId });
-    setMessages([text, ...messages]);
-  };
+const useWebSockets = (userId: string | null, roomId: string | null) => {
+  const [socket, setSocket] = React.useState<SocketIOClient.Socket | null>(
+    null,
+  );
+  const [connected, setConnected] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (socketRef.current == null) {
-        const socket = io.connect(wsUrl);
-        socketRef.current = socket;
-      }
+    if (userId != null) {
+      const socket = io.connect(wsUrl, { query: { user: userId } });
+      socket.on("connect", () => {
+        setConnected(true);
+      });
+
+      socket.on("disconnect", () => {
+        setConnected(false);
+      });
+
+      setSocket(socket);
 
       return () => {
-        socketRef.current?.disconnect();
+        socket?.close();
+        setSocket(null);
+        setConnected(false);
       };
     }
-  }, []);
+  }, [userId]);
 
-  React.useEffect(() => {
-    const socket = socketRef.current;
-
-    if (socket == null) {
-      return () => {};
-    }
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("message", onMessage);
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("message", onMessage);
-    };
-  }, [messages]);
-
-  return {
-    connected,
-    inRoom,
-    messages,
-    sendMessage,
-  };
+  return { socket, connected };
 };
 
 export default useWebSockets;

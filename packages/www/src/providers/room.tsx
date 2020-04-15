@@ -5,6 +5,7 @@ import useData from "../hooks/use-data";
 import { LoadingValue, Room, Table, User } from "../types";
 import { loadingValue, dataValue, errorValue } from "../utils";
 import useCurrentUserData from "../hooks/use-current-user-data";
+import useWebSockets from "../hooks/use-websockets";
 
 export type RoomState = {
   currentRoom: LoadingValue<Room>;
@@ -86,6 +87,48 @@ export const RoomProvider: React.FC = (props) => {
     setTable,
   } = useCurrentUserData(roomId, tableId);
 
+  const { socket, connected: socketConnected } = useWebSockets(
+    user?.data?.id ?? null,
+    roomId,
+  );
+
+  React.useEffect(() => {
+    if (socket != null && socketConnected && roomId != null) {
+      socket.emit("join room", { roomId });
+      return () => {
+        socket.emit("leave room", { roomId });
+      };
+    }
+  }, [roomId, socket, socketConnected]);
+
+  React.useEffect(() => {
+    if (
+      socket != null &&
+      socketConnected &&
+      roomId != null &&
+      tableId != null
+    ) {
+      socket.emit("join table", { roomId, tableId });
+      return () => {
+        socket.emit("leave table", { roomId, tableId });
+      };
+    }
+  }, [roomId, tableId, socket, socketConnected]);
+
+  React.useEffect(() => {
+    if (
+      socket != null &&
+      socketConnected &&
+      roomId != null &&
+      user.data?.onStage
+    ) {
+      socket.emit("join room stage", { roomId });
+      return () => {
+        socket.emit("leave room stage", { roomId });
+      };
+    }
+  }, [roomId, user.data?.onStage, socket, socketConnected]);
+
   const changeRoom = React.useCallback(
     (newRoomId: string | null) => {
       setRoomId(newRoomId);
@@ -142,10 +185,9 @@ export const RoomProvider: React.FC = (props) => {
 export const useRoom = () => React.useContext(RoomContext);
 /*
 
- const {data: room} = useRoom();
- const {data: table} = useTable(tableId);
+
  const stream = useVideo(userId);
- const {data: user} = useUser();
+
 */
 
 export const useCurrentRoom = () => {

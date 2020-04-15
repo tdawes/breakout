@@ -42,6 +42,9 @@ export default (logger: Logger): Mesh => {
   };
 
   const connect = (from: string, to: string) => {
+    if (from === to) {
+      return;
+    }
     logger.log(`mesh - adding connection from ${from} to ${to}`);
     const fromConnection = connections[from];
     const toConnection = connections[to];
@@ -53,14 +56,12 @@ export default (logger: Logger): Mesh => {
   };
 
   const disconnect = (from: string, to: string) => {
+    if (from === to) {
+      return;
+    }
     logger.log(`mesh - removing connection from ${from} to ${to}`);
     const fromConnection = connections[from];
-    const toConnection = connections[to];
     fromConnection.links.splice(fromConnection.links.indexOf(to), 1);
-
-    fromConnection.connection.getSenders().forEach((sender: RTCRtpSender) => {
-      toConnection.connection.removeTrack(sender);
-    });
   };
 
   return {

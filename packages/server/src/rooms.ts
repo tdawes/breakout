@@ -9,6 +9,7 @@ export interface RoomController {
   leaveRoom: (roomId: string, userId: string) => void;
   leaveRoomStage: (roomId: string, userId: string) => void;
   leaveTable: (roomId: string, tableId: string, userId: string) => void;
+  unregister: (userId: string) => void;
 }
 
 export interface Table {
@@ -52,6 +53,10 @@ export default (logger: Logger, pubSub: PubSub, mesh: Mesh): RoomController => {
       const spaceId = getSpaceId(roomId, tableId);
       pubSub.unsubscribe(spaceId, userId);
       pubSub.leaveSpace(spaceId, userId);
+    },
+    unregister: (userId: string) => {
+      mesh.unregister(userId);
+      pubSub.unsubscribeAll(userId);
     },
   };
 };

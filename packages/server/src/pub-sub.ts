@@ -19,6 +19,7 @@ export interface PubSub {
     subscription: Subscription,
   ) => void;
   unsubscribe: (spaceId: string, userId: string) => void;
+  unsubscribeAll: (userId: string) => void;
 }
 
 export const getSpaceId = (roomId: string, tableId: string) =>
@@ -52,12 +53,14 @@ export default (logger: Logger) => {
   const leaveSpace = (spaceId: string, userId: string) => {
     logger.log(`PubSub - User ${userId} left space ${spaceId}.`);
 
-    spaces[spaceId].users.delete(userId);
-    Object.values(spaces[spaceId].subscriptions).forEach((subscription) => {
-      if (subscription.onUserLeave != null) {
-        subscription.onUserLeave(userId);
-      }
-    });
+    if (spaces[spaceId] != null) {
+      spaces[spaceId].users.delete(userId);
+      Object.values(spaces[spaceId].subscriptions).forEach((subscription) => {
+        if (subscription.onUserLeave != null) {
+          subscription.onUserLeave(userId);
+        }
+      });
+    }
   };
 
   const subscribe = (
@@ -90,10 +93,22 @@ export default (logger: Logger) => {
     }
   };
 
+  const unsubscribeAll = (userId: string) => {
+    Object.entries(spaces).forEach(([spaceId, space]) => {
+      if (space.subscriptions[userId] != null) {
+        unsubscribe(spaceId, userId);
+      }
+      if (space.users.has(userId)) {
+        leaveSpace(spaceId, userId);
+      }
+    });
+  };
+
   return {
     joinSpace,
     leaveSpace,
     subscribe,
     unsubscribe,
+    unsubscribeAll,
   };
 };

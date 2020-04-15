@@ -21,7 +21,7 @@ const pubSub = newPubSub(logger);
 const rooms = newRoomController(logger, pubSub, mesh);
 const webRTC = newWebRTCController(logger);
 const signalling = newSignallingController(logger);
-setupSockets(io, mesh, rooms, webRTC, signalling, logger);
+setupSockets(io, mesh, rooms, pubSub, webRTC, signalling, logger);
 
 server.listen(port, () => {
   // tslint:disable-next-line:no-console
