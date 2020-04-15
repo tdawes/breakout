@@ -3,6 +3,6 @@ export interface Logger {
 }
 
 export default () => ({
-  // tslint:disable-next-line:no-console
+  // eslint-disable-next-line no-console
   log: (message: string, ...args: any[]) => console.log(message, ...args),
 });
