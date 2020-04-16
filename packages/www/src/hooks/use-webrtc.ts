@@ -20,9 +20,9 @@ const webrtcConfig = {
 };
 
 const useWebRTC = (socket: SocketIOClient.Socket | null) => {
-  const [localStream, setLocalStream] = React.useState<
-    MediaStream | undefined
-  >();
+  const [localStream, setLocalStream] = React.useState<MediaStream | null>(
+    null,
+  );
 
   // userId -> mid
   const [midLookup, updateMidLookup] = useImmer<Keyed<string[]>>({});
@@ -32,16 +32,24 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
     {},
   );
 
-  const getUserTrack = (userId: string | null): MediaStreamTrack[] => {
-    if (userId == null) {
-      return [];
-    }
+  const getUserTracks = React.useCallback(
+    (userId: string | null): MediaStreamTrack[] => {
+      if (userId == null) {
+        return [];
+      }
 
-    const mids = midLookup[userId];
-    const tracks = mids.map((mid) => trackLookup[mid]);
+      const mids = midLookup[userId];
 
-    return tracks;
-  };
+      if (mids == null) {
+        return [];
+      }
+
+      const tracks = mids.map((mid) => trackLookup[mid]).filter(Boolean);
+
+      return tracks;
+    },
+    [midLookup, trackLookup],
+  );
 
   React.useEffect(() => {
     if (socket == null) {
@@ -151,7 +159,7 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
     };
   }, [socket]);
 
-  return { getUserTrack, localStream };
+  return { getUserTracks, localStream };
 };
 
 export default useWebRTC;

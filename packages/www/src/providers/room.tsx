@@ -14,6 +14,7 @@ export type RoomState = {
   currentUser: LoadingValue<User | null>;
   preferredName: string;
   roomId: string | null;
+  localStream: MediaStream | null;
   changeRoom: (roomId: string | null) => void;
   changeTable: (tableId: string | null) => void;
   createUser: (name: string, roomId: string, tableId?: string) => void;
@@ -22,6 +23,7 @@ export type RoomState = {
   setName: (name: string) => void;
   setTable: (tableId: string | null) => void;
   setStage: (onStage: boolean) => void;
+  getUserTracks: (userId: string) => MediaStreamTrack[];
 };
 
 const RoomContext = React.createContext<RoomState>({} as RoomState);
@@ -139,7 +141,7 @@ export const RoomProvider: React.FC = (props) => {
   );
 
   useWSRoom(socket, socketConnected, roomId, tableId, user);
-  useWebRTC(socket);
+  const { getUserTracks, localStream } = useWebRTC(socket);
 
   const changeRoom = React.useCallback(
     (newRoomId: string | null) => setRoomId(newRoomId),
@@ -173,6 +175,7 @@ export const RoomProvider: React.FC = (props) => {
     currentRoom: room,
     currentTable: table,
     currentUser: user,
+    localStream,
     preferredName,
     roomId,
     changeRoom,
@@ -183,6 +186,7 @@ export const RoomProvider: React.FC = (props) => {
     setStage,
     setTable,
     createUser,
+    getUserTracks,
   };
 
   return (
@@ -196,7 +200,40 @@ export const useRoom = () => React.useContext(RoomContext);
  const stream = useVideo(userId);
 */
 
-// export const useVideo = (userId: string) => {
-//   const { getUserTrack } = useRoom();
-//   return getUserTrack(userId);
-// };
+export const useVideo = (userId: string): MediaStream | null => {
+  const [mediaStream, setMediaStream] = React.useState<MediaStream | null>(
+    null,
+  );
+  const {
+    getUserTracks,
+    currentUser: { data: user },
+    localStream,
+  } = useRoom();
+
+  React.useEffect(() => {
+    // requesting video for current user
+    if (user != null && userId === user.id) {
+      console.log("GETTING FOR LOCAL", userId)
+      setMediaStream(localStream);
+      return;
+    }
+
+    const tracks = getUserTracks(userId);
+
+    console.log(`${tracks.length} tracks for user ${userId}`);
+
+    if (tracks.length === 0) {
+      return;
+    }
+
+    const mediaStream = new MediaStream();
+
+    tracks.forEach((t) => {
+      mediaStream.addTrack(t);
+    });
+
+    setMediaStream(mediaStream);
+  }, [userId, getUserTracks, user]);
+
+  return mediaStream;
+};

@@ -19,7 +19,6 @@ export interface Connection {
 
 const flushDataChannelMessages = (connection: Connection) => {
   if (connection.isDataChannelOpen && connection.isConnectionStable) {
-    console.log("flusing", connection.messageQueue.length);
     while (connection.messageQueue.length > 0) {
       const msg = connection.messageQueue.shift();
       if (msg != null) {
@@ -45,14 +44,11 @@ export default (logger: Logger): Mesh => {
       transceiver.receiver.track,
     );
 
-    toConnection.connection.addEventListener(
-      "connectionstatechange",
-      (event) => {
-        toConnection.isConnectionStable =
-          toConnection.connection.signalingState === "stable";
-        flushDataChannelMessages(toConnection);
-      },
-    );
+    toConnection.connection.addEventListener("connectionstatechange", () => {
+      toConnection.isConnectionStable =
+        toConnection.connection.signalingState === "stable";
+      flushDataChannelMessages(toConnection);
+    });
 
     logger.log("OUTGOING", outgoing);
 
@@ -117,6 +113,7 @@ export default (logger: Logger): Mesh => {
         dataChannel,
         messageQueue: [],
         isDataChannelOpen: false,
+        isConnectionStable: false,
         links: [],
         tranceivers: [],
       };
