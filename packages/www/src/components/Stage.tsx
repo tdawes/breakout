@@ -37,6 +37,7 @@ const Stage: React.FC = (props) => {
           user={user}
           image="https://source.unsplash.com/random/300x1000"
           sx={{ minHeight: "400px" }}
+          showIfOnStage
         >
           {room.quizMaster === user.id ? "Quizmaster" : user.name}
         </UserVideo>

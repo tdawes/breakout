@@ -5,7 +5,26 @@ import { User } from "../types";
 import { useVideo } from "../providers/room";
 import { VideoOff } from "react-feather";
 
-const UserVideo: React.FC<{ image: string; user: User }> = (props) => {
+const BoxMessage: React.FC = (props) => (
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: "100%",
+      flexDirection: "column",
+    }}
+  >
+    {props.children}
+  </Box>
+);
+
+const UserVideo: React.FC<{
+  image: string;
+  user: User;
+  showIfOnStage?: boolean;
+}> = (props) => {
   const stream = useVideo(props.user.id);
 
   return (
@@ -18,23 +37,22 @@ const UserVideo: React.FC<{ image: string; user: User }> = (props) => {
         height: "100%",
       }}
     >
-      {stream != null && (
-        <Video mediaStream={stream} autoPlay playsInline muted controls />
-      )}
+      {props.user.onStage && !props.showIfOnStage ? (
+        <BoxMessage>
+          <Text>User is on stage</Text>
+        </BoxMessage>
+      ) : (
+        <Box>
+          {stream != null && (
+            <Video mediaStream={stream} autoPlay playsInline muted controls />
+          )}
 
-      {stream == null && (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100%",
-            height: "100%",
-            flexDirection: "column",
-          }}
-        >
-          <VideoOff size={28} />
-          <Text sx={{ fontSize: 3, pt: 2 }}>No Stream</Text>
+          {stream == null && (
+            <BoxMessage>
+              <VideoOff size={28} />
+              <Text sx={{ fontSize: 3, pt: 2 }}>No Stream</Text>
+            </BoxMessage>
+          )}
         </Box>
       )}
 
