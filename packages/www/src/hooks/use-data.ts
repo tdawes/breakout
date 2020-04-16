@@ -117,7 +117,7 @@ const useData = (roomId: string | null): Result => {
         const data = snapshot.data() as DBRoom;
         setDBRoom(data);
       } else {
-        setError("Roomo does not exist");
+        setError("Room does not exist");
       }
 
       setRoomLoading(false);
