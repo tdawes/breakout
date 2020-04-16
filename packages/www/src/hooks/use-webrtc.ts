@@ -25,12 +25,19 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
   );
 
   // userId -> mid
-  const [midLookup, updateMidLookup] = useImmer<Keyed<string[]>>({});
+  const [midLookup, updateMidLookup] = useImmer<
+    Keyed<{ audio?: string; video?: string }>
+  >({});
 
   // mid -> track
   const [trackLookup, updateTrackLookup] = useImmer<Keyed<MediaStreamTrack>>(
     {},
   );
+
+  React.useEffect(() => console.log(midLookup, trackLookup), [
+    midLookup,
+    trackLookup,
+  ]);
 
   const getUserTracks = React.useCallback(
     (userId: string | null): MediaStreamTrack[] => {
@@ -44,7 +51,10 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
         return [];
       }
 
-      const tracks = mids.map((mid) => trackLookup[mid]).filter(Boolean);
+      const tracks = [mids.audio, mids.video]
+        .filter(Boolean)
+        .map((mid) => trackLookup[mid as string])
+        .filter(Boolean);
 
       return tracks;
     },
@@ -93,13 +103,19 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
       if (event.channel != null) {
         event.channel.addEventListener("message", (event) => {
           try {
-            const { mid, uid } = JSON.parse(event.data) as {
+            const { mid, uid, kind } = JSON.parse(event.data) as {
               mid: string;
               uid: string;
+              kind: string;
             };
+
+            if (kind !== "video" && kind !== "audio") {
+              return;
+            }
+
             updateMidLookup((midLookup) => {
-              if (midLookup[uid] == null) midLookup[uid] = [];
-              midLookup[uid].push(mid);
+              if (midLookup[uid] == null) midLookup[uid] = {};
+              midLookup[uid][kind] = mid;
             });
           } catch (e) {
             console.error("failed to decode datachannel message", event.data);

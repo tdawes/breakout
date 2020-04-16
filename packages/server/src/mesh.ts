@@ -10,19 +10,29 @@ export interface Mesh {
 export interface Connection {
   connection: RTCPeerConnection;
   dataChannel: RTCDataChannel;
-  messageQueue: Array<() => string>;
+  messageQueue: Array<() => any>;
+  outgoing: {
+    [otherUser: string]: number;
+  };
   isDataChannelOpen: boolean;
   isConnectionStable: boolean;
-  links: string[];
-  tranceivers: RTCRtpTransceiver[];
+  transceivers: RTCRtpTransceiver[];
 }
 
 const flushDataChannelMessages = (connection: Connection) => {
   if (connection.isDataChannelOpen && connection.isConnectionStable) {
-    while (connection.messageQueue.length > 0) {
-      const msg = connection.messageQueue.shift();
+    const newQueue = connection.messageQueue.splice(
+      0,
+      connection.messageQueue.length,
+    );
+    for (const msg of newQueue) {
       if (msg != null) {
-        connection.dataChannel.send(msg());
+        const message = msg();
+        if (message.mid != null) {
+          connection.dataChannel.send(JSON.stringify(message));
+        } else {
+          connection.messageQueue.push(msg);
+        }
       }
     }
   }
@@ -38,6 +48,7 @@ export default (logger: Logger): Mesh => {
     to: string,
     transceiver: RTCRtpTransceiver,
   ) => {
+    logger.log(`Adding a transceiver from ${from} to ${to}`);
     const toConnection = connections[to];
 
     if (toConnection == null) {
@@ -48,37 +59,68 @@ export default (logger: Logger): Mesh => {
       transceiver.receiver.track,
     );
 
-    toConnection.connection.addEventListener("connectionstatechange", () => {
-      toConnection.isConnectionStable =
-        toConnection.connection.signalingState === "stable";
-      flushDataChannelMessages(toConnection);
-    });
-
-    logger.log("OUTGOING", outgoing);
-
-    toConnection.messageQueue.push(() =>
-      JSON.stringify({
-        mid: outgoing.mid,
-        uid: from,
-        kind: transceiver.receiver.track.kind,
-        label: transceiver.receiver.track.label,
-      }),
-    );
+    toConnection.messageQueue.push(() => ({
+      mid: outgoing.mid,
+      uid: from,
+      kind: transceiver.receiver.track.kind,
+      label: transceiver.receiver.track.label,
+    }));
     flushDataChannelMessages(toConnection);
+  };
+
+  const disconnectTransceivers = (from: string, to: string) => {
+    logger.log(
+      `Killing the link from ${from} to ${to} as no more active connections.`,
+    );
+    const fromConnection = connections[from];
+    const toConnection = connections[to];
+
+    if (fromConnection == null || toConnection == null) {
+      return;
+    }
+
+    toConnection.connection.getTransceivers().forEach((transceiver) => {
+      if (
+        fromConnection.transceivers.some(
+          (transceiver) =>
+            transceiver.sender.track?.id === transceiver.receiver.track.id,
+        )
+      ) {
+        transceiver.stop();
+      }
+    });
   };
 
   const connect = (from: string, to: string) => {
     if (from === to) {
       return;
     }
-    logger.log(`mesh - adding connection from ${from} to ${to}`);
     const fromConnection = connections[from];
-    const toConnection = connections[to];
-    fromConnection.links.push(to);
+    logger.log(
+      `mesh - adding connection from ${from} to ${to}: ${
+        fromConnection.outgoing[to] ?? 0
+      } current connections`,
+      JSON.stringify(fromConnection.outgoing),
+    );
 
-    fromConnection.tranceivers.forEach((transceiver) => {
-      connectTransceiver(from, to, transceiver);
-    });
+    if (
+      fromConnection.outgoing[to] == null ||
+      fromConnection.outgoing[to] === 0
+    ) {
+      console.log("HERE");
+      console.log(
+        `mesh - adding ${fromConnection.transceivers.length} transceivers from ${from} to ${to}`,
+      );
+      fromConnection.transceivers.forEach((transceiver) => {
+        connectTransceiver(from, to, transceiver);
+      });
+    }
+
+    fromConnection.outgoing[to] = (fromConnection.outgoing[to] ?? 0) + 1;
+
+    logger.log(
+      `There are now ${fromConnection.outgoing[to]} connections from ${from} to ${to}.`,
+    );
   };
 
   const disconnect = (from: string, to: string) => {
@@ -88,24 +130,41 @@ export default (logger: Logger): Mesh => {
     logger.log(`mesh - removing connection from ${from} to ${to}`);
     const fromConnection = connections[from];
 
-    if (fromConnection) {
-      fromConnection.links.splice(fromConnection.links.indexOf(to), 1);
+    if (fromConnection == null) {
+      return;
+    }
+
+    if (fromConnection.outgoing[to] <= 0) {
+      return;
+    }
+
+    fromConnection.outgoing[to]--;
+    logger.log(
+      `There are now ${fromConnection.outgoing[to]} connections from ${from} to ${to}.`,
+    );
+
+    if (fromConnection.outgoing[to] === 0) {
+      disconnectTransceivers(from, to);
     }
   };
 
   return {
     createSubscription: (userId: string) => ({
       onSubscribe: (otherUsers: string[]) => {
-        otherUsers.forEach((otherUser) => connect(userId, otherUser));
+        logger.log("onSubscribe", userId, otherUsers);
+        otherUsers.forEach((otherUser) => connect(otherUser, userId));
       },
       onUnsubscribe: (otherUsers: string[]) => {
-        otherUsers.forEach((otherUser) => disconnect(userId, otherUser));
+        logger.log("onUnsubscribe", userId, otherUsers);
+        otherUsers.forEach((otherUser) => disconnect(otherUser, userId));
       },
       onUserJoin: (otherUser: string) => {
-        connect(userId, otherUser);
+        logger.log("onUserJoin", userId, otherUser);
+        connect(otherUser, userId);
       },
       onUserLeave: (otherUser: string) => {
-        disconnect(userId, otherUser);
+        logger.log("onUserLeave", userId, otherUser);
+        disconnect(otherUser, userId);
       },
     }),
     register: (userId: string, connection: RTCPeerConnection) => {
@@ -118,8 +177,8 @@ export default (logger: Logger): Mesh => {
         messageQueue: [],
         isDataChannelOpen: false,
         isConnectionStable: false,
-        links: [],
-        tranceivers: [],
+        outgoing: {},
+        transceivers: [],
       };
       connections[userId] = userConnection;
 
@@ -133,20 +192,32 @@ export default (logger: Logger): Mesh => {
       });
 
       connection.addEventListener("track", (e: RTCTrackEvent) => {
-        userConnection.tranceivers.push(e.transceiver);
-        userConnection.links.forEach((otherUser) =>
-          connectTransceiver(userId, otherUser, e.transceiver),
-        );
+        userConnection.transceivers.push(e.transceiver);
+        Object.keys(userConnection.outgoing)
+          .filter((otherUser) => userConnection.outgoing[otherUser] > 0)
+          .forEach((otherUser) =>
+            connectTransceiver(userId, otherUser, e.transceiver),
+          );
+      });
+
+      connection.addEventListener("connectionstatechange", () => {
+        userConnection.isConnectionStable =
+          connection.signalingState === "stable";
+        flushDataChannelMessages(userConnection);
       });
     },
     unregister: (userId: string) => {
       logger.log("mesh - unregister");
 
-      if (connections[userId] == null) {
+      const userConnection = connections[userId];
+
+      if (userConnection == null) {
         return;
       }
 
-      connections[userId].links.forEach((other) => disconnect(userId, other));
+      Object.keys(userConnection.outgoing)
+        .filter((other) => userConnection.outgoing[other] > 0)
+        .forEach((other) => disconnectTransceivers(userId, other));
 
       delete connections[userId];
     },
