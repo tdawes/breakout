@@ -31,7 +31,7 @@ const Home = () => {
           >
             <Input
               value={roomId}
-              placeholder="Room name"
+              placeholder="Room ID"
               onChange={(e) => {
                 setRoomId(e.target.value);
               }}

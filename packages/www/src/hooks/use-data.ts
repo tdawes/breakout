@@ -51,6 +51,7 @@ const createRoom = (
     quizMaster: dbRoom.quizMaster ?? null,
     tables,
     users: roomUsers,
+    scratchpadsEditable: dbRoom.scratchpadsEditable ?? true,
   };
 
   return room;

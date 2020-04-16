@@ -1,16 +1,19 @@
 /** @jsx jsx */
 import * as React from "react";
-import { ChevronDown, ChevronUp } from "react-feather";
-import { Box, Flex, jsx, Text, Textarea } from "theme-ui";
+import { ChevronDown, ChevronUp, Delete } from "react-feather";
+import { Box, Flex, jsx, Text, Textarea, IconButton } from "theme-ui";
 import { useRoom } from "../providers/room";
 
 const Scratchpad: React.FC = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const {
+    currentRoom: { data: room },
     currentTable: { data: table },
+    currentUser: { data: user },
     setScratchpad,
   } = useRoom();
 
+  const canClear = table && user && table.users[user.id];
   return (
     <Box
       {...props}
@@ -30,8 +33,24 @@ const Scratchpad: React.FC = (props) => {
         }}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <Text>Team notes</Text>
-        {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+        <Text>
+          Team notes {room?.scratchpadsEditable === false && " (frozen)"}
+        </Text>
+        <div>
+          {isOpen && canClear && (
+            <IconButton
+              style={{ marginRight: "5px" }}
+              title="Clear all notes"
+              onClick={(e) => {
+                e.stopPropagation();
+                setScratchpad("");
+              }}
+            >
+              <Delete size={18} />
+            </IconButton>
+          )}
+          {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+        </div>
       </Flex>
 
       <Box
@@ -46,6 +65,7 @@ const Scratchpad: React.FC = (props) => {
         <Textarea
           value={table?.scratchpad}
           onChange={(e) => setScratchpad(e.target.value)}
+          readOnly={room?.scratchpadsEditable === false}
           sx={{
             height: "100%",
             mt: 1,
