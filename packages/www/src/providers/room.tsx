@@ -213,14 +213,11 @@ export const useVideo = (userId: string): MediaStream | null => {
   React.useEffect(() => {
     // requesting video for current user
     if (user != null && userId === user.id) {
-      console.log("GETTING FOR LOCAL", userId)
       setMediaStream(localStream);
       return;
     }
 
     const tracks = getUserTracks(userId);
-
-    console.log(`${tracks.length} tracks for user ${userId}`);
 
     if (tracks.length === 0) {
       return;
