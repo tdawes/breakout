@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Text, Flex, Box, jsx } from "theme-ui";
 import { User } from "../types";
-import { useVideo } from "../providers/room";
+import { useVideo, useRoom } from "../providers/room";
 import { VideoOff } from "react-feather";
 
 const BoxMessage: React.FC = (props) => (
@@ -26,6 +26,11 @@ const UserVideo: React.FC<{
   showIfOnStage?: boolean;
 }> = (props) => {
   const stream = useVideo(props.user.id);
+  const {
+    currentUser: { data: user },
+  } = useRoom();
+
+  const shouldMute = user != null && user.id === props.user.id;
 
   return (
     <Flex
@@ -43,7 +48,13 @@ const UserVideo: React.FC<{
       ) : (
         <>
           {stream != null && (
-            <Video mediaStream={stream} autoPlay playsInline muted controls />
+            <Video
+              mediaStream={stream}
+              autoPlay
+              playsInline
+              muted={shouldMute}
+              controls
+            />
           )}
 
           {stream == null && (
