@@ -1,9 +1,4 @@
 import * as Socket from "socket.io";
-import {
-  RTCIceCandidateInit,
-  RTCPeerConnection,
-  RTCSessionDescriptionInit,
-} from "wrtc";
 import { Logger } from "./logging";
 
 export interface SignallingController {
@@ -27,7 +22,7 @@ export default (logger: Logger): SignallingController => ({
           offer: connection.localDescription,
         });
       } catch (e) {
-        logger.log("ERROR SETTING OFFER", e);
+        logger.error("signalling - send offer", e);
       }
     };
 
@@ -36,7 +31,11 @@ export default (logger: Logger): SignallingController => ({
     connection.addEventListener("negotiationneeded", async () => {
       logger.log("signalling - negotiation needed");
       initial = false;
-      await sendOffer(initial);
+      try {
+        await sendOffer(initial);
+      } catch (e) {
+        logger.error("signalling - negotiationneeded", e);
+      }
     });
 
     // Process the answer
@@ -47,7 +46,7 @@ export default (logger: Logger): SignallingController => ({
         try {
           await connection.setRemoteDescription(answer);
         } catch (e) {
-          logger.log("ERROR SETTING ANSWER", e);
+          logger.error("signalling - sdp answer", e);
         }
       },
     );
@@ -56,16 +55,20 @@ export default (logger: Logger): SignallingController => ({
     socket.on(
       "sdp offer",
       async ({ offer }: { offer: RTCSessionDescriptionInit }) => {
-        await connection.setRemoteDescription(offer);
-        const answer = await connection.createAnswer(
-          initial
-            ? { offerToReceiveAudio: true, offerToReceiveVideo: true }
-            : {},
-        );
-        await connection.setLocalDescription(answer);
-        socket.emit("sdp answer", {
-          answer: connection.localDescription,
-        });
+        try {
+          await connection.setRemoteDescription(offer);
+          const answer = await connection.createAnswer(
+            initial
+              ? { offerToReceiveAudio: true, offerToReceiveVideo: true }
+              : {},
+          );
+          await connection.setLocalDescription(answer);
+          socket.emit("sdp answer", {
+            answer: connection.localDescription,
+          });
+        } catch (e) {
+          logger.error("signalling - sdp offer", e);
+        }
       },
     );
 
@@ -81,8 +84,12 @@ export default (logger: Logger): SignallingController => ({
     socket.on(
       "ice candidate",
       async ({ candidate }: { candidate: RTCIceCandidateInit }) => {
-        logger.log("signalling - received ice candidate");
-        await connection.addIceCandidate(candidate);
+        try {
+          logger.log("signalling - received ice candidate");
+          await connection.addIceCandidate(candidate);
+        } catch (e) {
+          logger.error("signalling - add ice candidate", e);
+        }
       },
     );
   },
