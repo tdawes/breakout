@@ -216,7 +216,9 @@ export const useVideo = (userId: string): MediaStream | null => {
       setMediaStream(localStream);
       return;
     }
+  }, [localStream, user, userId]);
 
+  React.useEffect(() => {
     const tracks = getUserTracks(userId);
 
     if (tracks.length === 0) {
