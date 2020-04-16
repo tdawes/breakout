@@ -19,6 +19,7 @@ export type RoomState = {
   changeTable: (tableId: string | null) => void;
   createUser: (name: string, roomId: string, tableId?: string) => void;
   setQuizMaster: (userId: string) => void;
+  setAllScratchpads: (contents: string) => void;
   setScratchpad: (contents: string) => void;
   setName: (name: string) => void;
   setTable: (tableId: string | null) => void;
@@ -171,6 +172,16 @@ export const RoomProvider: React.FC = (props) => {
     [tableId],
   );
 
+  const setAllScratchpads = (contents: string) => {
+    if (room.data != null) {
+      Object.values(room.data.tables).map((table) => {
+        db.updateTable(table.id, {
+          scratchpad: contents,
+        });
+      });
+    }
+  };
+
   const value: RoomState = {
     currentRoom: room,
     currentTable: table,
@@ -182,6 +193,7 @@ export const RoomProvider: React.FC = (props) => {
     changeTable,
     setName,
     setQuizMaster,
+    setAllScratchpads,
     setScratchpad,
     setStage,
     setTable,

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useRouter } from "next/router";
 import * as React from "react";
-import { Box, Flex, jsx, Text } from "theme-ui";
+import { Box, Flex, jsx, Text, IconButton } from "theme-ui";
 import Layout from "../../../../components/Layout";
 import Link from "../../../../components/Link";
 import Loading from "../../../../components/Loading";
@@ -12,6 +12,7 @@ import {
   NotQuizMaster,
   quizmasterHeaderHeight,
 } from "../table/[tableId]/master";
+import { Delete } from "react-feather";
 
 const TableView: React.FC<{ table: Table; roomId: string }> = ({
   table,
@@ -95,6 +96,7 @@ const MasterPage = () => {
     changeTable,
     changeRoom,
     setStage,
+    setAllScratchpads,
   } = useRoom();
 
   React.useEffect(() => {
@@ -124,7 +126,7 @@ const MasterPage = () => {
     <Layout title={room?.id}>
       <Flex
         sx={{
-          justifyContent: "space-around",
+          justifyContent: "space-between",
           alignContent: "center",
           p: 2,
           height: quizmasterHeaderHeight,
@@ -132,8 +134,17 @@ const MasterPage = () => {
           borderColor: "grey.500",
         }}
       >
+        <div />
         This game has {Object.keys(room.tables).length} tables and{" "}
         {Object.keys(room.users).length} players
+        <IconButton
+          title="Clear all scratchpads"
+          onClick={() => {
+            setAllScratchpads("");
+          }}
+        >
+          <Delete size={18} />
+        </IconButton>
       </Flex>
       <Flex
         sx={{
