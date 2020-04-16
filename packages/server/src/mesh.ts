@@ -24,9 +24,7 @@ export interface Connection {
 }
 
 const flushDataChannelMessages = (connection: Connection) => {
-  console.log("Attempting flush");
   if (connection.isDataChannelOpen && connection.isConnectionStable) {
-    console.log("Flushing", connection.messageQueue);
     const newQueue = connection.messageQueue.splice(
       0,
       connection.messageQueue.length,
