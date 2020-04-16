@@ -12,6 +12,7 @@ export interface Room {
   users: Keyed<User>;
   tables: Keyed<Table>;
   quizMaster: string | null;
+  scratchpadsEditable: boolean;
 }
 
 export interface Table {
@@ -34,6 +35,7 @@ export interface DBUser {
 export interface DBRoom {
   name: string;
   quizMaster?: string;
+  scratchpadsEditable?: boolean;
 }
 
 export interface DBTable {

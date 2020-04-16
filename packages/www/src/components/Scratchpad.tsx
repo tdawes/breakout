@@ -7,6 +7,7 @@ import { useRoom } from "../providers/room";
 const Scratchpad: React.FC = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const {
+    currentRoom: { data: room },
     currentTable: { data: table },
     currentUser: { data: user },
     setScratchpad,
@@ -32,7 +33,9 @@ const Scratchpad: React.FC = (props) => {
         }}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <Text>Team notes</Text>
+        <Text>
+          Team notes {room?.scratchpadsEditable === false && " (frozen)"}
+        </Text>
         <div>
           {isOpen && canClear && (
             <IconButton
@@ -62,6 +65,7 @@ const Scratchpad: React.FC = (props) => {
         <Textarea
           value={table?.scratchpad}
           onChange={(e) => setScratchpad(e.target.value)}
+          readOnly={room?.scratchpadsEditable === false}
           sx={{
             height: "100%",
             mt: 1,

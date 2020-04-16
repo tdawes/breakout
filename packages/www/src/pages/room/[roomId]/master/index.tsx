@@ -12,7 +12,7 @@ import {
   NotQuizMaster,
   quizmasterHeaderHeight,
 } from "../table/[tableId]/master";
-import { Delete } from "react-feather";
+import { PauseCircle, PlayCircle, XCircle } from "react-feather";
 
 const TableView: React.FC<{ table: Table; roomId: string }> = ({
   table,
@@ -97,6 +97,7 @@ const MasterPage = () => {
     changeRoom,
     setStage,
     setAllScratchpads,
+    setScratchpadsEditable,
   } = useRoom();
 
   React.useEffect(() => {
@@ -117,9 +118,9 @@ const MasterPage = () => {
     return <Loading />;
   }
 
-  if (!user || room.quizMaster != user.id) {
-    return <NotQuizMaster />;
-  }
+  // if (!user || room.quizMaster != user.id) {
+  //   return <NotQuizMaster />;
+  // }
 
   // A couple values here are hardcoded until we have real video
   return (
@@ -137,14 +138,32 @@ const MasterPage = () => {
         <div />
         This game has {Object.keys(room.tables).length} tables and{" "}
         {Object.keys(room.users).length} players
-        <IconButton
-          title="Clear all scratchpads"
-          onClick={() => {
-            setAllScratchpads("");
-          }}
-        >
-          <Delete size={18} />
-        </IconButton>
+        <Flex sx={{ alignItems: "center" }}>
+          Scratchpads:{" "}
+          {room?.scratchpadsEditable ? (
+            <IconButton
+              title="Freeze all scratchpads"
+              onClick={() => setScratchpadsEditable(false)}
+            >
+              <PauseCircle size={18} />
+            </IconButton>
+          ) : (
+            <IconButton
+              title="Unfreeze all scratchpads"
+              onClick={() => setScratchpadsEditable(true)}
+            >
+              <PlayCircle size={18} />
+            </IconButton>
+          )}
+          <IconButton
+            title="Clear all scratchpads"
+            onClick={() => {
+              setAllScratchpads("");
+            }}
+          >
+            <XCircle size={18} />
+          </IconButton>
+        </Flex>
       </Flex>
       <Flex
         sx={{

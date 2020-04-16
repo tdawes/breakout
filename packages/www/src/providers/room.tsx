@@ -20,6 +20,7 @@ export type RoomState = {
   createUser: (name: string, roomId: string, tableId?: string) => void;
   setQuizMaster: (userId: string) => void;
   setAllScratchpads: (contents: string) => void;
+  setScratchpadsEditable: (value: boolean) => void;
   setScratchpad: (contents: string) => void;
   setName: (name: string) => void;
   setTable: (tableId: string | null) => void;
@@ -182,6 +183,14 @@ export const RoomProvider: React.FC = (props) => {
     }
   };
 
+  const setScratchpadsEditable = (value: boolean) => {
+    if (room.data != null) {
+      db.updateRoom(room.data.id, {
+        scratchpadsEditable: value,
+      });
+    }
+  };
+
   const value: RoomState = {
     currentRoom: room,
     currentTable: table,
@@ -194,6 +203,7 @@ export const RoomProvider: React.FC = (props) => {
     setName,
     setQuizMaster,
     setAllScratchpads,
+    setScratchpadsEditable,
     setScratchpad,
     setStage,
     setTable,
