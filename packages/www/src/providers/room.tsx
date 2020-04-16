@@ -219,19 +219,22 @@ export const useVideo = (userId: string): MediaStream | null => {
   }, [localStream, user, userId]);
 
   React.useEffect(() => {
-    const tracks = getUserTracks(userId);
+    if (user == null || userId !== user.id) {
+      const tracks = getUserTracks(userId);
 
-    if (tracks.length === 0) {
-      return;
+      if (tracks.length === 0) {
+        setMediaStream(null);
+        return;
+      }
+
+      const mediaStream = new MediaStream();
+
+      tracks.forEach((t) => {
+        mediaStream.addTrack(t);
+      });
+
+      setMediaStream(mediaStream);
     }
-
-    const mediaStream = new MediaStream();
-
-    tracks.forEach((t) => {
-      mediaStream.addTrack(t);
-    });
-
-    setMediaStream(mediaStream);
   }, [userId, getUserTracks, user]);
 
   return mediaStream;

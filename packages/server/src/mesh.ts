@@ -7,10 +7,14 @@ export interface Mesh {
   unregister: (userId: string) => void;
 }
 
+export type DataMessage =
+  | { type: "connect"; mid: string; uid: string; kind: string; label?: string }
+  | { type: "disconnect"; uid: string };
+
 export interface Connection {
   connection: RTCPeerConnection;
   dataChannel: RTCDataChannel;
-  messageQueue: Array<() => any>;
+  messageQueue: Array<() => DataMessage | null>;
   outgoing: {
     [otherUser: string]: number;
   };
@@ -20,19 +24,19 @@ export interface Connection {
 }
 
 const flushDataChannelMessages = (connection: Connection) => {
+  console.log("Attempting flush");
   if (connection.isDataChannelOpen && connection.isConnectionStable) {
+    console.log("Flushing", connection.messageQueue);
     const newQueue = connection.messageQueue.splice(
       0,
       connection.messageQueue.length,
     );
     for (const msg of newQueue) {
-      if (msg != null) {
-        const message = msg();
-        if (message.mid != null) {
-          connection.dataChannel.send(JSON.stringify(message));
-        } else {
-          connection.messageQueue.push(msg);
-        }
+      const message = msg();
+      if (message != null) {
+        connection.dataChannel.send(JSON.stringify(message));
+      } else {
+        connection.messageQueue.push(msg);
       }
     }
   }
@@ -59,36 +63,47 @@ export default (logger: Logger): Mesh => {
       transceiver.receiver.track,
     );
 
-    toConnection.messageQueue.push(() => ({
-      mid: outgoing.mid,
-      uid: from,
-      kind: transceiver.receiver.track.kind,
-      label: transceiver.receiver.track.label,
-    }));
+    toConnection.messageQueue.push(() =>
+      outgoing.mid == null
+        ? null
+        : {
+            type: "connect",
+            mid: outgoing.mid,
+            uid: from,
+            kind: transceiver.receiver.track.kind,
+            label: transceiver.receiver.track.label,
+          },
+    );
     flushDataChannelMessages(toConnection);
   };
 
   const disconnectTransceivers = (from: string, to: string) => {
+    const toConnection = connections[to];
     logger.log(
       `Killing the link from ${from} to ${to} as no more active connections.`,
+      toConnection,
     );
-    const fromConnection = connections[from];
-    const toConnection = connections[to];
 
-    if (fromConnection == null || toConnection == null) {
+    if (toConnection == null) {
       return;
     }
 
-    toConnection.connection.getTransceivers().forEach((transceiver) => {
-      if (
-        fromConnection.transceivers.some(
-          (transceiver) =>
-            transceiver.sender.track?.id === transceiver.receiver.track.id,
-        )
-      ) {
-        transceiver.stop();
-      }
-    });
+    // toConnection.transceivers.forEach((transceiver) => {
+    //   if (
+    //     fromConnection.transceivers.some(
+    //       (fromTransceiver) =>
+    //         fromTransceiver.sender.track?.id === transceiver.receiver.track.id,
+    //     )
+    //   ) {
+    //     transceiver.stop();
+    //   }
+    // });
+
+    toConnection.messageQueue.push(() => ({
+      type: "disconnect",
+      uid: from,
+    }));
+    flushDataChannelMessages(toConnection);
   };
 
   const connect = (from: string, to: string) => {
@@ -107,10 +122,6 @@ export default (logger: Logger): Mesh => {
       fromConnection.outgoing[to] == null ||
       fromConnection.outgoing[to] === 0
     ) {
-      console.log("HERE");
-      console.log(
-        `mesh - adding ${fromConnection.transceivers.length} transceivers from ${from} to ${to}`,
-      );
       fromConnection.transceivers.forEach((transceiver) => {
         connectTransceiver(from, to, transceiver);
       });

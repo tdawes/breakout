@@ -102,25 +102,30 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
     connection.addEventListener("datachannel", async (event) => {
       if (event.channel != null) {
         event.channel.addEventListener("message", (event) => {
+          console.log("DATA CHANNEL MESSAGE", event);
           try {
-            const { mid, uid, kind } = JSON.parse(event.data) as {
-              mid: string;
+            const { type, mid, uid, kind } = JSON.parse(event.data) as {
+              type: "connect" | "disconnect";
               uid: string;
-              kind: string;
+              mid?: string;
+              kind?: string;
             };
 
-            if (kind !== "video" && kind !== "audio") {
+            if (type === "connect" && kind !== "video" && kind !== "audio") {
               return;
             }
 
             updateMidLookup((midLookup) => {
               if (midLookup[uid] == null) midLookup[uid] = {};
-              midLookup[uid][kind] = mid;
+              if (type === "connect") {
+                midLookup[uid][kind as "video" | "audio"] = mid;
+              } else if (type === "disconnect") {
+                delete midLookup[uid];
+              }
             });
           } catch (e) {
             console.error("failed to decode datachannel message", event.data);
           }
-          console.log("DATA CHANNEL MESSAGE", event);
         });
       }
     });
