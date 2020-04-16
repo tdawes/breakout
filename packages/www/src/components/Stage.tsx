@@ -20,6 +20,7 @@ const Stage: React.FC = (props) => {
         flexDirection: "column",
         width: "100%",
         height: "100%",
+        bg: "muted",
       }}
     >
       {usersOnStage.length === 0 && (
@@ -33,6 +34,7 @@ const Stage: React.FC = (props) => {
       {usersOnStage.map((user) => (
         <UserVideo
           key={user.id}
+          user={user}
           image="https://source.unsplash.com/random/300x1000"
           sx={{ minHeight: "400px" }}
         >

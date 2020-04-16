@@ -1,7 +1,11 @@
 /** @jsx jsx */
 import { Flex, Box, jsx } from "theme-ui";
+import { User } from "../types";
+import { useRoom, useVideo } from "../providers/room";
 
-const UserVideo: React.FC<{ image: string }> = (props) => {
+const UserVideo: React.FC<{ image: string; user: User }> = (props) => {
+  const tracks = useVideo(props.user.id);
+
   return (
     <Flex
       {...props}

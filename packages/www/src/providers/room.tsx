@@ -6,6 +6,7 @@ import { LoadingValue, Room, Table, User } from "../types";
 import { loadingValue, dataValue, errorValue } from "../utils";
 import useCurrentUserData from "../hooks/use-current-user-data";
 import useWebSockets from "../hooks/use-websockets";
+import useWebRTC from "../hooks/use-webrtc";
 
 export type RoomState = {
   currentRoom: LoadingValue<Room>;
@@ -71,27 +72,13 @@ const useTableData = (
   return table;
 };
 
-export const RoomProvider: React.FC = (props) => {
-  const [roomId, setRoomId] = React.useState<string | null>(null);
-  const room = useRoomData(roomId);
-
-  const [tableId, setTableId] = React.useState<string | null>(null);
-  const table = useTableData(room, tableId);
-
-  const {
-    user,
-    preferredName,
-    setName,
-    createUser,
-    setStage,
-    setTable,
-  } = useCurrentUserData(roomId, tableId);
-
-  const { socket, connected: socketConnected } = useWebSockets(
-    user?.data?.id ?? null,
-    roomId,
-  );
-
+const useWSRoom = (
+  socket: SocketIOClient.Socket | null,
+  socketConnected: boolean,
+  roomId: string | null,
+  tableId: string | null,
+  user: LoadingValue<User | null>,
+) => {
   React.useEffect(() => {
     if (socket != null && socketConnected && roomId != null) {
       socket.emit("join room", { roomId });
@@ -128,18 +115,39 @@ export const RoomProvider: React.FC = (props) => {
       };
     }
   }, [roomId, user.data?.onStage, socket, socketConnected]);
+};
+
+export const RoomProvider: React.FC = (props) => {
+  const [roomId, setRoomId] = React.useState<string | null>(null);
+  const room = useRoomData(roomId);
+
+  const [tableId, setTableId] = React.useState<string | null>(null);
+  const table = useTableData(room, tableId);
+
+  const {
+    user,
+    preferredName,
+    setName,
+    createUser,
+    setStage,
+    setTable,
+  } = useCurrentUserData(roomId, tableId);
+
+  const { socket, connected: socketConnected } = useWebSockets(
+    user?.data?.id ?? null,
+    roomId,
+  );
+
+  useWSRoom(socket, socketConnected, roomId, tableId, user);
+  useWebRTC(socket);
 
   const changeRoom = React.useCallback(
-    (newRoomId: string | null) => {
-      setRoomId(newRoomId);
-    },
+    (newRoomId: string | null) => setRoomId(newRoomId),
     [roomId],
   );
 
   const changeTable = React.useCallback(
-    (newTableId: string | null) => {
-      setTableId(newTableId);
-    },
+    (newTableId: string | null) => setTableId(newTableId),
     [tableId],
   );
 
@@ -183,18 +191,12 @@ export const RoomProvider: React.FC = (props) => {
 };
 
 export const useRoom = () => React.useContext(RoomContext);
+
 /*
-
-
  const stream = useVideo(userId);
-
 */
 
-export const useCurrentRoom = () => {
-  const { currentRoom } = React.useContext(RoomContext);
-  return currentRoom;
-};
-
-export const useCurrentTable = () => {};
-export const useCurrentUser = () => {};
-export const useVideo = (userId: string) => {};
+// export const useVideo = (userId: string) => {
+//   const { getUserTrack } = useRoom();
+//   return getUserTrack(userId);
+// };

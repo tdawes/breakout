@@ -40,6 +40,7 @@ const Table = () => {
 
               return (
                 <UserVideo
+                  user={tableUser}
                   key={k}
                   image={`https://source.unsplash.com/random/300x300`}
                   sx={{ height: 300 }}
