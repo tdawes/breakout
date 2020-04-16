@@ -2,33 +2,31 @@
 
 import * as http from "http";
 import socketIO from "socket.io";
+import newLogger from "./logging";
+import newMesh from "./mesh";
+import newRoomController from "./rooms";
+import newSignallingController from "./signalling";
+import newPubSub from "./pub-sub";
+import setupSockets from "./sockets";
+import newWebRTCController from "./webrtc";
 
 const server = http.createServer();
 const io = socketIO(server);
 
 const port = process.env.PORT || 4000;
 
-io.on("connection", (client) => {
-  client.on("join", ({ roomId }: { roomId: string }) => {
-    console.log(`client ${client.id} joined room ${roomId}`);
-    client.join(roomId);
-  });
+// io.origins("https://breakout-by-prodo.herokuapp.com:443");
+io.origins("*:*");
 
-  client.on("message", ({ text, roomId }: { text: string; roomId: string }) => {
-    console.log("received message", text, roomId);
-    client.to(roomId).broadcast.emit("message", { text });
-  });
-
-  client.on("leave", ({ roomId }: { roomId: string }) => {
-    console.log(`client ${client.id} leaving room ${roomId}`);
-    client.leave(roomId);
-  });
-
-  client.on("disconnect", () => {
-    console.log("client disconnected");
-  });
-});
+const logger = newLogger();
+const mesh = newMesh(logger);
+const pubSub = newPubSub(logger);
+const rooms = newRoomController(logger, pubSub, mesh);
+const webRTC = newWebRTCController(logger);
+const signalling = newSignallingController(logger);
+setupSockets(io, mesh, rooms, pubSub, webRTC, signalling, logger);
 
 server.listen(port, () => {
-  console.log("server started on port", port);
+  // tslint:disable-next-line:no-console
+  console.log(`Started server on port ${port}`);
 });

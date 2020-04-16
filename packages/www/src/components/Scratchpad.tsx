@@ -2,15 +2,17 @@
 import * as React from "react";
 import { ChevronDown, ChevronUp, Delete } from "react-feather";
 import { Box, Flex, jsx, Text, Textarea, IconButton } from "theme-ui";
-import { useTable } from "../providers/table";
-import { useUser } from "../providers/user";
+import { useRoom } from "../providers/room";
 
 const Scratchpad: React.FC = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const { data: table, setScratchpad } = useTable();
-  const { data: user } = useUser();
-  const canClear = table && user && table.users[user.id];
+  const {
+    currentTable: { data: table },
+    currentUser: { data: user },
+    setScratchpad,
+  } = useRoom();
 
+  const canClear = table && user && table.users[user.id];
   return (
     <Box
       {...props}

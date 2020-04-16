@@ -9,8 +9,7 @@ import Loading from "../../../../../../components/Loading";
 import Stage from "../../../../../../components/Stage";
 import Table from "../../../../../../components/Table";
 import { useRoom } from "../../../../../../providers/room";
-import { useTable } from "../../../../../../providers/table";
-import { useUser } from "../../../../../../providers/user";
+import useRoomTablePage from "../../../../../../hooks/use-room-table-page";
 
 export const quizmasterHeaderHeight = "40px";
 
@@ -35,14 +34,25 @@ const TablePage = () => {
   const roomId = router.query.roomId as string;
   const tableId = router.query.tableId as string;
 
-  const { data: room, changeRoom } = useRoom();
-  const { data: table, changeTable } = useTable();
-  const { data: user } = useUser();
+  const {
+    currentRoom: { data: room },
+    currentTable: { data: table },
+    currentUser: { data: user },
+    changeRoom,
+    changeTable,
+    setStage,
+  } = useRoom();
 
+  useRoomTablePage();
+
+  // the quizmaster is removed from stage when visiting a table
   React.useEffect(() => {
-    changeRoom(roomId);
-    changeTable(tableId);
-  }, [roomId, tableId]);
+    if (room == null || user == null || room.quizMaster !== user.id) {
+      return;
+    }
+
+    setStage(false);
+  }, [room, user]);
 
   if (room == null || table == null) {
     return <Loading />;

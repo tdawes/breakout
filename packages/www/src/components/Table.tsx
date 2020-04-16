@@ -3,11 +3,14 @@ import { Grid, Box, jsx } from "theme-ui";
 import TableHeader from "./TableHeader";
 import UserVideo from "./UserVideo";
 import Scratchpad from "./Scratchpad";
-import { useTable } from "../providers/table";
 import { LoadingCenter } from "./Loading";
+import { useRoom } from "../providers/room";
 
 const Table = () => {
-  const { data: table } = useTable();
+  const {
+    currentTable: { data: table },
+    currentUser: { data: user },
+  } = useRoom();
 
   return (
     <Box
@@ -32,14 +35,32 @@ const Table = () => {
               pb: 5,
             }}
           >
-            {Object.keys(table.users).map((k) => (
-              <UserVideo
-                key={k}
-                image={`https://source.unsplash.com/random/300x300`}
-                title={table.users[k].name}
-                sx={{ height: 300 }}
-              />
-            ))}
+            {Object.keys(table.users).map((k) => {
+              const tableUser = table.users[k];
+
+              return (
+                <UserVideo
+                  user={tableUser}
+                  key={k}
+                  image={`https://source.unsplash.com/random/300x300`}
+                  sx={{ minHeight: 240, height: "100%" }}
+                >
+                  {tableUser.name}
+                  {user != null && user?.id === tableUser.id && (
+                    <span> (YOU) </span>
+                  )}
+                  {tableUser.onStage && (
+                    <span>
+                      {" "}
+                      -{" "}
+                      <span sx={{ color: "success", fontWeight: "bold" }}>
+                        on stage
+                      </span>
+                    </span>
+                  )}
+                </UserVideo>
+              );
+            })}
           </Grid>
         </Box>
       )}
