@@ -3,7 +3,7 @@ import * as io from "socket.io-client";
 
 const wsUrl =
   process.env.NODE_ENV === "production"
-    ? "NO PROD URL YET"
+    ? "https://breakout-by-prodo.herokuapp.com"
     : "http://localhost:4000";
 
 const useWebSockets = (userId: string | null, roomId: string | null) => {
