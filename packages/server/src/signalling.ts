@@ -27,7 +27,7 @@ export default (logger: Logger): SignallingController => ({
           offer: connection.localDescription,
         });
       } catch (e) {
-        logger.log("ERROR SETTING OFFER");
+        logger.log("ERROR SETTING OFFER", e);
       }
     };
 
@@ -47,7 +47,7 @@ export default (logger: Logger): SignallingController => ({
         try {
           await connection.setRemoteDescription(answer);
         } catch (e) {
-          logger.log("ERROR SETTING ANSWER");
+          logger.log("ERROR SETTING ANSWER", e);
         }
       },
     );
