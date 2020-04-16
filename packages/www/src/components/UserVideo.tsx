@@ -42,7 +42,7 @@ const UserVideo: React.FC<{
           <Text>User is on stage</Text>
         </BoxMessage>
       ) : (
-        <Box>
+        <>
           {stream != null && (
             <Video mediaStream={stream} autoPlay playsInline muted controls />
           )}
@@ -53,7 +53,7 @@ const UserVideo: React.FC<{
               <Text sx={{ fontSize: 3, pt: 2 }}>No Stream</Text>
             </BoxMessage>
           )}
-        </Box>
+        </>
       )}
 
       <Box
