@@ -20,11 +20,15 @@ export default (logger: Logger): SignallingController => ({
       const options = initial
         ? { offerToReceiveAudio: true, offerToReceiveVideo: true }
         : {};
-      const offer = await connection.createOffer(options);
-      await connection.setLocalDescription(offer);
-      socket.emit("sdp offer", {
-        offer: connection.localDescription,
-      });
+      try {
+        const offer = await connection.createOffer(options);
+        await connection.setLocalDescription(offer);
+        socket.emit("sdp offer", {
+          offer: connection.localDescription,
+        });
+      } catch (e) {
+        logger.log("ERROR SETTING OFFER");
+      }
     };
 
     let initial = true;
@@ -40,7 +44,11 @@ export default (logger: Logger): SignallingController => ({
       "sdp answer",
       async ({ answer }: { answer: RTCSessionDescriptionInit }) => {
         logger.log("signalling - received sdp answer");
-        await connection.setRemoteDescription(answer);
+        try {
+          await connection.setRemoteDescription(answer);
+        } catch (e) {
+          logger.log("ERROR SETTING ANSWER");
+        }
       },
     );
 
