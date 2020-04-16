@@ -40,6 +40,10 @@ export default (logger: Logger): Mesh => {
   ) => {
     const toConnection = connections[to];
 
+    if (toConnection == null) {
+      return;
+    }
+
     const outgoing = toConnection.connection.addTransceiver(
       transceiver.receiver.track,
     );
