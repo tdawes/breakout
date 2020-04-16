@@ -19,7 +19,7 @@ const UserVideo: React.FC<{ image: string; user: User }> = (props) => {
       }}
     >
       {stream != null && (
-        <Video mediaStream={stream} autoPlay muted playsInline />
+        <Video mediaStream={stream} autoPlay playsInline muted controls />
       )}
 
       {stream == null && (
