@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as db from "../db";
-import { LoadingValue, User, DBUser } from "../types";
+import { LoadingValue, User, DBUser, Room } from "../types";
 import { getItem, saveItem, clearItem } from "../local";
 import useAsyncEffect from "use-async-effect";
 import { loadingValue, dataValue } from "../utils";
@@ -10,8 +10,7 @@ const getLocalUserIdForRoom = (roomId: string): Promise<string | null> =>
   getItem<string | null>(userKey(roomId), null);
 const saveUserIdForRoom = (roomId: string, userId: string) =>
   saveItem(userKey(roomId), userId);
-export const removeUserIdForRoom = (roomId: string) =>
-  clearItem(userKey(roomId));
+const removeUserIdForRoom = (roomId: string) => clearItem(userKey(roomId));
 
 const nameKey = (): string => "@breakout/name";
 const getLocalName = (): Promise<string> => getItem<string>(nameKey(), "");
@@ -33,7 +32,7 @@ const usePreferredName = (): [string, (name: string) => void] => {
   return [preferredName, setName];
 };
 
-export default (roomId: string | null, tableId: string | null) => {
+export default (room: Room | null, tableId: string | null) => {
   const [userId, setUserId] = React.useState<string | null>(null);
   const [user, setUser] = React.useState<LoadingValue<User | null>>(
     loadingValue(),
@@ -42,27 +41,31 @@ export default (roomId: string | null, tableId: string | null) => {
 
   // reset user state when no room
   React.useEffect(() => {
-    if (roomId == null) {
+    if (room == null) {
       setUser(loadingValue());
       setUserId(null);
     }
-  }, [roomId]);
+  }, [room]);
 
   // get local userId for room whenever the room changes
   useAsyncEffect(async () => {
-    if (roomId == null) {
+    if (room == null) {
       return;
     }
 
-    const localUserId = await getLocalUserIdForRoom(roomId);
+    const localUserId = await getLocalUserIdForRoom(room.id);
 
     if (localUserId == null) {
+      setUserId(null);
+      setUser(dataValue(null));
+    } else if (room.users[localUserId] == null) {
+      removeUserIdForRoom(room.id);
       setUserId(null);
       setUser(dataValue(null));
     } else {
       setUserId(localUserId);
     }
-  }, [roomId]);
+  }, [room]);
 
   // subscribe to firestore user object when userId changes
   React.useEffect(() => {
@@ -99,16 +102,16 @@ export default (roomId: string | null, tableId: string | null) => {
 
   const createUser = React.useCallback(
     async (name: string) => {
-      if (roomId != null) {
-        const user = await db.createUser(name, roomId, tableId);
+      if (room != null) {
+        const user = await db.createUser(name, room.id, tableId);
 
         setUser(dataValue(user));
         setUserId(user.id);
-        saveUserIdForRoom(roomId, user.id);
+        saveUserIdForRoom(room.id, user.id);
         setPreferredName(user.name);
       }
     },
-    [user, roomId, tableId],
+    [user, room, tableId],
   );
 
   const setTable = React.useCallback(

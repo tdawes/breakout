@@ -1,31 +1,17 @@
 /** @jsx jsx */
 import * as React from "react";
-import { Trash2 } from "react-feather";
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  IconButton,
-  Input,
-  jsx,
-  Styled,
-  Text,
-} from "theme-ui";
-import AvatarList from "../components/AvatarList";
+import { Box, Button, Flex, Grid, Input, jsx, Styled, Text } from "theme-ui";
+import Avatar from "../components/Avatar";
 import Container from "../components/Container";
 import Footer from "../components/Footer";
 import Layout from "../components/Layout";
 import Link from "../components/Link";
 import * as db from "../db";
 import useData from "../hooks/use-data";
-import useAllRooms from "../hooks/useAllRooms";
-import { useRoom } from "../providers/room";
-import { Table, User } from "../types";
 import useRoomTablePage from "../hooks/use-room-table-page";
+import useAllRooms from "../hooks/useAllRooms";
+import { Table, User } from "../types";
 import { pluralize } from "../utils";
-import Avatar from "../components/Avatar";
-import { removeUserIdForRoom } from "../hooks/use-current-user-data";
 
 const Section: React.FC = (props) => <Box sx={{ py: 3 }} {...props} />;
 
@@ -70,9 +56,6 @@ const UserItem: React.FC<{
           sx={{ fontSize: 2, color: "muted" }}
           onClick={() => {
             db.deleteUser(user);
-            if (user.roomId != null) {
-              removeUserIdForRoom(user.roomId);
-            }
           }}
         >
           del
