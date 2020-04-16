@@ -1,6 +1,17 @@
 /** @jsx jsx */
 import * as React from "react";
-import { Box, Button, Flex, Grid, Input, jsx, Styled, Text } from "theme-ui";
+import { Trash2 } from "react-feather";
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  IconButton,
+  Input,
+  jsx,
+  Styled,
+  Text,
+} from "theme-ui";
 import Avatar from "../components/Avatar";
 import Container from "../components/Container";
 import Footer from "../components/Footer";
@@ -37,7 +48,7 @@ const UserItem: React.FC<{
       <Box>
         {showPromoteButton && (
           <Button
-            variant="link"
+            variant="linkDark"
             sx={{ fontSize: 2, color: "muted", mr: 3 }}
             onClick={() => {
               if (isQuizMaster) {
@@ -51,15 +62,14 @@ const UserItem: React.FC<{
           </Button>
         )}
 
-        <Button
-          variant="link"
+        <IconButton
           sx={{ fontSize: 2, color: "muted" }}
           onClick={() => {
             db.deleteUser(user);
           }}
         >
-          del
-        </Button>
+          <Trash2 size={14} />
+        </IconButton>
       </Box>
     </Flex>
   );
@@ -106,7 +116,7 @@ const TableItem: React.FC<{ table: Table }> = ({ table }) => {
       )}
 
       <Box sx={{ pt: 2, fontSize: 1, color: "muted" }}>
-        <Button variant="link" onClick={() => db.deleteTable(table)}>
+        <Button variant="linkDark" onClick={() => db.deleteTable(table)}>
           delete table
         </Button>
       </Box>
@@ -208,7 +218,7 @@ const RoomItem: React.FC<{
         </Box>
 
         <Box sx={{ pt: 3, fontSize: 1, color: "muted" }}>
-          <Button variant="link" onClick={() => db.deleteRoom(room)}>
+          <Button variant="linkDark" onClick={() => db.deleteRoom(room)}>
             delete room
           </Button>
         </Box>

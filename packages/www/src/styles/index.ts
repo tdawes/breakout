@@ -177,7 +177,7 @@ const theme: Theme = {
         bg: "accent",
       },
     },
-    link: {
+    linkDark: {
       ...baseLink,
       m: 0,
       p: 0,
