@@ -34,7 +34,6 @@ const UserVideo: React.FC<{
         position: "relative",
         alignItems: "flex-end",
         width: "100%",
-        height: "100%",
       }}
     >
       {props.user.onStage && !props.showIfOnStage ? (

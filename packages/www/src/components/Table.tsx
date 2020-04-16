@@ -43,7 +43,7 @@ const Table = () => {
                   user={tableUser}
                   key={k}
                   image={`https://source.unsplash.com/random/300x300`}
-                  sx={{ minHeight: 240 }}
+                  sx={{ minHeight: 240, height: "100%" }}
                 >
                   {tableUser.name}
                   {user != null && user?.id === tableUser.id && (
