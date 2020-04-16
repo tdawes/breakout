@@ -54,8 +54,7 @@ export const RoomProvider: React.FC = (props) => {
   const setAllScratchpads = (contents: string) => {
     if (room.data != null) {
       Object.values(room.data.tables).map((table) => {
-        db.setTable({
-          ...table,
+        db.updateTable(table.id, {
           scratchpad: contents,
         });
       });

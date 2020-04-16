@@ -98,3 +98,10 @@ export const setTable = async (table: Table) => {
 
   tablesCollection.doc(table.id).set(dbTable);
 };
+
+export const updateTable = async (
+  tableId: string,
+  dbTable: Partial<DBTable>,
+) => {
+  tablesCollection.doc(tableId).set(dbTable, { merge: true });
+};
