@@ -3,6 +3,7 @@ import * as React from "react";
 import { Box, Flex, jsx, Text, Button } from "theme-ui";
 import { pluralize } from "../utils";
 import { useRoom } from "../providers/room";
+import Link from "./Link";
 
 const TableStats: React.FC = (props) => {
   const {
@@ -78,7 +79,13 @@ const TableHeader = () => {
         </Button>
       )}
 
-      <Text sx={{ color: "grey.600" }}>This game</Text>
+      <Link
+        href="/room/[roomId]"
+        as={`/room/${room.id}`}
+        sx={{ color: "grey.600", textDecoration: "none" }}
+      >
+        Go to room
+      </Link>
     </Box>
   );
 };
