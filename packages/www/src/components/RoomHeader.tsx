@@ -4,7 +4,9 @@ import { useRoom } from "../providers/room";
 import { pluralize } from "../utils";
 
 const RoomHeader = () => {
-  const { data: room } = useRoom();
+  const {
+    currentRoom: { data: room },
+  } = useRoom();
 
   if (room == null) {
     return null;

@@ -7,8 +7,6 @@ import Link from "../../../../components/Link";
 import Loading from "../../../../components/Loading";
 import Stage from "../../../../components/Stage";
 import { useRoom } from "../../../../providers/room";
-import { useTable } from "../../../../providers/table";
-import { useUser } from "../../../../providers/user";
 import { Table } from "../../../../types";
 import {
   NotQuizMaster,
@@ -91,9 +89,13 @@ const MasterPage = () => {
   const router = useRouter();
   const roomId = router.query.roomId as string;
 
-  const { data: room, changeRoom } = useRoom();
-  const { changeTable } = useTable();
-  const { data: user, setStage } = useUser();
+  const {
+    currentRoom: { data: room },
+    currentUser: { data: user },
+    changeTable,
+    changeRoom,
+    setStage,
+  } = useRoom();
 
   React.useEffect(() => {
     changeRoom(roomId);

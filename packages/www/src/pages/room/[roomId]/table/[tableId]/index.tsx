@@ -9,17 +9,17 @@ import Table from "../../../../../components/Table";
 import { useEnsureMasterTable } from "../../../../../hooks/use-ensure-master";
 import useRoomTablePage from "../../../../../hooks/use-room-table-page";
 import { useRoom } from "../../../../../providers/room";
-import { useTable } from "../../../../../providers/table";
-import { useUser } from "../../../../../providers/user";
 import JoinTable from "../../../../../components/JoinTable";
 
 const TablePage = () => {
   useRoomTablePage();
   useEnsureMasterTable();
 
-  const { data: room, error: roomError } = useRoom();
-  const { data: table, error: tableError } = useTable();
-  const { loading: userLoading } = useUser();
+  const {
+    currentRoom: { data: room, error: roomError },
+    currentTable: { data: table, error: tableError },
+    currentUser: { loading: userLoading },
+  } = useRoom();
 
   if (roomError != null || tableError != null) {
     return (

@@ -18,6 +18,8 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-use-before-define": "off",
     "no-unused-vars": "off",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",

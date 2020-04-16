@@ -69,12 +69,12 @@ export const getUser = (userId: string) => usersCollection.doc(userId);
 export const createUser = async (
   name: string,
   roomId: string,
-  tableId?: string,
+  tableId: string | null,
 ): Promise<User> => {
   const dbUser: DBUser = {
     name,
     roomId,
-    tableId: tableId ?? null,
+    tableId,
     onStage: false,
   };
 
@@ -102,4 +102,8 @@ export const setTable = async (table: Table) => {
   };
 
   tablesCollection.doc(table.id).set(dbTable);
+};
+
+export const updateTable = (tableId: string, dbTable: Partial<DBTable>) => {
+  tablesCollection.doc(tableId).update(dbTable);
 };

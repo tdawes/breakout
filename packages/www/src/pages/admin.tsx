@@ -20,8 +20,8 @@ import * as db from "../db";
 import useData from "../hooks/use-data";
 import useAllRooms from "../hooks/useAllRooms";
 import { useRoom } from "../providers/room";
-import { useTable } from "../providers/table";
 import { Table } from "../types";
+import useRoomTablePage from "../hooks/use-room-table-page";
 
 const Section: React.FC = (props) => <Box sx={{ py: 3 }} {...props} />;
 
@@ -193,13 +193,7 @@ const RoomItem: React.FC<{
 const Admin = () => {
   const [roomName, setRoomName] = React.useState("");
   const roomIds = useAllRooms();
-  const { changeRoom } = useRoom();
-  const { changeTable } = useTable();
-
-  React.useEffect(() => {
-    changeRoom(null);
-    changeTable(null);
-  }, []);
+  useRoomTablePage();
 
   return (
     <Layout>

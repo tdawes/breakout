@@ -5,18 +5,12 @@ import Layout from "../components/Layout";
 import Router from "next/router";
 import Container from "../components/Container";
 import Link from "../components/Link";
-import { useRoom } from "../providers/room";
-import { useTable } from "../providers/table";
+import useRoomTablePage from "../hooks/use-room-table-page";
 
 const Home = () => {
   const [roomId, setRoomId] = React.useState("");
-  const { changeRoom } = useRoom();
-  const { changeTable } = useTable();
 
-  React.useEffect(() => {
-    changeRoom(null);
-    changeTable(null);
-  }, []);
+  useRoomTablePage();
 
   return (
     <Layout>

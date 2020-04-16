@@ -4,7 +4,9 @@ import UserVideo from "./UserVideo";
 import { useRoom } from "../providers/room";
 
 const Stage: React.FC = (props) => {
-  const { data: room } = useRoom();
+  const {
+    currentRoom: { data: room },
+  } = useRoom();
 
   if (room == null) {
     return null;
@@ -18,6 +20,7 @@ const Stage: React.FC = (props) => {
         flexDirection: "column",
         width: "100%",
         height: "100%",
+        bg: "muted",
       }}
     >
       {usersOnStage.length === 0 && (
@@ -31,8 +34,9 @@ const Stage: React.FC = (props) => {
       {usersOnStage.map((user) => (
         <UserVideo
           key={user.id}
+          user={user}
           image="https://source.unsplash.com/random/300x1000"
-          sx={{ minHeight: "400px" }}
+          showIfOnStage
         >
           {room.quizMaster === user.id ? "Quizmaster" : user.name}
         </UserVideo>

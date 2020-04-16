@@ -13,12 +13,14 @@ import Stage from "../../../components/Stage";
 import { useEnsureMasterRoom } from "../../../hooks/use-ensure-master";
 import useRoomTablePage from "../../../hooks/use-room-table-page";
 import { useRoom } from "../../../providers/room";
-import { useUser } from "../../../providers/user";
 import { Table } from "../../../types";
 
 const TableItem: React.FC<{ table: Table }> = ({ table }) => {
-  const { data: room } = useRoom();
-  const { setTable, data: user } = useUser();
+  const {
+    currentRoom: { data: room },
+    currentUser: { data: user },
+    setTable,
+  } = useRoom();
   const isUsersTable = user != null && user.tableId === table.id;
 
   if (room == null) return null;
@@ -67,7 +69,9 @@ const TableItem: React.FC<{ table: Table }> = ({ table }) => {
 };
 
 const TableList: React.FC = (props) => {
-  const { data: room } = useRoom();
+  const {
+    currentRoom: { data: room },
+  } = useRoom();
 
   if (room == null) {
     return null;
@@ -86,8 +90,10 @@ const RoomPage = () => {
   useEnsureMasterRoom();
   useRoomTablePage();
 
-  const { data: room, error: roomError, loading: roomLoading } = useRoom();
-  const { loading: userLoading } = useUser();
+  const {
+    currentRoom: { data: room, error: roomError, loading: roomLoading },
+    currentUser: { loading: userLoading },
+  } = useRoom();
 
   if (roomError != null) {
     return (
