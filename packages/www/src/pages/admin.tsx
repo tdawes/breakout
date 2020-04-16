@@ -153,6 +153,7 @@ const RoomItem: React.FC<{
         my: 3,
         p: 3,
         borderRadius: 2,
+        maxWidth: "500px",
       }}
     >
       <Box sx={{ pr: [0], pb: [2, 0] }}>
@@ -276,7 +277,7 @@ const Admin = () => {
               <Grid
                 gap={2}
                 sx={{
-                  gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
                 }}
               >
                 {roomIds.map((id) => (
