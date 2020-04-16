@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as db from "../db";
 import { LoadingValue, User, DBUser } from "../types";
-import { getItem, saveItem } from "../local";
+import { getItem, saveItem, clearItem } from "../local";
 import useAsyncEffect from "use-async-effect";
 import { loadingValue, dataValue } from "../utils";
 
@@ -10,6 +10,8 @@ const getLocalUserIdForRoom = (roomId: string): Promise<string | null> =>
   getItem<string | null>(userKey(roomId), null);
 const saveUserIdForRoom = (roomId: string, userId: string) =>
   saveItem(userKey(roomId), userId);
+export const removeUserIdForRoom = (roomId: string) =>
+  clearItem(userKey(roomId));
 
 const nameKey = (): string => "@breakout/name";
 const getLocalName = (): Promise<string> => getItem<string>(nameKey(), "");

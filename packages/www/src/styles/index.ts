@@ -158,7 +158,7 @@ const theme: Theme = {
     subtle: {
       color: "text",
       border: "solid 1px",
-      borderColor: "text",
+      borderColor: "purple.100",
       borderRadius: 0,
       cursor: "pointer",
       bg: "purple.100",
@@ -174,6 +174,19 @@ const theme: Theme = {
       transition: "all 150ms ease-in-out",
 
       "&:hover,&:focus,&:active": {
+        bg: "accent",
+      },
+    },
+    link: {
+      ...baseLink,
+      m: 0,
+      p: 0,
+      color: "black",
+      bg: "transparent",
+      borderRadius: 2,
+
+      "&:hover,&:focus,&:active": {
+        color: "currentColor",
         bg: "accent",
       },
     },

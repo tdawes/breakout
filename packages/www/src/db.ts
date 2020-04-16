@@ -30,8 +30,9 @@ export const createTable = (name: string, roomId: string) => {
 export const createRoom = async (name: string) => {
   const dbRoom: DBRoom = {
     name,
+    quizMaster: null,
   };
-  const doc = await roomsCollection.add(dbRoom);
+  await roomsCollection.add(dbRoom);
 };
 
 export const setRoom = async (roomId: string, dbRoom: DBRoom) => {
@@ -106,4 +107,8 @@ export const setTable = async (table: Table) => {
 
 export const updateTable = (tableId: string, dbTable: Partial<DBTable>) => {
   tablesCollection.doc(tableId).update(dbTable);
+};
+
+export const deleteUser = (user: User) => {
+  usersCollection.doc(user.id).delete();
 };

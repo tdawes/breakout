@@ -33,7 +33,7 @@ export interface DBUser {
 
 export interface DBRoom {
   name: string;
-  quizMaster?: string;
+  quizMaster: string | null;
 }
 
 export interface DBTable {

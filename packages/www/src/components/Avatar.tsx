@@ -1,12 +1,11 @@
 /** @jsx jsx */
-import { Text, Flex, Box, jsx, Button } from "theme-ui";
 import { Star } from "react-feather";
-import { userInfo } from "os";
+import { Box, Flex, jsx, Text } from "theme-ui";
 
-const defaultSize = 20;
+const defaultSize = 24;
 
 const Avatar: React.FC<{
-  name: string;
+  name?: string;
   isQuizMaster?: boolean;
   size?: number;
   onClick?: () => void;
@@ -40,7 +39,9 @@ const Avatar: React.FC<{
           </Box>
         )}
       </Box>
-      <Text sx={{ fontSize: 1, pt: 0 }}>{props.name}</Text>
+      {props.name != null && (
+        <Text sx={{ fontSize: 1, pt: 0 }}>{props.name}</Text>
+      )}
     </Flex>
   );
 };
