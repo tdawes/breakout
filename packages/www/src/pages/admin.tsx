@@ -5,61 +5,92 @@ import {
   Box,
   Button,
   Flex,
+  Grid,
   IconButton,
   Input,
   jsx,
   Styled,
   Text,
 } from "theme-ui";
-import AvatarList from "../components/AvatarList";
+import Avatar from "../components/Avatar";
 import Container from "../components/Container";
 import Footer from "../components/Footer";
 import Layout from "../components/Layout";
 import Link from "../components/Link";
 import * as db from "../db";
 import useData from "../hooks/use-data";
-import useAllRooms from "../hooks/useAllRooms";
-import { useRoom } from "../providers/room";
-import { Table } from "../types";
 import useRoomTablePage from "../hooks/use-room-table-page";
+import useAllRooms from "../hooks/useAllRooms";
+import { Table, User } from "../types";
+import { pluralize } from "../utils";
 
 const Section: React.FC = (props) => <Box sx={{ py: 3 }} {...props} />;
 
+const UserItem: React.FC<{
+  user: User;
+  roomId: string;
+  isQuizMaster?: boolean;
+  showPromoteButton?: boolean;
+}> = ({ user, isQuizMaster, showPromoteButton, roomId }) => {
+  return (
+    <Flex
+      key={user.id}
+      sx={{
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      <Flex>
+        <Avatar sx={{ mr: 2 }} isQuizMaster={isQuizMaster} />
+        <Text>{user.name}</Text>
+      </Flex>
+
+      <Box>
+        {showPromoteButton && (
+          <Button
+            variant="linkDark"
+            sx={{ fontSize: 2, color: "muted", mr: 3 }}
+            onClick={() => {
+              if (isQuizMaster) {
+                db.updateRoom(roomId, { quizMaster: null });
+              } else {
+                db.updateRoom(roomId, { quizMaster: user.id });
+              }
+            }}
+          >
+            {isQuizMaster ? "remove as qm" : "set as qm"}
+          </Button>
+        )}
+
+        <IconButton
+          sx={{ fontSize: 2, color: "muted" }}
+          onClick={() => {
+            db.deleteUser(user);
+          }}
+        >
+          <Trash2 size={14} />
+        </IconButton>
+      </Box>
+    </Flex>
+  );
+};
+
 const TableItem: React.FC<{ table: Table }> = ({ table }) => {
+  const numMembers = Object.keys(table.users).length;
+
   return (
     <Box
       sx={{
-        my: 2,
+        flexGrow: 1,
+        my: 1,
         p: 2,
-        position: "relative",
         border: "solid 1px",
         borderColor: "grey.200",
-
-        "&:hover": {
-          ".deleteTable": { opacity: 1 },
-        },
       }}
     >
-      <IconButton
-        className="deleteTable"
-        sx={{
-          position: "absolute",
-          top: 2,
-          right: 4,
-          opacity: 0,
-          transition: "opacity 150ms ease-in-out",
-        }}
-        onClick={() => db.deleteTable(table)}
-      >
-        <Trash2 size={18} />
-      </IconButton>
-
       <Box>
-        <Text>Table {table.name}</Text>
-        <Flex>
-          <Text sx={{ fontSize: 1, color: "muted", mr: 3 }}>
-            {Object.keys(table.users).length} members
-          </Text>
+        <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
+          <Text>Table {table.name}</Text>
           <Link
             href="/room/[roomId]/table/[tableId]"
             as={`/room/${table.roomId}/table/${table.id}`}
@@ -69,9 +100,26 @@ const TableItem: React.FC<{ table: Table }> = ({ table }) => {
             go to table
           </Link>
         </Flex>
+        <Flex>
+          <Text sx={{ fontSize: 1, color: "muted", mr: 3 }}>
+            {numMembers} {pluralize("member", numMembers)}
+          </Text>
+        </Flex>
       </Box>
 
-      <AvatarList users={Object.values(table.users)} sx={{ pt: 2 }} />
+      {numMembers > 0 && (
+        <Box sx={{ pt: 2 }}>
+          {Object.values(table.users).map((user) => (
+            <UserItem key={user.id} user={user} roomId={table.roomId} />
+          ))}
+        </Box>
+      )}
+
+      <Box sx={{ pt: 2, fontSize: 1, color: "muted" }}>
+        <Button variant="linkDark" onClick={() => db.deleteTable(table)}>
+          delete table
+        </Button>
+      </Box>
     </Box>
   );
 };
@@ -91,71 +139,62 @@ const RoomItem: React.FC<{
   );
 
   return (
-    <Flex
+    <Box
       sx={{
-        alignItems: ["initial", "center"],
-        flexDirection: ["column", "row"],
         bg: "grey.100",
         color: "black",
         my: 3,
         p: 3,
         borderRadius: 2,
-        position: "relative",
-
-        "&:hover": {
-          ".deleteRoom": { opacity: 1 },
-        },
+        maxWidth: "500px",
       }}
     >
-      <IconButton
-        className="deleteRoom"
-        sx={{
-          position: "absolute",
-          top: 1,
-          right: 1,
-          opacity: 0,
-          zIndex: 2,
-          transition: "opacity 150ms ease-in-out",
-        }}
-        onClick={() => db.deleteRoom(room)}
-      >
-        <Trash2 size={18} />
-      </IconButton>
-
-      <Box sx={{ pr: [0, 4, 6], pb: [2, 0] }}>
-        <Text sx={{ fontSize: 3 }}>Room {room.name}</Text>
-
-        <Box sx={{ fontSize: 1, color: "muted" }}>
-          <Text>{Object.keys(room.users).length} members</Text>
-          <Text>{Object.keys(room.tables).length} tables</Text>
+      <Box sx={{ pr: [0], pb: [2, 0] }}>
+        <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
+          <Text sx={{ fontSize: 3 }}>{room.name}</Text>
           <Link href="/room/[roomId]" as={`/room/${room.id}`} variant="dark">
             go to room
           </Link>
+        </Flex>
+
+        <Box sx={{ fontSize: 1, color: "muted" }}>
+          <Flex>
+            <Text sx={{ mr: 3, color: "muted" }}>
+              {Object.keys(room.users).length} members
+            </Text>
+            <Text>{Object.keys(room.tables).length} tables</Text>
+          </Flex>
 
           {usersNoTable.length > 0 && (
-            <Box sx={{ py: 3 }}>
-              <Text>These users have no table</Text>
-              <Text>Click to promote to quizmaster</Text>
-
-              <AvatarList
-                users={usersNoTable}
-                quizMaster={room.quizMaster}
-                onUserClick={(userId) => {
-                  db.setRoom(room.id, {
-                    name: room.name,
-                    quizMaster: userId,
-                  });
-                }}
-                sx={{ pt: 2 }}
-              />
+            <Box sx={{ py: 2 }}>
+              {usersNoTable.map((user) => (
+                <UserItem
+                  key={user.id}
+                  user={user}
+                  roomId={room.id}
+                  isQuizMaster={
+                    room.quizMaster != null && room.quizMaster === user.id
+                  }
+                  showPromoteButton
+                />
+              ))}
             </Box>
           )}
         </Box>
       </Box>
 
       <Box sx={{ flexGrow: 1 }}>
+        {Object.keys(room.tables).length > 0 && (
+          <Box>
+            {Object.keys(room.tables).map((tableId) => (
+              <TableItem key={tableId} table={room.tables[tableId]} />
+            ))}
+          </Box>
+        )}
+
         <Box
           as="form"
+          sx={{ mt: 3, maxWidth: "measure" }}
           onSubmit={(e) => {
             e.preventDefault();
             if (tableName !== "") {
@@ -178,15 +217,13 @@ const RoomItem: React.FC<{
           </Button>
         </Box>
 
-        {Object.keys(room.tables).length > 0 && (
-          <Box sx={{ pt: 2 }}>
-            {Object.keys(room.tables).map((tableId) => (
-              <TableItem key={tableId} table={room.tables[tableId]} />
-            ))}
-          </Box>
-        )}
+        <Box sx={{ pt: 3, fontSize: 1, color: "muted" }}>
+          <Button variant="linkDark" onClick={() => db.deleteRoom(room)}>
+            delete room
+          </Button>
+        </Box>
       </Box>
-    </Flex>
+    </Box>
   );
 };
 
@@ -230,11 +267,16 @@ const Admin = () => {
             </Section>
 
             <Section>
-              <Styled.h3>Rooms List</Styled.h3>
-
-              {roomIds.map((id) => (
-                <RoomItem key={id} roomId={id} />
-              ))}
+              <Grid
+                gap={2}
+                sx={{
+                  gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+                }}
+              >
+                {roomIds.map((id) => (
+                  <RoomItem key={id} roomId={id} />
+                ))}
+              </Grid>
             </Section>
           </Box>
 

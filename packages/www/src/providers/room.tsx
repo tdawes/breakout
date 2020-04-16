@@ -135,7 +135,7 @@ export const RoomProvider: React.FC = (props) => {
     createUser,
     setStage,
     setTable,
-  } = useCurrentUserData(roomId, tableId);
+  } = useCurrentUserData(room.data, tableId);
 
   const { socket, connected: socketConnected } = useWebSockets(
     user?.data?.id ?? null,

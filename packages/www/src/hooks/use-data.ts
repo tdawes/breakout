@@ -113,8 +113,13 @@ const useData = (roomId: string | null): Result => {
 
     setRoomLoading(true);
     const unsubscribe = roomsCollection.doc(roomId).onSnapshot((snapshot) => {
-      const data = snapshot.data() as DBRoom;
-      setDBRoom(data);
+      if (snapshot.exists) {
+        const data = snapshot.data() as DBRoom;
+        setDBRoom(data);
+      } else {
+        setError("Room does not exist");
+      }
+
       setRoomLoading(false);
     });
 

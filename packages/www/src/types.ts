@@ -34,7 +34,7 @@ export interface DBUser {
 
 export interface DBRoom {
   name: string;
-  quizMaster?: string;
+  quizMaster: string | null;
   scratchpadsEditable?: boolean;
 }
 
