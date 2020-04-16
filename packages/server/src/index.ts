@@ -15,6 +15,9 @@ const io = socketIO(server);
 
 const port = process.env.PORT || 4000;
 
+// io.origins("https://breakout-by-prodo.herokuapp.com:443");
+io.origins("*:*");
+
 const logger = newLogger();
 const mesh = newMesh(logger);
 const pubSub = newPubSub(logger);
