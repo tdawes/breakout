@@ -12,6 +12,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "build"]
+  "include": ["src/**/*", "typings/**/*"],
+  "exclude": ["./node_modules", "**/build", "**/node_modules"]
 }

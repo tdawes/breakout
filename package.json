@@ -11,7 +11,8 @@
     "start:server": "yarn workspace server start",
     "start:server:prod": "yarn workspace server start:prod",
     "clean": "yarn workspaces run clean",
-    "lint": "eslint . --ext .ts,.tsx"
+    "lint": "eslint . --ext .ts,.tsx",
+    "heroku-postbuild": "yarn workspace server run build"
   },
   "dependencies": {},
   "devDependencies": {

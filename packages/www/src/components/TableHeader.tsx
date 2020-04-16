@@ -1,12 +1,14 @@
 /** @jsx jsx */
 import * as React from "react";
-import { Box, Flex, Grid, jsx, Text, Button } from "theme-ui";
-import { useTable } from "../providers/table";
-import Avatar from "./Avatar";
+import { Box, Flex, jsx, Text, Button } from "theme-ui";
 import { pluralize } from "../utils";
+import { useRoom } from "../providers/room";
+import Link from "./Link";
 
 const TableStats: React.FC = (props) => {
-  const { data: table } = useTable();
+  const {
+    currentTable: { data: table },
+  } = useRoom();
 
   if (table == null) {
     return null;
@@ -34,9 +36,14 @@ const TableStats: React.FC = (props) => {
 };
 
 const TableHeader = () => {
-  const { data: table } = useTable();
+  const {
+    currentTable: { data: table },
+    currentUser: { data: user },
+    currentRoom: { data: room },
+    setStage,
+  } = useRoom();
 
-  if (table == null) {
+  if (table == null || user == null || room == null) {
     return null;
   }
 
@@ -54,16 +61,31 @@ const TableHeader = () => {
     >
       <Flex sx={{ justifyContent: "space-between", pb: [3, 3, 0] }}>
         <Text>
-          Your Table:{" "}
+          This Table:{" "}
           <span sx={{ fontWeight: "bold" }}>
             {table.name}, {numUsers} {pluralize("member", numUsers)}
           </span>
         </Text>
       </Flex>
 
-      <Button>Join Stage</Button>
+      {room.quizMaster !== user.id && (
+        <Button
+          variant={user.onStage ? "secondary" : "primary"}
+          onClick={() => {
+            setStage(!user.onStage);
+          }}
+        >
+          {user.onStage ? "Leave Stage" : "Join Stage"}
+        </Button>
+      )}
 
-      <Text sx={{ color: "grey.600" }}>This game</Text>
+      <Link
+        href="/room/[roomId]"
+        as={`/room/${room.id}`}
+        sx={{ color: "grey.600", textDecoration: "none" }}
+      >
+        Go to room
+      </Link>
     </Box>
   );
 };

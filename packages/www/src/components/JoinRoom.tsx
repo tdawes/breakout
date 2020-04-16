@@ -2,21 +2,18 @@
 import * as React from "react";
 import { Box, Button, Input, jsx, Text } from "theme-ui";
 import { useRoom } from "../providers/room";
-import { useTable } from "../providers/table";
-import { useUser } from "../providers/user";
 import Modal from "./Modal";
 
 const maxNameLength = 20;
 
 const JoinRoom: React.FC = () => {
-  const { data: room, loading: roomLoading } = useRoom();
-  const { data: table } = useTable();
   const {
-    data: user,
-    loading: userLoading,
+    currentRoom: { data: room, loading: roomLoading },
+    currentTable: { data: table },
+    currentUser: { data: user, loading: userLoading },
     preferredName,
     createUser,
-  } = useUser();
+  } = useRoom();
 
   const [name, setName] = React.useState(preferredName);
   React.useEffect(() => setName(preferredName), [preferredName]);
