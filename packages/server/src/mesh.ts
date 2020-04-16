@@ -141,6 +141,11 @@ export default (logger: Logger): Mesh => {
     },
     unregister: (userId: string) => {
       logger.log("mesh - unregister");
+
+      if (connections[userId] == null) {
+        return;
+      }
+
       connections[userId].links.forEach((other) => disconnect(userId, other));
 
       delete connections[userId];
