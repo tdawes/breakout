@@ -76,7 +76,7 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
             connection.addTrack(track, ls);
           });
         } catch (e) {
-          console.log("error adding track to connection", e);
+          console.error("error adding track to connection", e);
         }
       });
 
@@ -91,11 +91,16 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
 
     connection.addEventListener("negotiationneeded", async () => {
       console.log("negotiationneeded - making sdp offer");
-      const offer = await connection.createOffer();
-      await connection.setLocalDescription(offer);
-      socket.emit(SignallingMessage.SDP_OFFER, {
-        offer,
-      });
+      try {
+        const offer = await connection.createOffer();
+        await connection.setLocalDescription(offer);
+
+        socket.emit(SignallingMessage.SDP_OFFER, {
+          offer,
+        });
+      } catch (e) {
+        console.error("error creating offer", e);
+      }
     });
 
     connection.addEventListener("datachannel", async (event) => {
@@ -146,7 +151,11 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
       SignallingMessage.SDP_ANSWER,
       async ({ answer }: { answer: RTCSessionDescriptionInit }) => {
         console.log("sdp answer");
-        await connection.setRemoteDescription(answer);
+        try {
+          await connection.setRemoteDescription(answer);
+        } catch (e) {
+          console.error("error setting remote description", e);
+        }
       },
     );
 
@@ -158,20 +167,28 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
       SignallingMessage.SDP_OFFER,
       async ({ offer }: { offer: RTCSessionDescriptionInit }) => {
         console.log("socket sdp offer");
-        await connection.setRemoteDescription(offer);
-        const answer = await connection.createAnswer();
-        await connection.setLocalDescription(answer);
-        socket.emit(SignallingMessage.SDP_ANSWER, {
-          answer,
-        });
+        try {
+          await connection.setRemoteDescription(offer);
+          const answer = await connection.createAnswer();
+          await connection.setLocalDescription(answer);
+          socket.emit(SignallingMessage.SDP_ANSWER, {
+            answer,
+          });
+        } catch (e) {
+          console.error("error sdp offer", e);
+        }
       },
     );
 
     socket.on(
       SignallingMessage.ICE_CANDIDATE,
       async ({ candidate }: { candidate: RTCIceCandidateInit }) => {
-        console.log("socket recevied sdp offer");
-        await connection.addIceCandidate(candidate);
+        console.log("socket recevied ICE candidate");
+        try {
+          await connection.addIceCandidate(candidate);
+        } catch (e) {
+          console.error("error adding ICE Candidate", e);
+        }
       },
     );
 
