@@ -196,6 +196,10 @@ export default (logger: Logger): Mesh => {
       };
       connections[userId] = userConnection;
 
+      dataChannel.addEventListener("open", () => {
+        flushDataChannelMessages(userConnection);
+      });
+
       connection.addEventListener("track", (e: RTCTrackEvent) => {
         userConnection.transceivers.push(e.transceiver);
         Object.keys(userConnection.outgoing)
