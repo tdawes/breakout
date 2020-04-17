@@ -20,12 +20,16 @@ const useWebSockets = (userId: string | null, roomId: string | null) => {
       });
 
       socket.on("disconnect", () => {
+        // eslint-disable-next-line
+        console.log("socket disconnected!");
         setConnected(false);
       });
 
       setSocket(socket);
 
       return () => {
+        // eslint-disable-next-line
+        console.log("closing socket!");
         socket?.close();
         setSocket(null);
         setConnected(false);
