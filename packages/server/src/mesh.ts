@@ -150,11 +150,16 @@ export default (logger: Logger): Mesh => {
       return;
     }
 
+    if (fromConnection.outgoing[to] == null) {
+      fromConnection.outgoing[to] = 0;
+    }
+
     if (fromConnection.outgoing[to] <= 0) {
       return;
     }
 
-    fromConnection.outgoing[to]--;
+    fromConnection.outgoing[to] -= 1;
+
     logger.log(
       `There are now ${fromConnection.outgoing[to]} connections from ${from} to ${to}.`,
     );
