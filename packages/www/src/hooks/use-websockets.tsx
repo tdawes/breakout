@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+
 import * as React from "react";
 import * as io from "socket.io-client";
 
@@ -13,31 +15,42 @@ const useWebSockets = (userId: string | null, roomId: string | null) => {
   const [connected, setConnected] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    // eslint-disable-next-line
-    console.log("websocket hook!", userId);
     if (userId != null) {
-      const socket = io.connect(wsUrl, { query: { user: userId } });
-      socket.on("connect", () => {
-        setConnected(true);
-      });
+      let s: SocketIOClient.Socket | null = null;
 
-      socket.on("disconnect", () => {
-        // eslint-disable-next-line
-        console.log("socket disconnected!");
-        setConnected(false);
-      });
+      const connectSocket = () => {
+        console.log("reconnecting socket", { userId });
 
-      socket.on("error", (...args) => {
-        // eslint-disable-next-line
-        console.log(...args);
-      });
+        const socket = io.connect(wsUrl, { query: { user: userId } });
+        setSocket(socket);
 
-      setSocket(socket);
+        s = socket;
+
+        socket.on("connect", () => {
+          setConnected(true);
+        });
+
+        socket.on("disconnect", () => {
+          console.log("socket disconnected!");
+          setSocket(null);
+          setConnected(false);
+
+          // attempt to reconnect
+          connectSocket();
+        });
+
+        socket.on("error", (...args) => {
+          console.log(...args);
+        });
+
+        return socket;
+      };
+
+      connectSocket();
 
       return () => {
-        // eslint-disable-next-line
         console.log("closing socket! unsubscribing!", userId);
-        socket?.close();
+        s?.close();
         setSocket(null);
         setConnected(false);
       };
