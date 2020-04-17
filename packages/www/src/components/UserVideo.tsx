@@ -30,7 +30,9 @@ const UserVideo: React.FC<{
     currentUser: { data: user },
   } = useRoom();
 
-  const shouldMute = user != null && user.id === props.user.id;
+  const shouldMute =
+    process.env.NODE_ENV === "development" ||
+    (user != null && user.id === props.user.id);
 
   return (
     <Flex
@@ -52,7 +54,7 @@ const UserVideo: React.FC<{
               mediaStream={stream}
               autoPlay
               playsInline
-              muted={true || shouldMute}
+              muted={shouldMute}
               controls
             />
           )}
