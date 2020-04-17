@@ -41,6 +41,7 @@ const UserVideo: React.FC<{
         flexDirection: "column",
         alignItems: "flex-end",
         width: "100%",
+        border: "solid 2px peachpuff",
       }}
     >
       {props.user.onStage && !props.showIfOnStage ? (
