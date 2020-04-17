@@ -55,8 +55,8 @@ export default (logger: Logger, pubSub: PubSub, mesh: Mesh): RoomController => {
       pubSub.leaveSpace(spaceId, userId);
     },
     unregister: (userId: string) => {
-      mesh.unregister(userId);
       pubSub.unsubscribeAll(userId);
+      mesh.unregister(userId);
     },
   };
 };
