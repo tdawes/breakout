@@ -25,6 +25,11 @@ const useWebSockets = (userId: string | null, roomId: string | null) => {
         setConnected(false);
       });
 
+      socket.on("error", (...args) => {
+        // eslint-disable-next-line
+        console.log(...args);
+      });
+
       setSocket(socket);
 
       return () => {
