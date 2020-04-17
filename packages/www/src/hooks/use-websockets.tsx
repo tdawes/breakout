@@ -13,6 +13,8 @@ const useWebSockets = (userId: string | null, roomId: string | null) => {
   const [connected, setConnected] = React.useState<boolean>(false);
 
   React.useEffect(() => {
+    // eslint-disable-next-line
+    console.log("websocket hook!", userId);
     if (userId != null) {
       const socket = io.connect(wsUrl, { query: { user: userId } });
       socket.on("connect", () => {
@@ -34,7 +36,7 @@ const useWebSockets = (userId: string | null, roomId: string | null) => {
 
       return () => {
         // eslint-disable-next-line
-        console.log("closing socket!");
+        console.log("closing socket! unsubscribing!", userId);
         socket?.close();
         setSocket(null);
         setConnected(false);
