@@ -84,7 +84,6 @@ export default (logger: Logger): Mesh => {
     const toConnection = connections[to];
     logger.log(
       `Killing the link from ${from} to ${to} as no more active connections.`,
-      toConnection,
     );
 
     if (toConnection == null) {
