@@ -118,9 +118,9 @@ const MasterPage = () => {
     return <Loading />;
   }
 
-  // if (!user || room.quizMaster != user.id) {
-  //   return <NotQuizMaster />;
-  // }
+  if (!user || room.quizMaster != user.id) {
+    return <NotQuizMaster />;
+  }
 
   // A couple values here are hardcoded until we have real video
   return (
