@@ -18,13 +18,14 @@ export interface Connection {
   outgoing: {
     [otherUser: string]: number;
   };
-  isDataChannelOpen: boolean;
-  isConnectionStable: boolean;
   transceivers: RTCRtpTransceiver[];
 }
 
 const flushDataChannelMessages = (connection: Connection) => {
-  if (connection.isDataChannelOpen && connection.isConnectionStable) {
+  if (
+    connection.dataChannel.readyState === "open" &&
+    connection.connection.signalingState === "stable"
+  ) {
     const newQueue = connection.messageQueue.splice(
       0,
       connection.messageQueue.length,
@@ -57,22 +58,26 @@ export default (logger: Logger): Mesh => {
       return;
     }
 
-    const outgoing = toConnection.connection.addTransceiver(
-      transceiver.receiver.track,
-    );
+    try {
+      const outgoing = toConnection.connection.addTransceiver(
+        transceiver.receiver.track,
+      );
 
-    toConnection.messageQueue.push(() =>
-      outgoing.mid == null
-        ? null
-        : {
-            type: "connect",
-            mid: outgoing.mid,
-            uid: from,
-            kind: transceiver.receiver.track.kind,
-            label: transceiver.receiver.track.label,
-          },
-    );
-    flushDataChannelMessages(toConnection);
+      toConnection.messageQueue.push(() =>
+        outgoing.mid == null
+          ? null
+          : {
+              type: "connect",
+              mid: outgoing.mid,
+              uid: from,
+              kind: transceiver.receiver.track.kind,
+              label: transceiver.receiver.track.label,
+            },
+      );
+      flushDataChannelMessages(toConnection);
+    } catch (e) {
+      logger.error("error adding receiver", e);
+    }
   };
 
   const disconnectTransceivers = (from: string, to: string) => {
@@ -187,21 +192,10 @@ export default (logger: Logger): Mesh => {
         connection,
         dataChannel,
         messageQueue: [],
-        isDataChannelOpen: false,
-        isConnectionStable: false,
         outgoing: {},
         transceivers: [],
       };
       connections[userId] = userConnection;
-
-      dataChannel.addEventListener("open", () => {
-        userConnection.isDataChannelOpen = true;
-        flushDataChannelMessages(userConnection);
-      });
-
-      dataChannel.addEventListener("close", () => {
-        userConnection.isDataChannelOpen = false;
-      });
 
       connection.addEventListener("track", (e: RTCTrackEvent) => {
         userConnection.transceivers.push(e.transceiver);
@@ -213,8 +207,6 @@ export default (logger: Logger): Mesh => {
       });
 
       connection.addEventListener("connectionstatechange", () => {
-        userConnection.isConnectionStable =
-          connection.signalingState === "stable";
         flushDataChannelMessages(userConnection);
       });
     },

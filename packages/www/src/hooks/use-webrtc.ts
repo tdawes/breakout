@@ -34,11 +34,6 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
     {},
   );
 
-  React.useEffect(() => console.log(midLookup, trackLookup), [
-    midLookup,
-    trackLookup,
-  ]);
-
   const getUserTracks = React.useCallback(
     (userId: string | null): MediaStreamTrack[] => {
       if (userId == null) {
@@ -76,9 +71,13 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
       .then((ls) => {
         setLocalStream(ls);
 
-        ls.getTracks().forEach((track) => {
-          connection.addTrack(track, ls);
-        });
+        try {
+          ls.getTracks().forEach((track) => {
+            connection.addTrack(track, ls);
+          });
+        } catch (e) {
+          console.log("error adding track to connection", e);
+        }
       });
 
     connection.addEventListener("icecandidate", (e) => {
@@ -102,7 +101,6 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
     connection.addEventListener("datachannel", async (event) => {
       if (event.channel != null) {
         event.channel.addEventListener("message", (event) => {
-          console.log("DATA CHANNEL MESSAGE", event);
           try {
             const { type, mid, uid, kind } = JSON.parse(event.data) as {
               type: "connect" | "disconnect";
@@ -119,7 +117,9 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
               if (midLookup[uid] == null) midLookup[uid] = {};
               if (type === "connect") {
                 midLookup[uid][kind as "video" | "audio"] = mid;
+                console.log("received rtc media info", { kind, uid, mid });
               } else if (type === "disconnect") {
+                console.log("received rtc disconnect event", { uid });
                 delete midLookup[uid];
               }
             });
@@ -128,6 +128,18 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
           }
         });
       }
+    });
+
+    connection.addEventListener("track", (e) => {
+      console.log("received track");
+      const remoteStream = new MediaStream();
+      remoteStream.addTrack(e.track);
+
+      updateTrackLookup((trackLookup) => {
+        if (e.transceiver.mid != null) {
+          trackLookup[e.transceiver.mid] = e.track;
+        }
+      });
     });
 
     socket.on(
@@ -162,18 +174,6 @@ const useWebRTC = (socket: SocketIOClient.Socket | null) => {
         await connection.addIceCandidate(candidate);
       },
     );
-
-    connection.addEventListener("track", (e) => {
-      console.log("received track");
-      const remoteStream = new MediaStream();
-      remoteStream.addTrack(e.track);
-
-      updateTrackLookup((trackLookup) => {
-        if (e.transceiver.mid != null) {
-          trackLookup[e.transceiver.mid] = e.track;
-        }
-      });
-    });
 
     return () => {
       connection.close();
