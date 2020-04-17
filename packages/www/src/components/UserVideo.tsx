@@ -36,7 +36,7 @@ const UserVideo: React.FC<{
     <Flex
       {...props}
       sx={{
-        position: "relative",
+        flexDirection: "column",
         alignItems: "flex-end",
         width: "100%",
       }}
@@ -52,7 +52,7 @@ const UserVideo: React.FC<{
               mediaStream={stream}
               autoPlay
               playsInline
-              muted={shouldMute}
+              muted={true || shouldMute}
               controls
             />
           )}
@@ -73,10 +73,6 @@ const UserVideo: React.FC<{
           py: 1,
           bg: "#6665658f",
           fontSize: 1,
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
         }}
       >
         {props.children}
