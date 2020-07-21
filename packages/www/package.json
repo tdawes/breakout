@@ -15,7 +15,7 @@
     "firebase": "^7.13.2",
     "immer": "^6.0.3",
     "localforage": "^1.7.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "next": "9.3.4",
     "next-compose-plugins": "^2.2.0",
     "next-images": "^1.4.0",
